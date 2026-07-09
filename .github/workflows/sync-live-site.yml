@@ -22,6 +22,7 @@ jobs:
           set -e
           BASE="https://trynexa.com.br"
           FILES=(
+            index.html
             app.html
             cadastro.html
             cookies.html
