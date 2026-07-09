@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nexa Admin</title>
+<link rel="stylesheet" href="/admin.css">
+</head>
+<body>
+<div class="layout">
+  <aside>
+    <h1>Nexa Admin</h1>
+    <p>Operação • CRM • Tesouraria</p>
+    <input id="email" placeholder="E-mail admin">
+    <input id="password" type="password" placeholder="Senha">
+    <button id="loginBtn">Entrar</button>
+    <button id="logoutBtn">Sair</button>
+    <div id="status">Aguardando login.</div>
+    <nav>
+      <button data-tab="ops">Operations</button>
+      <button data-tab="clientes">Clientes</button>
+      <button data-tab="financeiro">Financeiro</button>
+      <button data-tab="tesouraria">Tesouraria</button>
+      <button data-tab="crm">CRM / SmartBots</button>
+      <button data-tab="conhecimento">Conhecimento</button>
+      <button data-tab="raw">Debug</button>
+    </nav>
+  </aside>
+  <main>
+    <header>
+      <h2 id="title">Operations</h2>
+      <button id="refreshBtn">Atualizar</button>
+    </header>
+    <section id="content"></section>
+  </main>
+</div>
+<script src="/admin.js"></script>
+</body>
+</html>
