@@ -1,0 +1,4 @@
+/admin  /admin.html  200!
+/admin/  /admin.html  200!
+/docs  https://nexa-backend-p2u0.onrender.com/docs  200!
+/api/v1/*  https://nexa-backend-p2u0.onrender.com/api/v1/:splat  200!
