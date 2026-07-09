@@ -1,0 +1,27 @@
+[build]
+  publish = "."
+  command = ""
+
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/admin/"
+  to = "/admin.html"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/docs"
+  to = "https://nexa-backend-p2u0.onrender.com/docs"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/v1/*"
+  to = "https://nexa-backend-p2u0.onrender.com/api/v1/:splat"
+  status = 200
+  force = true
