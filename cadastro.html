@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Cadastro | Nexa</title><script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>body{font-family:'Inter',system-ui,sans-serif}.gradient-bg{background:linear-gradient(135deg,#0F172A 0%,#1E293B 100%)}.cta-glow{box-shadow:0 0 40px rgba(99,102,241,.35)}</style>
+<script>const API_URL='https://nexa-backend-p2u0.onrender.com/api/v1';</script></head>
+<body class="gradient-bg text-white min-h-screen">
+  <div class="min-h-screen flex items-center justify-center px-4 py-10">
+    <form id="cadastroForm" class="w-full max-w-md bg-slate-900/90 border border-white/10 p-8 rounded-2xl shadow-2xl">
+      <a href="/" class="inline-flex items-center gap-3 mb-8"><span class="w-10 h-10 bg-indigo-500 rounded-xl flex items-center justify-center font-bold text-xl">N</span><span class="text-xl font-bold">Nexa</span></a>
+      <h1 class="text-3xl font-extrabold mb-2">Começar em 30s</h1>
+      <p class="text-slate-400 mb-6">Crie sua conta para testar o dólar digital.</p>
+      <label class="block text-sm text-slate-300 mb-2">Nome completo</label>
+      <input id="fullName" required class="w-full mb-4 p-3 rounded-lg bg-slate-800 border border-white/10 outline-none focus:border-indigo-500" placeholder="Seu nome">
+      <label class="block text-sm text-slate-300 mb-2">E-mail</label>
+      <input id="email" type="email" required class="w-full mb-4 p-3 rounded-lg bg-slate-800 border border-white/10 outline-none focus:border-indigo-500" placeholder="voce@email.com">
+      <label class="block text-sm text-slate-300 mb-2">CPF</label>
+      <input id="cpf" required class="w-full mb-4 p-3 rounded-lg bg-slate-800 border border-white/10 outline-none focus:border-indigo-500" placeholder="000.000.000-00">
+      <label class="block text-sm text-slate-300 mb-2">Telefone</label>
+      <input id="phone" required class="w-full mb-4 p-3 rounded-lg bg-slate-800 border border-white/10 outline-none focus:border-indigo-500" placeholder="(11) 99999-9999">
+      <label class="block text-sm text-slate-300 mb-2">Senha</label>
+      <input id="password" type="password" minlength="6" required class="w-full mb-6 p-3 rounded-lg bg-slate-800 border border-white/10 outline-none focus:border-indigo-500" placeholder="Mínimo 6 caracteres">
+      <button id="submitBtn" class="w-full bg-indigo-500 hover:bg-indigo-600 p-3 rounded-lg font-bold cta-glow">Criar conta</button>
+      <p id="msg" class="mt-4 text-sm text-center"></p>
+      <p class="mt-6 text-sm text-slate-400 text-center">Já tem conta? <a class='text-indigo-400 hover:text-indigo-300' href='/login'>Entrar</a></p>
+    </form>
+  </div>
+<script>
+document.getElementById('cadastroForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const msg=document.getElementById('msg'); const btn=document.getElementById('submitBtn');
+  msg.textContent='Criando conta...'; msg.className='mt-4 text-sm text-center text-slate-300'; btn.disabled=true;
+  try {
+    const payload={fullName:fullName.value,email:email.value,cpf:cpf.value,phone:phone.value,password:password.value};
+    const res=await fetch(API_URL+'/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok) throw new Error(Array.isArray(data.message)?data.message.join(', '):(data.message || 'Não foi possível criar a conta'));
+    localStorage.setItem('nexa_access_token', data.accessToken);
+    localStorage.setItem('nexa_refresh_token', data.refreshToken);
+    localStorage.setItem('nexa_user', JSON.stringify(data.user));
+    window.location.href='/app.html';
+  } catch(err) {
+    msg.textContent=err.message; msg.className='mt-4 text-sm text-center text-red-400'; btn.disabled=false;
+  }
+});
+</script></body></html>

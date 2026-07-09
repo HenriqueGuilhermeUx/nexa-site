@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nexa | Portal Web</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.svg">
+  <link rel="icon" href="/favicon.svg">
+  <meta name="theme-color" content="#041f2c">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body{font-family:Inter,system-ui,sans-serif;background:#020617;color:white}
+    .bgx{background:radial-gradient(circle at 20% 10%,rgba(99,102,241,.28),transparent 30%),radial-gradient(circle at 80% 20%,rgba(34,211,238,.16),transparent 28%),linear-gradient(135deg,#020617,#0f172a 55%,#111827)}
+    .glass{background:rgba(15,23,42,.72);border:1px solid rgba(148,163,184,.18);backdrop-filter:blur(18px)}
+    .card{background:linear-gradient(180deg,rgba(30,41,59,.8),rgba(15,23,42,.78));border:1px solid rgba(148,163,184,.18)}
+    .grad{background:linear-gradient(90deg,#a5b4fc,#fff,#5eead4);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .glow{box-shadow:0 0 45px rgba(99,102,241,.35)}
+    input,select,textarea{background:#020617;border:1px solid rgba(148,163,184,.25);color:white}
+    input:focus,select:focus,textarea:focus{outline:none;border-color:#6366f1}
+    .hidden{display:none!important}.tab.active{background:#4f46e5;color:white}
+  </style>
+</head>
+<body class="bgx min-h-screen">
+<nav class="fixed top-0 left-0 right-0 z-50 bg-slate-950/85 backdrop-blur-xl border-b border-white/10">
+  <div class="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between">
+    <a href="/" class="flex items-center gap-3"><div class="w-10 h-10 rounded-2xl bg-indigo-500 flex items-center justify-center font-black glow">N</div><span class="font-black text-xl">Portal Nexa</span></a>
+    <div class="hidden md:flex gap-6 text-sm text-slate-300"><a href="/" class="hover:text-white">Home</a><a class='hover:text-white' href='/pj'>Empresas</a><a class='hover:text-white' href='/merchant'>Portal PJ</a></div>
+    <button id="logoutBtn" class="bg-white/10 hover:bg-white/15 border border-white/10 px-4 py-2 rounded-xl font-bold">Sair</button>
+  </div>
+</nav>
+<main class="pt-28 pb-16 px-5 max-w-7xl mx-auto">
+  <section id="loginArea" class="max-w-xl mx-auto">
+    <div class="glass rounded-[2rem] p-8">
+      <h1 class="text-4xl font-black mb-3">Entrar no Portal Nexa</h1>
+      <p class="text-slate-400 mb-6">Use o mesmo e-mail e senha da sua conta Nexa.</p>
+      <input id="loginEmail" class="w-full p-4 rounded-2xl mb-3" type="email" placeholder="E-mail" autocomplete="email">
+      <input id="loginPassword" class="w-full p-4 rounded-2xl mb-4" type="password" placeholder="Senha" autocomplete="current-password">
+      <button id="loginBtn" class="w-full bg-indigo-500 hover:bg-indigo-600 p-4 rounded-2xl font-black glow">Entrar</button>
+      <a class='block text-center mt-5 text-cyan-300 font-bold hover:text-white' href='/cadastro'>Ainda não tenho conta Nexa</a>
+      <pre id="loginMsg" class="mt-5 bg-slate-950 border border-white/10 rounded-2xl p-4 overflow-auto text-xs text-slate-300 max-h-52">Aguardando login...</pre>
+    </div>
+  </section>
+  <section id="appArea" class="hidden">
+    <section class="glass rounded-[2rem] p-7 mb-6">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div>
+          <p class="text-cyan-300 font-black">Conta Nexa</p>
+          <h1 id="hello" class="text-4xl md:text-5xl font-black mt-2">Olá</h1>
+          <p id="userLine" class="text-slate-400 mt-2">Carregando...</p>
+        </div>
+        <button id="refreshBtn" class="bg-indigo-500 hover:bg-indigo-600 px-6 py-3 rounded-2xl font-black">Atualizar</button>
+      </div>
+    </section>
+    <div class="grid lg:grid-cols-4 gap-5 mb-6">
+      <div class="card rounded-3xl p-6"><p class="text-slate-400 text-sm">USDC</p><h3 id="saldoUsdc" class="text-3xl font-black mt-2">0.00000000</h3></div>
+      <div class="card rounded-3xl p-6"><p class="text-slate-400 text-sm">BRL</p><h3 id="saldoBrl" class="text-3xl font-black mt-2">0.00</h3></div>
+      <div class="card rounded-3xl p-6"><p class="text-slate-400 text-sm">KYC</p><h3 id="kycStatus" class="text-3xl font-black mt-2">-</h3></div>
+      <div class="card rounded-3xl p-6"><p class="text-slate-400 text-sm">Carteira</p><h3 id="walletMini" class="text-lg font-black mt-2 break-all">-</h3></div>
+    </div>
+    <div class="glass rounded-[2rem] p-4 mb-6 overflow-x-auto">
+      <div class="flex gap-3 min-w-max">
+        <button class="tab active px-5 py-3 rounded-2xl font-black bg-white/10" data-tab="resumo">Resumo</button>
+        <button class="tab px-5 py-3 rounded-2xl font-black bg-white/10" data-tab="carteira">Carteira</button>
+        <button class="tab px-5 py-3 rounded-2xl font-black bg-white/10" data-tab="ativos">Ativos Digitais</button>
+        <button class="tab px-5 py-3 rounded-2xl font-black bg-white/10" data-tab="rewards">Rewards</button>
+        <button class="tab px-5 py-3 rounded-2xl font-black bg-white/10" data-tab="recorrente">Cripto por Assinatura</button>
+        <button class="tab px-5 py-3 rounded-2xl font-black bg-white/10" data-tab="historico">Histórico</button>
+        <button class="tab px-5 py-3 rounded-2xl font-black bg-white/10" data-tab="ecossistema">Ecossistema</button>
+      </div>
+    </div>
+    <div id="panel-resumo" class="panel">
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <button class="card rounded-3xl p-7 text-left" data-go="carteira"><div class="text-4xl mb-3">🔐</div><h3 class="text-2xl font-black">Carteira</h3><p class="text-slate-400">Endereço e QR Code.</p></button>
+        <button class="card rounded-3xl p-7 text-left" data-go="ativos"><div class="text-4xl mb-3">🟠</div><h3 class="text-2xl font-black">WBTC / PAXG</h3><p class="text-slate-400">Ativos digitais com entrega on-chain.</p></button>
+        <button class="card rounded-3xl p-7 text-left" data-go="rewards"><div class="text-4xl mb-3">💚</div><h3 class="text-2xl font-black">Rewards</h3><p class="text-slate-400">USDC com infraestrutura Aave.</p></button>
+        <button class="card rounded-3xl p-7 text-left" data-go="recorrente"><div class="text-4xl mb-3">🔁</div><h3 class="text-2xl font-black">Assinatura</h3><p class="text-slate-400">Compra recorrente de USDC/WBTC/PAXG.</p></button>
+        <button class="card rounded-3xl p-7 text-left" data-go="historico"><div class="text-4xl mb-3">📄</div><h3 class="text-2xl font-black">Histórico</h3><p class="text-slate-400">Extrato da conta.</p></button>
+        <a class='card rounded-3xl p-7 text-left block' href='/merchant'><div class="text-4xl mb-3">🏢</div><h3 class="text-2xl font-black">Portal PJ</h3><p class="text-slate-400">QR Code e cobranças.</p></a>
+      </div>
+    </div>
+    <div id="panel-carteira" class="panel hidden">
+      <div class="grid lg:grid-cols-2 gap-6">
+        <div class="glass rounded-[2rem] p-7"><h2 class="text-3xl font-black mb-4">Minha carteira</h2><p id="walletFull" class="font-mono text-sm break-all text-cyan-300 bg-slate-950 border border-white/10 rounded-2xl p-4">-</p><button id="copyWalletBtn" class="mt-4 bg-indigo-500 hover:bg-indigo-600 px-5 py-3 rounded-2xl font-black">Copiar</button><button id="scanBtn" class="mt-4 ml-2 bg-white/10 border border-white/10 px-5 py-3 rounded-2xl font-black">PolygonScan</button></div>
+        <div class="glass rounded-[2rem] p-7"><h2 class="text-3xl font-black mb-4">QR da carteira</h2><div id="walletQr" class="bg-white rounded-3xl p-5 inline-block"></div></div>
+      </div>
+    </div>
+    <div id="panel-ativos" class="panel hidden">
+      <div class="grid lg:grid-cols-2 gap-6"><div class="glass rounded-[2rem] p-7"><h2 class="text-3xl font-black mb-4">Ativos digitais</h2><select id="assetSymbol" class="w-full p-4 rounded-2xl mb-3"><option value="PAXG">PAXG · Ouro digital</option><option value="WBTC">WBTC · Bitcoin tokenizado</option><option value="USDC">USDC</option></select><input id="assetAmount" class="w-full p-4 rounded-2xl mb-4" placeholder="Valor em USDC"><button id="quoteBtn" class="bg-cyan-500 hover:bg-cyan-600 px-5 py-3 rounded-2xl font-black mr-2 mb-2">Simular</button><button id="executeBtn" class="bg-emerald-500 hover:bg-emerald-600 px-5 py-3 rounded-2xl font-black mb-2">Confirmar</button></div><pre id="assetResult" class="glass rounded-[2rem] p-7 overflow-auto text-xs text-slate-300 max-h-[520px]">Aguardando...</pre></div>
+    </div>
+    <div id="panel-rewards" class="panel hidden"><div class="grid lg:grid-cols-2 gap-6"><div class="glass rounded-[2rem] p-7"><h2 class="text-3xl font-black mb-4">Nexa Rewards</h2><input id="rewardAmount" class="w-full p-4 rounded-2xl mb-4" placeholder="Valor USDC"><button id="rewardBtn" class="bg-emerald-500 hover:bg-emerald-600 px-5 py-3 rounded-2xl font-black">Ativar Rewards</button></div><div class="glass rounded-[2rem] p-7"><h2 class="text-3xl font-black mb-4">Posições</h2><div id="rewardsList" class="space-y-3 text-slate-300">Carregando...</div></div></div></div>
+    <div id="panel-recorrente" class="panel hidden"><div class="grid lg:grid-cols-2 gap-6"><div class="glass rounded-[2rem] p-7"><h2 class="text-3xl font-black mb-4">Cripto por assinatura</h2><input id="recAmount" class="w-full p-4 rounded-2xl mb-3" placeholder="Valor mensal em R$"><input id="recDay" class="w-full p-4 rounded-2xl mb-3" placeholder="Dia do mês" value="5"><select id="recAsset" class="w-full p-4 rounded-2xl mb-4"><option value="USDC">USDC</option><option value="WBTC">WBTC</option><option value="PAXG">PAXG</option></select><button id="recSaveBtn" class="bg-indigo-500 hover:bg-indigo-600 px-5 py-3 rounded-2xl font-black mr-2 mb-2">Salvar</button><button id="recLinkBtn" class="bg-cyan-500 hover:bg-cyan-600 px-5 py-3 rounded-2xl font-black mb-2">Autorizar Pix</button></div><div class="glass rounded-[2rem] p-7"><h2 class="text-3xl font-black mb-4">Atual</h2><div id="recBox" class="card rounded-2xl p-5 text-slate-300">Carregando...</div></div></div></div>
+    <div id="panel-historico" class="panel hidden"><div class="glass rounded-[2rem] p-7"><h2 class="text-3xl font-black mb-4">Histórico</h2><button id="historyBtn" class="bg-white/10 border border-white/10 px-5 py-3 rounded-2xl font-black mb-4">Atualizar</button><div id="historyList" class="space-y-3 text-slate-300">Carregando...</div></div></div>
+    <div id="panel-ecossistema" class="panel hidden"><div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5"><a class="card rounded-3xl p-7 block" href="https://healthwallet1.netlify.app" target="_blank"><div class="text-4xl mb-3">🏥</div><h3 class="text-2xl font-black">HealthWallet</h3><p class="text-slate-400">Saúde com IA.</p></a><a class="card rounded-3xl p-7 block" href="https://docwallet.netlify.app" target="_blank"><div class="text-4xl mb-3">📄</div><h3 class="text-2xl font-black">DocWallet</h3><p class="text-slate-400">Documentos.</p></a><a class="card rounded-3xl p-7 block" href="https://app.smartbots.club" target="_blank"><div class="text-4xl mb-3">🤖</div><h3 class="text-2xl font-black">Staff IA</h3><p class="text-slate-400">Assistente inteligente.</p></a><a class="card rounded-3xl p-7 block" href="https://f-insight.org" target="_blank"><div class="text-4xl mb-3">📈</div><h3 class="text-2xl font-black">F-Insight</h3><p class="text-slate-400">Inteligência financeira.</p></a></div></div>
+    <div class="glass rounded-[2rem] p-7 mt-6"><h2 class="text-2xl font-black mb-3">Resposta técnica</h2><pre id="debug" class="bg-slate-950 border border-white/10 rounded-2xl p-4 overflow-auto text-xs text-slate-300 max-h-80">Aguardando...</pre></div>
+  </section>
+</main>
+<script>
+const API='https://nexa-backend-p2u0.onrender.com/api/v1';
+let token=localStorage.getItem('nexa_token')||'';let user=null;let balances={BRL:0,USDC:0,WBTC:0,PAXG:0};let wallet='';
+function $(id){return document.getElementById(id)}
+function log(x){const t=typeof x==='string'?x:JSON.stringify(x,null,2); if($('debug'))$('debug').textContent=t; if($('loginMsg'))$('loginMsg').textContent=t; console.log(x)}
+function h(json=true){const o={};if(json)o['Content-Type']='application/json';if(token)o.Authorization='Bearer '+token;return o}
+function amount(v){const s=String(v||'').replace(/R\$/gi,'').replace(/USDC/gi,'').replace(/\s/g,'').replace(/\./g,'').replace(',','.');const n=Number(s);return Number.isFinite(n)?n:0}
+async function jsonFetch(url,opt={}){const r=await fetch(url,opt);const text=await r.text();let data={};try{data=text?JSON.parse(text):{}}catch(e){data={raw:text}}return{ok:r.ok,status:r.status,data}}
+function tokenFrom(d){return d.accessToken||d.token||d.access_token||d.tokens?.accessToken||d.tokens?.access_token||d.data?.accessToken||d.data?.token||d.auth?.accessToken||''}
+function showApp(){ $('loginArea').classList.add('hidden'); $('appArea').classList.remove('hidden'); }
+function showLogin(){ $('loginArea').classList.remove('hidden'); $('appArea').classList.add('hidden'); }
+async function login(){
+  const email=$('loginEmail').value.trim();const password=$('loginPassword').value;
+  if(!email||!password){log('Informe e-mail e senha.');return}
+  $('loginBtn').disabled=true;$('loginBtn').textContent='Entrando...';log('Entrando...');
+  try{
+    const res=await jsonFetch(API+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+    if(!res.ok){log({erro:'Login recusado',status:res.status,response:res.data});return}
+    token=tokenFrom(res.data); if(!token){log({erro:'Login respondeu, mas sem token',response:res.data});return}
+    localStorage.setItem('nexa_token',token); user=res.data.user||res.data.data?.user||{email}; showApp(); renderBasic();
+    await loadAll(); log({success:true,message:'Portal carregado',user,balances});
+  }catch(e){log('Erro no login: '+e.message)}finally{$('loginBtn').disabled=false;$('loginBtn').textContent='Entrar'}
+}
+async function loadMe(){try{const res=await jsonFetch(API+'/user/me',{headers:h(false)});if(res.ok){user=res.data.user||res.data;wallet=user.walletAddress||user.wallet?.address||user.wallet?.walletAddress||''}}catch(e){} return user}
+async function loadBalances(){if(!user?.id)return;const urls=[API+'/ledger/balance?userId='+encodeURIComponent(user.id)+'&mode=real',API+'/ledger/balance?userId='+encodeURIComponent(user.id),API+'/ledger/balance'];for(const url of urls){try{const res=await jsonFetch(url,{headers:h(false)});if(!res.ok)continue;const b=res.data.balances||res.data.balance||res.data;balances={BRL:Number(b.BRL??b.brl??0),USDC:Number(b.USDC??b.usdc??0),WBTC:Number(b.WBTC??b.wbtc??0),PAXG:Number(b.PAXG??b.paxg??0)};return}catch(e){}}}
+function renderBasic(){ if(!user)return; const name=user.fullName||user.email||'cliente Nexa'; $('hello').textContent='Olá, '+name; $('userLine').textContent=(user.email||'')+' · '+(user.username?('@'+user.username):'Nexa ID'); $('saldoUsdc').textContent=Number(balances.USDC||0).toFixed(8); $('saldoBrl').textContent=Number(balances.BRL||0).toFixed(2); $('kycStatus').textContent=user.kycStatus||'-'; $('walletMini').textContent=wallet?wallet.slice(0,6)+'...'+wallet.slice(-4):'-'; $('walletFull').textContent=wallet||'Carteira não encontrada'; renderQr(); }
+function renderQr(){const a=$('walletQr'); if(!a)return; a.innerHTML=''; if(wallet&&window.QRCode)new QRCode(a,{text:wallet,width:210,height:210})}
+async function loadAll(){await loadMe();await loadBalances();renderBasic();await Promise.allSettled([loadRewards(),loadRecurring(),loadHistory()])}
+function openTab(t){document.querySelectorAll('.panel').forEach(p=>p.classList.add('hidden'));document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));$('panel-'+t)?.classList.remove('hidden');document.querySelector('.tab[data-tab="'+t+'"]')?.classList.add('active'); if(t==='historico')loadHistory(); if(t==='rewards')loadRewards(); if(t==='recorrente')loadRecurring()}
+function copyWallet(){if(!wallet){log('Carteira não encontrada');return}navigator.clipboard.writeText(wallet);log('Carteira copiada')}
+function scan(){if(wallet)window.open('https://polygonscan.com/address/'+wallet,'_blank')}
+async function quoteAsset(){const toAsset=$('assetSymbol').value;const amountUsdc=amount($('assetAmount').value);if(!amountUsdc){log('Informe valor em USDC');return}const res=await jsonFetch(API+'/swap/investment-quote',{method:'POST',headers:h(true),body:JSON.stringify({userId:user.id,toAsset,amountUsdc})});$('assetResult').textContent=JSON.stringify(res.data,null,2);log(res.data)}
+async function executeAsset(){const toAsset=$('assetSymbol').value;const amountUsdc=amount($('assetAmount').value);if(!amountUsdc){log('Informe valor em USDC');return}const res=await jsonFetch(API+'/swap/investment-execute',{method:'POST',headers:h(true),body:JSON.stringify({userId:user.id,toAsset,amountUsdc})});$('assetResult').textContent=JSON.stringify(res.data,null,2);log(res.data);await loadAll()}
+async function rewardJoin(){const amountUsdc=amount($('rewardAmount').value);if(!amountUsdc){log('Informe valor USDC');return}const res=await jsonFetch(API+'/rewards/join',{method:'POST',headers:h(true),body:JSON.stringify({userId:user.id,amountUsdc,plan:'FLEX'})});log(res.data);await loadRewards();await loadAll()}
+async function loadRewards(){if(!user?.id||!$('rewardsList'))return;try{const res=await jsonFetch(API+'/rewards/positions?userId='+encodeURIComponent(user.id),{headers:h(false)});const list=res.data.positions||res.data.data||(Array.isArray(res.data)?res.data:[]);$('rewardsList').innerHTML=list.length?list.map(p=>'<div class="card rounded-2xl p-4"><b>'+(p.plan||'FLEX')+' · '+Number(p.principalUsdc||p.amountUsdc||0).toFixed(8)+' USDC</b><p class="text-slate-400 text-sm">Status: '+(p.status||'-')+'</p></div>').join(''):'Nenhuma posição Rewards carregada.'}catch(e){}}
+async function loadRecurring(){if(!user?.id||!$('recBox'))return;try{const res=await jsonFetch(API+'/recurring-pix/me?userId='+encodeURIComponent(user.id),{headers:h(false)});const p=res.data.plan||res.data.recurring||res.data.data||res.data;$('recBox').innerHTML='<p><b>Status:</b> '+(p.status||p.recurringStatus||'-')+'</p><p><b>Valor:</b> R$ '+Number(p.amountBrl||p.amount||0).toFixed(2)+'</p><p><b>Ativo:</b> '+(p.asset||p.targetAsset||'-')+'</p>'}catch(e){$('recBox').innerHTML='Nenhuma assinatura carregada.'}}
+async function saveRecurring(){const payload={userId:user.id,amountBrl:amount($('recAmount').value),asset:$('recAsset').value,targetAsset:$('recAsset').value,dayOfMonth:Number($('recDay').value||5),frequency:'monthly',status:'active'};const res=await jsonFetch(API+'/recurring-pix/upsert',{method:'POST',headers:h(true),body:JSON.stringify(payload)});log({sentPayload:payload,response:res.data});await loadRecurring()}
+async function linkRecurring(){const res=await jsonFetch(API+'/recurring-pix/link-woovi',{method:'POST',headers:h(true),body:JSON.stringify({userId:user.id})});log(res.data);const url=res.data.url||res.data.link||res.data.paymentLinkUrl||res.data.checkoutUrl||res.data.data?.url;if(url)window.open(url,'_blank')}
+async function loadHistory(){if(!user?.id||!$('historyList'))return;const urls=[API+'/ledger/statement?userId='+encodeURIComponent(user.id)+'&limit=50&mode=real',API+'/transaction/history'];for(const url of urls){try{const res=await jsonFetch(url,{headers:h(false)});if(!res.ok)continue;const list=res.data.statement||res.data.transactions||res.data.history||res.data.data||(Array.isArray(res.data)?res.data:[]);$('historyList').innerHTML=list.length?list.map(x=>'<div class="card rounded-2xl p-4 flex justify-between gap-4"><div><b>'+(x.description||x.type||'Movimentação')+'</b><p class="text-slate-400 text-sm">'+(x.createdAt?new Date(x.createdAt).toLocaleString('pt-BR'):'')+'</p></div><b>'+Number(x.amount||x.amountUsdc||0).toFixed((x.asset==='BRL')?2:8)+' '+(x.asset||'USDC')+'</b></div>').join(''):'Nenhum histórico carregado.';return}catch(e){}}$('historyList').innerHTML='Não foi possível carregar histórico.'}
+function logout(){localStorage.removeItem('nexa_token');token='';user=null;balances={BRL:0,USDC:0};showLogin();log('Sessão encerrada')}
+function bind(){ $('loginBtn').addEventListener('click',login); $('loginPassword').addEventListener('keydown',e=>{if(e.key==='Enter')login()}); $('loginEmail').addEventListener('keydown',e=>{if(e.key==='Enter')login()}); $('logoutBtn').addEventListener('click',logout); $('refreshBtn').addEventListener('click',loadAll); document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.tab))); document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.go))); $('copyWalletBtn').addEventListener('click',copyWallet); $('scanBtn').addEventListener('click',scan); $('quoteBtn').addEventListener('click',quoteAsset); $('executeBtn').addEventListener('click',executeAsset); $('rewardBtn').addEventListener('click',rewardJoin); $('recSaveBtn').addEventListener('click',saveRecurring); $('recLinkBtn').addEventListener('click',linkRecurring)}
+if('serviceWorker'in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>null);
+document.addEventListener('DOMContentLoaded',async()=>{bind(); if(token){showApp();await loadAll();log('Sessão restaurada.')}});
+</script>
+
+<div class="mt-6 flex flex-wrap justify-center gap-6 text-sm">
+  <a class='hover:text-white' href='/privacidade'>Política de Privacidade</a>
+  <a class='hover:text-white' href='/termos'>Termos de Uso</a>
+  <a class='hover:text-white' href='/lgpd'>LGPD</a>
+  <a class='hover:text-white' href='/suporte'>Suporte</a>
+  <a class='hover:text-white' href='/excluir-conta'>Excluir conta</a>
+</div>
+</body>
+</html>

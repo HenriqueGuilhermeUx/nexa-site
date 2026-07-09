@@ -1,0 +1,289 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Nexa Passport</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+<body class="bg-slate-950 text-white">
+
+<div class="max-w-4xl mx-auto px-6 py-12">
+
+<div class="text-center mb-10">
+
+<div class="text-6xl mb-4">
+🔐
+</div>
+
+<h1 class="text-5xl font-black">
+Nexa Passport
+</h1>
+
+<p class="text-slate-400 mt-4">
+Identidade digital verificável do ecossistema Nexa
+</p>
+
+</div>
+
+<div id="loading" class="text-center py-20">
+
+<div class="text-3xl animate-pulse">
+⏳
+</div>
+
+<p class="mt-4 text-slate-400">
+Carregando perfil...
+</p>
+
+</div>
+
+<div id="passport" class="hidden">
+
+<div class="bg-slate-900 rounded-3xl p-8 border border-cyan-500/20">
+
+<div class="flex items-center justify-between mb-8">
+
+<div>
+
+<div class="text-cyan-400 text-sm mb-2">
+NEXA PASSPORT
+</div>
+
+<h2 id="fullName" class="text-3xl font-black">
+-
+</h2>
+
+<p id="handle" class="text-slate-400">
+-
+</p>
+
+</div>
+
+<div class="text-5xl">
+🛡️
+</div>
+
+</div>
+
+<div class="grid md:grid-cols-2 gap-6">
+
+<div>
+<div class="text-slate-500 text-sm">
+Nexa ID
+</div>
+
+<div id="nexaId" class="font-bold text-xl">
+-
+</div>
+</div>
+
+<div>
+<div class="text-slate-500 text-sm">
+KYC
+</div>
+
+<div id="kyc" class="font-bold text-green-400">
+-
+</div>
+</div>
+
+<div>
+<div class="text-slate-500 text-sm">
+Wallet
+</div>
+
+<div id="wallet" class="font-mono text-sm break-all">
+-
+</div>
+</div>
+
+<div>
+<div class="text-slate-500 text-sm">
+Rede
+</div>
+
+<div id="network" class="font-bold">
+Polygon
+</div>
+</div>
+
+</div>
+
+<div class="mt-10 border-t border-slate-800 pt-8 text-center">
+
+<h3 class="font-bold text-xl mb-4">
+QR Passport
+</h3>
+
+<div class="inline-block bg-white p-4 rounded-2xl">
+
+<img
+id="qrCode"
+src=""
+alt="QR Code Nexa Passport"
+class="w-56 h-56"
+/>
+
+</div>
+
+<p class="text-slate-400 text-sm mt-4">
+Escaneie para verificar este Nexa Passport
+</p>
+
+</div>
+
+<div class="mt-10 border-t border-slate-800 pt-8">
+
+<h3 class="font-bold text-xl mb-4">
+Apps conectados
+</h3>
+
+<div class="grid md:grid-cols-3 gap-4">
+
+<div class="bg-slate-800 rounded-xl p-4">
+💳 Wallet
+</div>
+
+<div class="bg-slate-800 rounded-xl p-4">
+🤖 Staff
+</div>
+
+<div class="bg-slate-800 rounded-xl p-4">
+📄 DocWallet
+</div>
+
+<div class="bg-slate-800 rounded-xl p-4">
+❤️ HealthWallet
+</div>
+
+<div class="bg-slate-800 rounded-xl p-4">
+🏥 MyDataMed
+</div>
+
+<div class="bg-slate-800 rounded-xl p-4">
+📈 F-Insight
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div id="notFound" class="hidden text-center py-20">
+
+<div class="text-6xl mb-4">
+❌
+</div>
+
+<h2 class="text-3xl font-black">
+Perfil não encontrado
+</h2>
+
+</div>
+
+</div>
+
+<script>
+
+const API =
+'https://nexa-backend-p2u0.onrender.com/api/v1';
+
+const params =
+new URLSearchParams(window.location.search);
+
+const nexaId =
+params.get('nexaId');
+
+async function loadProfile() {
+
+if (!nexaId) {
+
+document.getElementById('loading').style.display='none';
+
+document.getElementById('notFound').classList.remove('hidden');
+
+return;
+
+}
+
+try {
+
+const response =
+await fetch(
+`${API}/nexa-id/profile/${nexaId}`
+);
+
+const data =
+await response.json();
+
+document.getElementById('loading').style.display='none';
+
+if (!data.success) {
+
+document.getElementById('notFound').classList.remove('hidden');
+
+return;
+
+}
+
+const p = data.profile;
+
+document.getElementById('passport').classList.remove('hidden');
+
+document.getElementById('fullName').innerText =
+p.fullName || '-';
+
+document.getElementById('handle').innerText =
+p.handle || '-';
+
+document.getElementById('nexaId').innerText =
+p.nexaId || '-';
+
+document.getElementById('wallet').innerText =
+p.walletAddress || '-';
+
+document.getElementById('kyc').innerText =
+p.kycStatus || 'approved';
+
+const passportUrl =
+`${window.location.origin}/passport.html?nexaId=${p.nexaId}`;
+
+document.getElementById('qrCode').src =
+`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(passportUrl)}`;
+
+}
+catch {
+
+document.getElementById('loading').style.display='none';
+
+document.getElementById('notFound').classList.remove('hidden');
+
+}
+
+}
+
+loadProfile();
+
+</script>
+
+
+<div class="mt-6 flex flex-wrap justify-center gap-6 text-sm">
+  <a class='hover:text-white' href='/privacidade'>Política de Privacidade</a>
+  <a class='hover:text-white' href='/termos'>Termos de Uso</a>
+  <a class='hover:text-white' href='/lgpd'>LGPD</a>
+  <a class='hover:text-white' href='/suporte'>Suporte</a>
+  <a class='hover:text-white' href='/excluir-conta'>Excluir conta</a>
+</div>
+</body>
+</html>
+```

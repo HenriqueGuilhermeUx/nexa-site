@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal Nexa PJ | Recebimentos Pix e USDC</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.svg">
+  <link rel="icon" href="/favicon.svg">
+  <meta name="theme-color" content="#041f2c">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body{font-family:Inter,system-ui,sans-serif;background:#020617;color:white}
+    .bgx{background:radial-gradient(circle at 20% 10%,rgba(99,102,241,.28),transparent 30%),radial-gradient(circle at 80% 20%,rgba(34,211,238,.16),transparent 28%),linear-gradient(135deg,#020617,#0f172a 55%,#111827)}
+    .glass{background:rgba(15,23,42,.72);border:1px solid rgba(148,163,184,.18);backdrop-filter:blur(18px)}
+    .card{background:linear-gradient(180deg,rgba(30,41,59,.8),rgba(15,23,42,.78));border:1px solid rgba(148,163,184,.18)}
+    .grad{background:linear-gradient(90deg,#a5b4fc,#fff,#5eead4);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .glow{box-shadow:0 0 45px rgba(99,102,241,.35)}
+    input,textarea,select{background:#020617;border:1px solid rgba(148,163,184,.25);color:white}
+    input:focus,textarea:focus,select:focus{outline:none;border-color:#6366f1}
+    .hidden{display:none!important}
+  </style>
+</head>
+<body class="bgx min-h-screen pb-10">
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-950/85 backdrop-blur-xl border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-indigo-500 flex items-center justify-center font-black glow">N</div>
+        <span class="font-black text-xl">Portal Nexa PJ</span>
+      </a>
+      <div class="hidden md:flex gap-6 text-sm text-slate-300">
+        <a class='hover:text-white' href='/pj'>Empresas</a>
+        <a class='hover:text-white' href='/portal'>Portal Nexa</a>
+        <a href="/" class="hover:text-white">Home</a>
+      </div>
+      <button onclick="logout()" class="bg-white/10 hover:bg-white/15 border border-white/10 px-4 py-2 rounded-xl font-bold">Sair</button>
+    </div>
+  </nav>
+
+  <main class="pt-28 px-5 max-w-7xl mx-auto">
+    <section class="glass rounded-[2rem] p-8 md:p-10 mb-8">
+      <span class="inline-block px-4 py-2 rounded-full bg-cyan-500/10 text-cyan-300 font-black text-sm mb-5">Portal Nexa PJ</span>
+      <h1 class="text-4xl md:text-6xl font-black leading-tight">
+        Receba Pix, gere QR Code e acompanhe tudo no <span class="grad">Portal Nexa PJ.</span>
+      </h1>
+      <p class="text-slate-300 text-lg md:text-xl mt-5 max-w-4xl">
+        Use sua conta Nexa para acessar o Portal PJ. Cadastre a empresa, gere cobranças, acompanhe transações e liquide seus recebimentos em BRL ou USDC.
+      </p>
+    </section>
+
+    <section id="loginArea" class="max-w-xl mx-auto">
+      <div class="glass rounded-[2rem] p-8">
+        <h2 class="text-3xl font-black mb-3">Entrar no Portal PJ</h2>
+        <p class="text-slate-400 mb-6">Use o mesmo login da sua conta Nexa.</p>
+        <input id="email" class="w-full p-4 rounded-2xl mb-3" type="email" placeholder="E-mail" autocomplete="email">
+        <input id="password" class="w-full p-4 rounded-2xl mb-4" type="password" placeholder="Senha" autocomplete="current-password">
+        <button onclick="login()" class="w-full bg-indigo-500 hover:bg-indigo-600 p-4 rounded-2xl font-black glow">Entrar</button>
+        <a class='block text-center mt-5 text-cyan-300 font-bold hover:text-white' href='/cadastro'>Ainda não tenho conta Nexa</a>
+        <pre id="loginMsg" class="mt-5 bg-slate-950 border border-white/10 rounded-2xl p-4 overflow-auto text-xs text-slate-300 max-h-52">Aguardando login...</pre>
+      </div>
+    </section>
+
+    <section id="appArea" class="hidden">
+      <div class="grid lg:grid-cols-4 gap-5 mb-8">
+        <div class="card rounded-3xl p-6">
+          <p class="text-slate-400 text-sm">Status</p>
+          <h3 id="merchantStatus" class="text-3xl font-black mt-2">-</h3>
+        </div>
+        <div class="card rounded-3xl p-6">
+          <p class="text-slate-400 text-sm">Recebido USDC</p>
+          <h3 id="merchantUsdc" class="text-3xl font-black mt-2">0.00000000</h3>
+        </div>
+        <div class="card rounded-3xl p-6">
+          <p class="text-slate-400 text-sm">Transações</p>
+          <h3 id="merchantTxs" class="text-3xl font-black mt-2">0</h3>
+        </div>
+        <div class="card rounded-3xl p-6">
+          <p class="text-slate-400 text-sm">Taxa Nexa PJ</p>
+          <h3 class="text-3xl font-black mt-2">1,9%</h3>
+        </div>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-6">
+        <div class="glass rounded-[2rem] p-7">
+          <h2 class="text-3xl font-black mb-2">Cadastro da empresa</h2>
+          <p class="text-slate-400 mb-6">Cadastra sua empresa no backend Nexa. Se a empresa já existir, use Configurações para atualizar Pix, wallet e liquidação.</p>
+          <div class="grid md:grid-cols-2 gap-4">
+            <input id="businessName" class="p-4 rounded-2xl" placeholder="Nome da empresa">
+            <input id="cnpj" class="p-4 rounded-2xl" placeholder="CNPJ ou CPF">
+            <input id="merchantEmail" class="p-4 rounded-2xl" placeholder="E-mail da empresa">
+            <input id="merchantPhone" class="p-4 rounded-2xl" placeholder="Telefone">
+            <input id="pixKey" class="p-4 rounded-2xl md:col-span-2" placeholder="Chave Pix da empresa">
+            <input id="externalWallet" class="p-4 rounded-2xl md:col-span-2" placeholder="Carteira 0x própria opcional">
+          </div>
+          <button onclick="registerMerchant()" class="w-full mt-5 bg-indigo-500 hover:bg-indigo-600 p-4 rounded-2xl font-black">Salvar empresa</button>
+        </div>
+
+        <div class="glass rounded-[2rem] p-7">
+          <h2 class="text-3xl font-black mb-2">QR Code e cobrança</h2>
+          <p class="text-slate-400 mb-6">Gere QR fixo ou cobrança com valor. No backend atual, o valor da cobrança é enviado em USDC e a API converte para Pix/BRL.</p>
+          <button onclick="getStaticQr()" class="w-full bg-cyan-500 hover:bg-cyan-600 p-4 rounded-2xl font-black mb-4">Gerar QR Code fixo</button>
+          <div class="grid md:grid-cols-2 gap-4">
+            <input id="chargeAmount" class="p-4 rounded-2xl" placeholder="Valor em USDC. Ex: 20">
+            <input id="chargeDescription" class="p-4 rounded-2xl" placeholder="Descrição">
+          </div>
+          <button onclick="generateChargeQr()" class="w-full mt-4 bg-emerald-500 hover:bg-emerald-600 p-4 rounded-2xl font-black">Gerar cobrança com valor</button>
+          <div id="qrBox" class="hidden mt-6">
+            <div id="qrcode" class="bg-white rounded-3xl p-5 inline-block"></div>
+            <textarea id="copyPaste" readonly class="w-full p-4 rounded-2xl mt-4 text-xs h-32"></textarea>
+            <button onclick="copyPix()" class="w-full mt-3 bg-white/10 hover:bg-white/15 border border-white/10 p-3 rounded-2xl font-bold">Copiar Pix</button>
+          </div>
+        </div>
+
+        <div class="glass rounded-[2rem] p-7">
+          <h2 class="text-3xl font-black mb-2">Liquidação</h2>
+          <p class="text-slate-400 mb-6">Executa a liquidação das transações PJ pendentes conforme configuração da empresa.</p>
+          <button onclick="settleMerchant()" class="w-full bg-amber-500 hover:bg-amber-600 p-4 rounded-2xl font-black">Executar liquidação</button>
+        </div>
+
+        <div class="glass rounded-[2rem] p-7">
+          <h2 class="text-3xl font-black mb-2">Configurações</h2>
+          <p class="text-slate-400 mb-6">Atualize Pix, moeda de liquidação e destino da carteira.</p>
+          <select id="settlementMode" class="w-full p-4 rounded-2xl mb-3">
+            <option value="USDC">Liquidar em USDC</option>
+            <option value="BRL">Liquidar em BRL/Pix</option>
+          </select>
+          <select id="settlementWalletMode" class="w-full p-4 rounded-2xl mb-3">
+            <option value="NEXA_WALLET">Usar wallet Nexa</option>
+            <option value="EXTERNAL_WALLET">Enviar para carteira 0x externa</option>
+          </select>
+          <button onclick="updateSettings()" class="w-full bg-white/10 hover:bg-white/15 border border-white/10 p-4 rounded-2xl font-black">Salvar configurações</button>
+        </div>
+      </div>
+
+      <div class="glass rounded-[2rem] p-7 mt-6">
+        <div class="flex flex-col md:flex-row justify-between gap-4 mb-6">
+          <div>
+            <h2 class="text-3xl font-black">Transações PJ</h2>
+            <p class="text-slate-400">Últimos recebimentos, cobranças, taxas e valores líquidos.</p>
+          </div>
+          <button onclick="loadTransactions()" class="bg-white/10 hover:bg-white/15 border border-white/10 px-5 py-3 rounded-2xl font-bold">Atualizar</button>
+        </div>
+        <div id="txList" class="space-y-3"><p class="text-slate-400">Nenhuma transação carregada.</p></div>
+      </div>
+
+      <div class="glass rounded-[2rem] p-7 mt-6">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+          <div>
+            <span class="inline-block px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300 font-black text-xs mb-3">EM BREVE</span>
+            <h2 class="text-3xl font-black mb-2">Capital Inteligente</h2>
+            <p class="text-slate-400 max-w-3xl">
+              Esta área será a vitrine de parceiros de crédito e antecipação. Por enquanto, ela não executa análise, não consulta crédito e não envia dados para parceiros.
+            </p>
+          </div>
+          <a class='bg-white/10 hover:bg-white/15 border border-white/10 px-5 py-3 rounded-2xl font-bold text-center' href='/pj#capital'>Ver conceito na landing</a>
+        </div>
+      </div>
+
+      <div class="glass rounded-[2rem] p-7 mt-6">
+        <h2 class="text-2xl font-black mb-3">Resposta técnica</h2>
+        <pre id="debug" class="bg-slate-950 border border-white/10 rounded-2xl p-4 overflow-auto text-xs text-slate-300 max-h-80">Aguardando ações...</pre>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const API = 'https://nexa-backend-p2u0.onrender.com/api/v1';
+    let token = localStorage.getItem('nexa_token') || '';
+    let user = null;
+    let lastPix = '';
+
+    function $(id){ return document.getElementById(id); }
+
+    function show(data){
+      const text = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+      if ($('debug')) $('debug').textContent = text;
+      if ($('loginMsg')) $('loginMsg').textContent = text;
+      console.log(data);
+    }
+
+    function headers(json = true){
+      const h = {};
+      if (json) h['Content-Type'] = 'application/json';
+      if (token) h.Authorization = 'Bearer ' + token;
+      return h;
+    }
+
+    async function jsonFetch(url, options = {}){
+      const response = await fetch(url, options);
+      const text = await response.text();
+      let data = {};
+      try { data = text ? JSON.parse(text) : {}; } catch (error) { data = { raw: text }; }
+      return { ok: response.ok, status: response.status, data };
+    }
+
+    function tokenFrom(data){
+      return data.accessToken || data.token || data.access_token || data.tokens?.accessToken || data.tokens?.access_token || data.data?.accessToken || data.data?.token || data.auth?.accessToken || '';
+    }
+
+    function parseAmount(value){
+      const normalized = String(value || '').replace(/USDC/gi, '').replace(/R\$/gi, '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
+      const n = Number(normalized);
+      return Number.isFinite(n) ? n : 0;
+    }
+
+    function extractQr(data){
+      return data?.copyPasteCode || data?.qrCode || data?.brCode || data?.pixCopyPaste || data?.copyPaste || data?.code || data?.payload || data?.data?.copyPasteCode || data?.data?.qrCode || data?.data?.brCode || data?.data?.pixCopyPaste || data?.data?.copyPaste || data?.data?.code || '';
+    }
+
+    function isExternalWalletMode(){
+      return $('settlementWalletMode')?.value === 'EXTERNAL_WALLET' || !!String($('externalWallet')?.value || '').trim();
+    }
+
+    function isValidWallet(address){
+      return /^0x[a-fA-F0-9]{40}$/.test(String(address || '').trim());
+    }
+
+    function showAuthArea(){
+      const logged = !!token;
+      $('loginArea').classList.toggle('hidden', logged);
+      $('appArea').classList.toggle('hidden', !logged);
+    }
+
+    async function login(){
+      const email = $('email').value.trim();
+      const password = $('password').value;
+      if (!email || !password) { show('Informe e-mail e senha.'); return; }
+
+      try {
+        show('Entrando...');
+        const res = await jsonFetch(API + '/auth/login', {
+          method: 'POST',
+          headers: headers(true),
+          body: JSON.stringify({ email, password })
+        });
+
+        show(res.data);
+        if (!res.ok) return;
+
+        token = tokenFrom(res.data);
+        if (!token) { show({ erro: 'Login respondeu, mas não retornou token.', response: res.data }); return; }
+
+        localStorage.setItem('nexa_token', token);
+        await loadMe();
+        showAuthArea();
+        await loadAll();
+      } catch (error) {
+        show('Erro login: ' + error.message);
+      }
+    }
+
+    async function loadMe(){
+      const res = await jsonFetch(API + '/user/me', { headers: headers(false) });
+      if (!res.ok) throw new Error('Sessão inválida ou expirada.');
+      user = res.data.user || res.data;
+      return user;
+    }
+
+    function logout(){
+      localStorage.removeItem('nexa_token');
+      token = '';
+      user = null;
+      showAuthArea();
+      show('Sessão encerrada');
+    }
+
+    function buildMerchantPayload(){
+      const externalWalletAddress = String($('externalWallet').value || '').trim();
+      const settlementCurrency = $('settlementMode').value || 'USDC';
+      const settlementWalletMode = isExternalWalletMode() ? 'EXTERNAL_WALLET' : 'NEXA_WALLET';
+
+      if (settlementWalletMode === 'EXTERNAL_WALLET' && !isValidWallet(externalWalletAddress)) {
+        throw new Error('Para usar carteira externa, informe uma wallet 0x válida.');
+      }
+
+      return {
+        businessName: $('businessName').value.trim(),
+        cnpj: $('cnpj').value.trim(),
+        email: $('merchantEmail').value.trim(),
+        phone: $('merchantPhone').value.trim(),
+        pixKey: $('pixKey').value.trim(),
+        externalWalletAddress,
+        settlementCurrency,
+        settlementWalletMode
+      };
+    }
+
+    async function registerMerchant(){
+      try {
+        const payload = buildMerchantPayload();
+        if (!payload.businessName || !payload.cnpj || !payload.email) {
+          show('Informe nome da empresa, CNPJ/CPF e e-mail antes de salvar.');
+          return;
+        }
+
+        const res = await jsonFetch(API + '/merchant/register', {
+          method: 'POST',
+          headers: headers(true),
+          body: JSON.stringify(payload)
+        });
+
+        show({ sentPayload: payload, response: res.data, status: res.status });
+        if (res.ok) await loadAll();
+      } catch (error) {
+        show('Erro ao salvar empresa: ' + error.message);
+      }
+    }
+
+    function hydrateFormFromDashboard(data){
+      const merchant = data.merchant || data.dashboard?.merchant || null;
+      if (!merchant) return;
+
+      if (merchant.pixKey && $('pixKey')) $('pixKey').value = merchant.pixKey;
+      if (merchant.externalWalletAddress && $('externalWallet')) $('externalWallet').value = merchant.externalWalletAddress;
+      if (merchant.settlementCurrency && $('settlementMode')) $('settlementMode').value = merchant.settlementCurrency;
+      if (merchant.settlementWalletMode && $('settlementWalletMode')) $('settlementWalletMode').value = merchant.settlementWalletMode;
+    }
+
+    async function loadDashboard(){
+      try {
+        const res = await jsonFetch(API + '/merchant/dashboard', { headers: headers(false) });
+        const data = res.data;
+
+        if (!res.ok) {
+          $('merchantStatus').textContent = 'cadastre';
+          $('merchantUsdc').textContent = '0.00000000';
+          $('merchantTxs').textContent = '0';
+          show({ aviso: 'Empresa PJ ainda não cadastrada ou dashboard indisponível.', status: res.status, response: data });
+          return;
+        }
+
+        hydrateFormFromDashboard(data);
+        const merchant = data.merchant || data.dashboard?.merchant || data;
+        $('merchantStatus').textContent = merchant.status || data.status || 'ativo';
+        $('merchantUsdc').textContent = Number(data.totalSalesUsdc || data.dashboard?.totalSalesUsdc || merchant.totalSalesUsdc || 0).toFixed(8);
+        $('merchantTxs').textContent = String(data.totalTransactions || data.dashboard?.totalTransactions || merchant.totalTransactions || 0);
+        show(data);
+      } catch (error) {
+        show('Erro dashboard: ' + error.message);
+      }
+    }
+
+    async function getStaticQr(){
+      try {
+        const res = await jsonFetch(API + '/merchant/qrcode/static', { headers: headers(false) });
+        show({ response: res.data, status: res.status });
+        if (!res.ok) return;
+        renderQr(extractQr(res.data), res.data.qrCodeImage || res.data.data?.qrCodeImage || '');
+      } catch (error) {
+        show('Erro QR fixo: ' + error.message);
+      }
+    }
+
+    async function generateChargeQr(){
+      try {
+        const amount = parseAmount($('chargeAmount').value);
+        if (!amount || amount <= 0) { show('Informe um valor em USDC maior que zero.'); return; }
+
+        const payload = {
+          amount,
+          description: $('chargeDescription').value || 'Cobrança Nexa PJ'
+        };
+
+        const res = await jsonFetch(API + '/merchant/qrcode', {
+          method: 'POST',
+          headers: headers(true),
+          body: JSON.stringify(payload)
+        });
+
+        show({ sentPayload: payload, response: res.data, status: res.status });
+        if (!res.ok) return;
+        renderQr(extractQr(res.data), res.data.qrCodeImage || res.data.data?.qrCodeImage || '');
+        await loadAll();
+      } catch (error) {
+        show('Erro cobrança: ' + error.message);
+      }
+    }
+
+    function renderQr(code, image){
+      $('qrcode').innerHTML = '';
+
+      if (code) {
+        lastPix = code;
+        new QRCode($('qrcode'), { text: code, width: 220, height: 220 });
+        $('copyPaste').value = code;
+        $('qrBox').classList.remove('hidden');
+        return;
+      }
+
+      if (image) {
+        $('qrcode').innerHTML = '<img alt="QR Code Pix" style="width:220px;height:220px" src="' + image + '">';
+        $('copyPaste').value = '';
+        $('qrBox').classList.remove('hidden');
+        return;
+      }
+
+      show('QR não encontrado na resposta.');
+    }
+
+    function copyPix(){
+      const value = lastPix || $('copyPaste').value;
+      if (!value) { show('Nenhum Pix copia e cola disponível.'); return; }
+      navigator.clipboard.writeText(value);
+      show('Pix copiado.');
+    }
+
+    async function loadTransactions(){
+      try {
+        const res = await jsonFetch(API + '/merchant/transactions?limit=20&offset=0', { headers: headers(false) });
+        const data = res.data;
+
+        if (!res.ok) {
+          $('txList').innerHTML = '<p class="text-slate-400">Cadastre sua empresa para carregar transações PJ.</p>';
+          return;
+        }
+
+        show(data);
+        const list = data.transactions || data.data || (Array.isArray(data) ? data : []);
+        $('txList').innerHTML = list.length
+          ? list.map(tx => `
+            <div class="card rounded-2xl p-4 flex justify-between gap-4">
+              <div>
+                <b>${tx.customerName || tx.description || 'Pagamento PJ'}</b>
+                <p class="text-slate-400 text-sm">${tx.createdAt ? new Date(tx.createdAt).toLocaleString('pt-BR') : ''}</p>
+              </div>
+              <div class="text-right">
+                <b>R$ ${Number(tx.amountBrl || 0).toFixed(2)}</b>
+                <p class="text-slate-400 text-sm">${Number(tx.netAmount || tx.amountUsdc || 0).toFixed(8)} USDC · ${tx.status || 'completed'}</p>
+              </div>
+            </div>`).join('')
+          : '<p class="text-slate-400">Nenhuma transação PJ carregada.</p>';
+      } catch (error) {
+        show('Erro transações: ' + error.message);
+      }
+    }
+
+    async function settleMerchant(){
+      try {
+        const res = await jsonFetch(API + '/merchant/settle', {
+          method: 'POST',
+          headers: headers(false)
+        });
+        show({ response: res.data, status: res.status });
+        if (res.ok) await loadAll();
+      } catch (error) {
+        show('Erro liquidação: ' + error.message);
+      }
+    }
+
+    async function updateSettings(){
+      try {
+        const externalWalletAddress = String($('externalWallet').value || '').trim();
+        const settlementWalletMode = $('settlementWalletMode').value || (externalWalletAddress ? 'EXTERNAL_WALLET' : 'NEXA_WALLET');
+
+        if (settlementWalletMode === 'EXTERNAL_WALLET' && !isValidWallet(externalWalletAddress)) {
+          show('Para usar carteira externa, informe uma wallet 0x válida.');
+          return;
+        }
+
+        const payload = {
+          pixKey: $('pixKey').value.trim(),
+          settlementCurrency: $('settlementMode').value || 'USDC',
+          settlementWalletMode,
+          externalWalletAddress
+        };
+
+        const res = await jsonFetch(API + '/merchant/settings', {
+          method: 'PUT',
+          headers: headers(true),
+          body: JSON.stringify(payload)
+        });
+
+        show({ sentPayload: payload, response: res.data, status: res.status });
+        if (res.ok) await loadAll();
+      } catch (error) {
+        show('Erro configurações: ' + error.message);
+      }
+    }
+
+    async function loadAll(){
+      await loadDashboard();
+      await loadTransactions();
+    }
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+
+    (async () => {
+      if (token) {
+        try {
+          await loadMe();
+          showAuthArea();
+          await loadAll();
+        } catch (error) {
+          logout();
+        }
+      } else {
+        showAuthArea();
+      }
+    })();
+  </script>
+
+<div class="mt-6 flex flex-wrap justify-center gap-6 text-sm">
+  <a class='hover:text-white' href='/privacidade'>Política de Privacidade</a>
+  <a class='hover:text-white' href='/termos'>Termos de Uso</a>
+  <a class='hover:text-white' href='/lgpd'>LGPD</a>
+  <a class='hover:text-white' href='/suporte'>Suporte</a>
+  <a class='hover:text-white' href='/excluir-conta'>Excluir conta</a>
+</div>
+</body>
+</html>

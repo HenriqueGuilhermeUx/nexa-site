@@ -1,0 +1,26 @@
+{
+  "name": "Nexa Beta",
+  "short_name": "Nexa",
+  "description": "Portal Nexa Beta: Pix, USDC, WBTC, PAXG, Rewards, assinatura recorrente, carteira e ecossistema digital.",
+  "start_url": "/portal.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#020617",
+  "theme_color": "#041f2c",
+  "categories": ["finance", "productivity", "business"],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/maskable-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

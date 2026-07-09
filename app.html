@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>App | Nexa</title><script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>body{font-family:'Inter',system-ui,sans-serif}.gradient-bg{background:linear-gradient(135deg,#0F172A 0%,#1E293B 100%)}.cta-glow{box-shadow:0 0 40px rgba(99,102,241,.35)}</style>
+<script>const API_URL='https://nexa-backend-p2u0.onrender.com/api/v1';</script></head>
+<body class="gradient-bg text-white min-h-screen">
+  <nav class="border-b border-white/10 bg-slate-950/70"><div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center"><a href="/" class="flex items-center gap-3"><span class="w-10 h-10 bg-indigo-500 rounded-xl flex items-center justify-center font-bold text-xl">N</span><span class="text-xl font-bold">Nexa</span></a><button onclick="logout()" class="text-slate-300 hover:text-white">Sair</button></div></nav>
+  <main class="max-w-5xl mx-auto px-4 py-10">
+    <h1 class="text-3xl font-extrabold mb-2">Painel Nexa</h1>
+    <p id="welcome" class="text-slate-400 mb-8">Carregando...</p>
+    <div class="grid md:grid-cols-3 gap-6 mb-8">
+      <div class="bg-slate-900 border border-white/10 rounded-2xl p-6"><div class="text-sm text-slate-400 mb-2">API</div><div id="apiStatus" class="text-xl font-bold">Verificando...</div></div>
+      <div class="bg-slate-900 border border-white/10 rounded-2xl p-6"><div class="text-sm text-slate-400 mb-2">Saldo USDC</div><div class="text-xl font-bold">$ 0.00</div><p class="text-xs text-slate-500 mt-2">Mock até plugar Privy/Z.ro</p></div>
+      <div class="bg-slate-900 border border-white/10 rounded-2xl p-6"><div class="text-sm text-slate-400 mb-2">Spread Nexa</div><div class="text-xl font-bold">1,5%</div><p class="text-xs text-slate-500 mt-2">Pix ⇄ USDC</p></div>
+    </div>
+    <div class="grid md:grid-cols-2 gap-6">
+      <button class="bg-indigo-500/20 border border-indigo-500/40 rounded-2xl p-6 text-left"><div class="text-xl font-bold mb-2">Depositar via Pix</div><p class="text-slate-400">Em breve: gerar QR Pix e converter para USDC.</p></button>
+      <button class="bg-emerald-500/20 border border-emerald-500/40 rounded-2xl p-6 text-left"><div class="text-xl font-bold mb-2">Pagar Pix com USDC</div><p class="text-slate-400">Em breve: ler QR Pix e liquidar com parceiro.</p></button>
+    </div>
+  </main>
+<script>
+const token=localStorage.getItem('nexa_access_token'); const user=JSON.parse(localStorage.getItem('nexa_user')||'null');
+if(!token) window.location.href='/login.html';
+document.getElementById('welcome').textContent = user ? 'Olá, '+(user.fullName || user.email)+'. Sua conta foi conectada ao backend.' : 'Conta conectada.';
+async function checkHealth(){
+ try{ const r=await fetch(API_URL+'/health'); const d=await r.json(); document.getElementById('apiStatus').textContent=d.status==='ok'?'Online':'Indefinida'; }
+ catch{ document.getElementById('apiStatus').textContent='Offline'; }
+}
+function logout(){ localStorage.clear(); window.location.href='/'; }
+checkHealth();
+</script>
+<div class="mt-6 flex flex-wrap justify-center gap-6 text-sm">
+  <a class='hover:text-white' href='/privacidade'>Política de Privacidade</a>
+  <a class='hover:text-white' href='/termos'>Termos de Uso</a>
+  <a class='hover:text-white' href='/lgpd'>LGPD</a>
+  <a class='hover:text-white' href='/suporte'>Suporte</a>
+  <a class='hover:text-white' href='/excluir-conta'>Excluir conta</a>
+</div>
+</body></html>
