@@ -1,0 +1,104 @@
+name: Sync live TryNexa static site
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/sync-live-site.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download current live static files
+        shell: bash
+        run: |
+          set -e
+          BASE="https://trynexa.com.br"
+          FILES=(
+            app.html
+            cadastro.html
+            cookies.html
+            excluir-conta.html
+            identity.html
+            instalar.html
+            lgpd.html
+            login.html
+            merchant.html
+            obrigado-pj.html
+            offline.html
+            passport.html
+            pj.html
+            portal.html
+            privacidade.html
+            suporte.html
+            sw.js
+            termos.html
+            manifest.webmanifest
+            icon.svg
+            maskable-icon.svg
+            apple-touch-icon.svg
+            favicon.svg
+          )
+
+          for f in "${FILES[@]}"; do
+            echo "Downloading $f"
+            curl -fsSL "$BASE/$f" -o "$f" || echo "WARN: failed $f"
+          done
+
+          # Keep the static admin built in this repo; do not fetch /admin from live proxy.
+          cat > _redirects <<'EOF'
+          /admin  /admin.html  200!
+          /admin/  /admin.html  200!
+          /docs  https://nexa-backend-p2u0.onrender.com/docs  200!
+          /api/v1/*  https://nexa-backend-p2u0.onrender.com/api/v1/:splat  200!
+          EOF
+
+          cat > netlify.toml <<'EOF'
+          [build]
+            publish = "."
+            command = ""
+
+          [[redirects]]
+            from = "/admin"
+            to = "/admin.html"
+            status = 200
+            force = true
+
+          [[redirects]]
+            from = "/admin/"
+            to = "/admin.html"
+            status = 200
+            force = true
+
+          [[redirects]]
+            from = "/docs"
+            to = "https://nexa-backend-p2u0.onrender.com/docs"
+            status = 200
+            force = true
+
+          [[redirects]]
+            from = "/api/v1/*"
+            to = "https://nexa-backend-p2u0.onrender.com/api/v1/:splat"
+            status = 200
+            force = true
+          EOF
+
+      - name: Commit synced site
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Sync live TryNexa static site"
+            git push
+          fi
