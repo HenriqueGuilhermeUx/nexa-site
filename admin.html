@@ -3,21 +3,22 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Nexa Admin</title>
+<title>Nexa Control Center</title>
 <link rel="stylesheet" href="/admin.css">
 </head>
 <body>
 <div class="layout">
   <aside>
-    <h1>Nexa Admin</h1>
+    <div class="brandmark">N</div>
+    <h1>Nexa Control Center</h1>
     <p>Operação • CRM • Tesouraria • Custódia</p>
     <input id="email" placeholder="E-mail admin">
     <input id="password" type="password" placeholder="Senha">
     <button id="loginBtn">Entrar</button>
-    <button id="logoutBtn">Sair</button>
+    <button id="logoutBtn" class="ghost">Sair</button>
     <div id="status">Aguardando login.</div>
     <nav>
-      <button data-tab="ops">Operations</button>
+      <button data-tab="ops">Visão Geral</button>
       <button data-tab="clientes">Clientes</button>
       <button data-tab="financeiro">Financeiro</button>
       <button data-tab="tesouraria">Tesouraria</button>
@@ -29,7 +30,7 @@
   </aside>
   <main>
     <header>
-      <h2 id="title">Operations</h2>
+      <div><div class="eyebrow">NEXA OPERATIONS</div><h2 id="title">Visão Geral</h2></div>
       <button id="refreshBtn">Atualizar</button>
     </header>
     <section id="content"></section>
@@ -37,5 +38,6 @@
 </div>
 <script src="/admin.js"></script>
 <script src="/custody-admin.js"></script>
+<script src="/control-center.js"></script>
 </body>
 </html>
