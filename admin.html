@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
 <title>Nexa Control Center</title>
 <link rel="stylesheet" href="/admin.css">
 </head>
@@ -11,33 +12,28 @@
   <aside>
     <div class="brandmark">N</div>
     <h1>Nexa Control Center</h1>
-    <p>Operação • CRM • Tesouraria • Custódia</p>
-    <input id="email" placeholder="E-mail admin">
-    <input id="password" type="password" placeholder="Senha">
-    <button id="loginBtn">Entrar</button>
-    <button id="logoutBtn" class="ghost">Sair</button>
+    <p>Operação • Clientes • Pix • Tesouraria</p>
+    <input id="email" type="email" placeholder="E-mail admin" autocomplete="username">
+    <input id="password" type="password" placeholder="Senha" autocomplete="current-password">
+    <button id="loginBtn" type="button">Entrar</button>
+    <button id="logoutBtn" type="button" class="ghost">Sair</button>
     <div id="status">Aguardando login.</div>
     <nav>
-      <button data-tab="ops">Visão Geral</button>
-      <button data-tab="clientes">Clientes</button>
-      <button data-tab="financeiro">Financeiro / Pix</button>
-      <button data-tab="tesouraria">Tesouraria</button>
-      <button data-tab="custodia">Custódia Inteligente</button>
-      <button data-tab="crm">CRM / SmartBots</button>
-      <button data-tab="conhecimento">Conhecimento</button>
-      <button data-tab="raw">Debug</button>
+      <button type="button" data-tab="ops">Visão Geral</button>
+      <button type="button" data-tab="clientes">Clientes</button>
+      <button type="button" data-tab="financeiro">Financeiro / Pix</button>
+      <button type="button" data-tab="tesouraria">Tesouraria</button>
+      <button type="button" data-tab="crm">CRM</button>
     </nav>
   </aside>
   <main>
     <header>
       <div><div class="eyebrow">NEXA OPERATIONS</div><h2 id="title">Visão Geral</h2></div>
-      <button id="refreshBtn">Atualizar</button>
+      <button id="refreshBtn" type="button">Atualizar</button>
     </header>
-    <section id="content"></section>
+    <section id="content"><div class="card"><h3>Acesso restrito</h3><p>Nenhum dado administrativo é carregado antes do login.</p></div></section>
   </main>
 </div>
-<script src="/admin.js?v=0d3f78bf"></script>
-<script src="/custody-admin.js"></script>
-<script src="/control-center.js"></script>
+<script src="/admin.js?v=ab4b0dab"></script>
 </body>
 </html>
