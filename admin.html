@@ -1,40 +1,70 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex,nofollow,noarchive">
-<title>Nexa Control Center</title>
-<link rel="stylesheet" href="/admin.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="color-scheme" content="dark">
+  <title>Nexa Control Center</title>
+  <link rel="stylesheet" href="/admin.css?v=3">
 </head>
 <body>
 <div class="layout">
   <aside>
     <div class="brandmark">N</div>
     <h1>Nexa Control Center</h1>
-    <p>Operação • CRM • Tesouraria • Custódia</p>
-    <input id="email" placeholder="E-mail admin" autocomplete="username">
-    <input id="password" type="password" placeholder="Senha" autocomplete="current-password">
-    <button id="loginBtn">Entrar</button>
-    <button id="logoutBtn" class="ghost">Sair</button>
-    <div id="status">Aguardando login.</div>
+    <p>Operação • Clientes • CRM • Tesouraria</p>
+
+    <div class="login-box">
+      <input id="email" placeholder="E-mail admin" autocomplete="username">
+      <input id="password" type="password" placeholder="Senha" autocomplete="current-password">
+      <div class="login-actions">
+        <button id="loginBtn">Entrar</button>
+        <button id="logoutBtn" class="ghost">Sair</button>
+      </div>
+      <div id="status">Aguardando login.</div>
+    </div>
+
     <nav>
       <button data-tab="ops">Visão Geral</button>
       <button data-tab="clientes">Clientes</button>
-      <button data-tab="financeiro">Saques Pix</button>
+      <button data-tab="financeiro">Resgates Pix</button>
       <button data-tab="tesouraria">Tesouraria</button>
-      <button data-tab="crm">CRM / SmartBots</button>
+      <button data-tab="crm">CRM</button>
+      <button data-tab="audit">Auditoria</button>
       <button data-tab="raw">Debug</button>
     </nav>
+
+    <div class="aside-note">
+      <strong>Regra operacional</strong>
+      <span>Nenhum Pix é concluído sem venda real e conciliação.</span>
+    </div>
   </aside>
+
   <main>
     <header>
-      <div><div class="eyebrow">NEXA OPERATIONS</div><h2 id="title">Visão Geral</h2></div>
-      <button id="refreshBtn">Atualizar</button>
+      <div>
+        <div class="eyebrow">NEXA OPERATIONS</div>
+        <h2 id="title">Visão Geral</h2>
+      </div>
+      <div class="header-actions">
+        <span id="lastUpdated" class="muted"></span>
+        <button id="refreshBtn">Atualizar</button>
+      </div>
     </header>
     <section id="content"></section>
   </main>
 </div>
-<script src="/admin.js?v=2a0aa3d8"></script>
+
+<div id="modal" class="modal" aria-hidden="true">
+  <div class="modal-backdrop" data-close-modal="true"></div>
+  <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <button class="modal-close" data-close-modal="true" aria-label="Fechar">×</button>
+    <div id="modalContent"></div>
+  </section>
+</div>
+
+<div id="toast" class="toast" aria-live="polite"></div>
+<script src="/admin.js?v=3"></script>
 </body>
 </html>
