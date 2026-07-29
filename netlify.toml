@@ -3,6 +3,30 @@
   command = ""
 
 [[redirects]]
+  from = "/primeiros-nexa"
+  to = "/primeiros-nexa.html"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/primeiros-nexa/"
+  to = "/primeiros-nexa.html"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/pj"
+  to = "/pj.html"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/merchant"
+  to = "/merchant.html"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/admin"
   to = "/admin.html"
   status = 200
