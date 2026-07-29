@@ -1,6 +1,29 @@
 [build]
   publish = "."
-  command = ""
+  command = "node scripts/build-site.mjs"
+
+[build.environment]
+  NODE_VERSION = "20.19.4"
+  NPM_FLAGS = "--no-audit --no-fund"
+  NEXA_PORTAL_COMMIT = "5b4bfe9f79dcedfc8511ef48345a80d6c2218c0e"
+  VITE_API_URL = "https://nexa-backend-p2u0.onrender.com/api/v1"
+  VITE_PRIVY_APP_ID = "cmpen2gm3007v0cjswjlyefji"
+  VITE_PRIVY_CLIENT_ID = "client-WY6ZY2Ptr39FTjXumMRAfqM2Bx8m9DUWxcSgXg6CWaMyT"
+
+[[redirects]]
+  from = "/portal"
+  to = "/portal/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/portal/"
+  to = "/portal/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/portal/*"
+  to = "/portal/index.html"
+  status = 200
 
 [[redirects]]
   from = "/primeiros-nexa"
