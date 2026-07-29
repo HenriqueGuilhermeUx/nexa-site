@@ -11,6 +11,90 @@
   VITE_PRIVY_CLIENT_ID = "client-WY6ZY2Ptr39FTjXumMRAfqM2Bx8m9DUWxcSgXg6CWaMyT"
 
 [[redirects]]
+  from = "/cadastro"
+  to = "/portal/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cadastro.html"
+  to = "/portal/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/login"
+  to = "/portal/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/login.html"
+  to = "/portal/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/entrar"
+  to = "/portal/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/app"
+  to = "/portal/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/app.html"
+  to = "/portal/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/portal.html"
+  to = "/portal/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/painel"
+  to = "/portal/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/painel.html"
+  to = "/portal/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/historico"
+  to = "/portal/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/historico.html"
+  to = "/portal/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/depositos"
+  to = "/portal/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/depositos.html"
+  to = "/portal/"
+  status = 301
+  force = true
+
+[[redirects]]
   from = "/portal"
   to = "/portal/index.html"
   status = 200
