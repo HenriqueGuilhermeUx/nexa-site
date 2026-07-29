@@ -12,14 +12,16 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '20.19.4'
       - name: Validate JavaScript syntax
-        run: node --check admin.js
+        run: |
+          node --check admin.js
+          node --check scripts/build-site.mjs
       - name: Validate launch strategy and financial safety
         run: node scripts/validate-launch-site.js
       - name: Validate required pages
@@ -30,3 +32,15 @@ jobs:
           test -s merchant.html
           test -s admin.html
           test -s netlify.toml
+      - name: Build validated Privy portal under site path
+        run: node scripts/build-site.mjs
+      - name: Verify embedded portal output
+        run: |
+          test -s portal/index.html
+          test -d portal/assets
+          grep -q 'src="/portal/assets/' portal/index.html
+          grep -q 'href="/portal/assets/' portal/index.html
+          grep -R -q '/payment/user' portal/assets
+          grep -R -q 'direct-settlement/wallet/link' portal/assets
+          grep -R -q 'x-privy-access-token' portal/assets
+          ! grep -R -E 'PRIVY_APP_SECRET|PRIVY_SECRET_KEY|MASTER_WALLET_PRIVATE_KEY|/user/link-privy-wallet' portal
