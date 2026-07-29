@@ -1,6 +1,10 @@
 name: Nexa Site CI
 
 on:
+  push:
+    branches:
+      - feat/primeiros-nexa-product-launch
+      - main
   pull_request:
     branches:
       - main
@@ -8,6 +12,10 @@ on:
 
 permissions:
   contents: read
+
+concurrency:
+  group: nexa-site-ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   validate:
