@@ -1,0 +1,32 @@
+name: Nexa Site CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Validate JavaScript syntax
+        run: node --check admin.js
+      - name: Validate launch strategy and financial safety
+        run: node scripts/validate-launch-site.js
+      - name: Validate required pages
+        run: |
+          test -s index.html
+          test -s primeiros-nexa.html
+          test -s pj.html
+          test -s merchant.html
+          test -s admin.html
+          test -s netlify.toml
