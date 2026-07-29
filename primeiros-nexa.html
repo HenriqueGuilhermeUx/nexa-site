@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Faça parte dos Primeiros Nexa e receba prioridade nos primeiros convites da plataforma brasileira de acesso simples a ativos digitais.">
+  <meta name="theme-color" content="#020617">
+  <meta property="og:title" content="Primeiros Nexa — receba acesso primeiro">
+  <meta property="og:description" content="Entre para a primeira comunidade da Nexa. Prioridade nos convites, novidades e participação na construção.">
+  <meta property="og:type" content="website">
+  <title>Primeiros Nexa — Acesso antecipado</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.svg">
+  <link rel="icon" href="/favicon.svg">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{color-scheme:dark}*{box-sizing:border-box}body{font-family:Inter,system-ui,sans-serif;background:#020617;color:#fff;margin:0}.bgx{background:radial-gradient(circle at 15% 5%,rgba(79,70,229,.32),transparent 29%),radial-gradient(circle at 85% 18%,rgba(6,182,212,.18),transparent 28%),linear-gradient(135deg,#020617,#0f172a 58%,#111827)}.glass{background:rgba(15,23,42,.77);border:1px solid rgba(148,163,184,.18);backdrop-filter:blur(18px)}.card{background:linear-gradient(180deg,rgba(30,41,59,.84),rgba(15,23,42,.8));border:1px solid rgba(148,163,184,.18)}.grad{background:linear-gradient(90deg,#a5b4fc,#fff,#5eead4);-webkit-background-clip:text;background-clip:text;color:transparent}.glow{box-shadow:0 0 45px rgba(79,70,229,.32)}input,select{background:#020617;border:1px solid rgba(148,163,184,.28);color:#fff}input:focus,select:focus{outline:none;border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.13)}.hidden{display:none!important}.eyebrow{font-size:.74rem;letter-spacing:.18em;font-weight:900;text-transform:uppercase}
+  </style>
+</head>
+<body class="bgx min-h-screen">
+  <nav class="border-b border-white/10 bg-slate-950/75 backdrop-blur-xl"><div class="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between"><a href="/" class="flex items-center gap-3"><div class="w-10 h-10 rounded-2xl bg-indigo-500 flex items-center justify-center font-black glow">N</div><span class="font-black text-xl">Nexa</span></a><a href="/portal" class="text-sm text-slate-300 hover:text-white font-bold">Já tenho acesso</a></div></nav>
+
+  <main class="px-5 py-16 md:py-24">
+    <div class="max-w-7xl mx-auto grid lg:grid-cols-[.92fr_1.08fr] gap-10 lg:gap-16 items-start">
+      <section class="lg:sticky lg:top-12">
+        <span class="inline-flex px-4 py-2 rounded-full glass text-cyan-200 text-sm font-black">A primeira comunidade da Nexa</span>
+        <h1 class="text-5xl md:text-7xl font-black leading-[1.02] mt-7">Faça parte dos <span class="grad">Primeiros Nexa.</span></h1>
+        <p class="text-xl text-slate-300 leading-relaxed mt-6">A Nexa será aberta gradualmente. Entre agora para receber prioridade nos primeiros convites e ajudar a construir uma experiência mais simples para acessar ativos digitais.</p>
+        <div class="grid sm:grid-cols-2 gap-4 mt-9">
+          <div class="card rounded-2xl p-5"><div class="text-2xl">⚡</div><b class="block mt-3">Prioridade nos convites</b><p class="text-sm text-slate-400 mt-2">Abertura por ondas, de forma responsável.</p></div>
+          <div class="card rounded-2xl p-5"><div class="text-2xl">◉</div><b class="block mt-3">Novidades antes do público</b><p class="text-sm text-slate-400 mt-2">Acompanhe o que está sendo construído.</p></div>
+          <div class="card rounded-2xl p-5"><div class="text-2xl">✦</div><b class="block mt-3">Participação em pesquisas</b><p class="text-sm text-slate-400 mt-2">Ajude a decidir o que precisa ser simples.</p></div>
+          <div class="card rounded-2xl p-5"><div class="text-2xl">↗</div><b class="block mt-3">Código de indicação</b><p class="text-sm text-slate-400 mt-2">Convide pessoas alinhadas à comunidade.</p></div>
+        </div>
+        <p class="text-xs text-slate-500 mt-6">A lista não abre conta, não executa KYC, não cria carteira e não movimenta dinheiro. Esses passos só acontecem depois do convite e da sua decisão de avançar.</p>
+      </section>
+
+      <section class="glass rounded-[2rem] p-6 sm:p-9 shadow-2xl">
+        <div id="formArea">
+          <p class="eyebrow text-indigo-300">Acesso antecipado</p>
+          <h2 class="text-3xl md:text-4xl font-black mt-3">Quero receber acesso primeiro</h2>
+          <p class="text-slate-400 mt-3 mb-7">Leva menos de um minuto. As respostas ajudam a Nexa a liberar convites para perfis alinhados aos primeiros testes.</p>
+          <form id="earlyForm" class="space-y-4">
+            <div><label for="fullName" class="block text-sm font-bold text-slate-300 mb-2">Seu nome</label><input id="fullName" name="fullName" required maxlength="160" autocomplete="name" class="w-full p-4 rounded-2xl" placeholder="Como podemos chamar você?"></div>
+            <div><label for="email" class="block text-sm font-bold text-slate-300 mb-2">E-mail</label><input id="email" name="email" type="email" required maxlength="180" autocomplete="email" class="w-full p-4 rounded-2xl" placeholder="voce@email.com"></div>
+            <div><label for="phone" class="block text-sm font-bold text-slate-300 mb-2">WhatsApp com DDD <span class="text-slate-500 font-normal">(opcional)</span></label><input id="phone" name="phone" inputmode="tel" autocomplete="tel" class="w-full p-4 rounded-2xl" placeholder="(31) 99999-9999"></div>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div><label for="cryptoExperience" class="block text-sm font-bold text-slate-300 mb-2">Sua experiência com cripto</label><select id="cryptoExperience" name="cryptoExperience" class="w-full p-4 rounded-2xl"><option value="never_used">Nunca usei</option><option value="tried_once">Já tentei, mas achei confuso</option><option value="already_uses">Já uso atualmente</option></select></div>
+              <div><label for="primaryInterest" class="block text-sm font-bold text-slate-300 mb-2">Principal interesse</label><select id="primaryInterest" name="primaryInterest" class="w-full p-4 rounded-2xl"><option value="usdc">Entender e acessar USDC</option><option value="dollar_exposure">Exposição ao dólar</option><option value="payments">Pagamentos digitais</option><option value="business">Soluções para empresa</option><option value="learning">Aprender sem complicação</option><option value="other">Outro</option></select></div>
+            </div>
+            <div><label for="preferredChannel" class="block text-sm font-bold text-slate-300 mb-2">Como prefere receber novidades?</label><select id="preferredChannel" name="preferredChannel" class="w-full p-4 rounded-2xl"><option value="email">E-mail</option><option value="whatsapp">WhatsApp</option></select></div>
+            <label class="flex gap-3 items-start text-sm text-slate-300"><input id="lgpdConsent" type="checkbox" required class="mt-1 accent-indigo-500"><span>Concordo com o tratamento dos dados para participar da lista de acesso antecipado, conforme a <a href="/privacidade" target="_blank" class="text-cyan-300 underline">Política de Privacidade</a>.</span></label>
+            <label class="flex gap-3 items-start text-sm text-slate-400"><input id="marketingConsent" type="checkbox" class="mt-1 accent-indigo-500"><span>Também autorizo o envio de conteúdos, pesquisas e novidades da Nexa. Posso cancelar depois.</span></label>
+            <button id="submitBtn" type="submit" class="w-full bg-indigo-500 hover:bg-indigo-600 p-4 rounded-2xl font-black glow">Quero ser um dos Primeiros Nexa</button>
+            <p id="formMsg" class="text-sm text-slate-400 text-center min-h-5"></p>
+          </form>
+        </div>
+
+        <div id="successArea" class="hidden text-center py-6">
+          <div class="w-20 h-20 mx-auto rounded-3xl bg-emerald-500/15 flex items-center justify-center text-4xl">✓</div>
+          <p class="eyebrow text-emerald-300 mt-7">Você está dentro</p>
+          <h2 class="text-4xl font-black mt-3">Bem-vindo aos Primeiros Nexa.</h2>
+          <p id="successMessage" class="text-slate-300 text-lg mt-5">Seu interesse foi registrado. A abertura será gradual e os convites chegarão pelos canais informados.</p>
+          <div class="card rounded-2xl p-5 mt-7 text-left"><p class="text-sm text-slate-400">Seu link de indicação</p><div class="flex flex-col sm:flex-row gap-3 mt-3"><input id="referralLink" readonly class="flex-1 p-3 rounded-xl text-sm"><button onclick="copyReferral()" class="bg-white/10 border border-white/10 px-5 py-3 rounded-xl font-bold">Copiar</button></div></div>
+          <div class="flex flex-col sm:flex-row gap-3 mt-7"><a href="/" class="flex-1 bg-white/10 border border-white/10 p-4 rounded-2xl font-bold">Voltar ao site</a><a href="/pj" class="flex-1 bg-emerald-500/15 text-emerald-300 border border-emerald-500/20 p-4 rounded-2xl font-bold">Conhecer Nexa PJ</a></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="border-t border-white/10 mt-12"><div class="max-w-7xl mx-auto px-5 py-9 flex flex-col md:flex-row justify-between gap-5 text-sm text-slate-500"><span>Nexa. Cripto sem complicação.</span><div class="flex flex-wrap gap-5"><a href="/privacidade">Privacidade</a><a href="/termos">Termos</a><a href="/lgpd">LGPD</a><a href="/suporte">Suporte</a></div></div></footer>
+
+  <script>
+    const API='/api/v1';
+    const form=document.getElementById('earlyForm');
+    const params=new URLSearchParams(location.search);
+    const referredByCode=(params.get('ref')||'').trim().slice(0,80);
+    const tracking={utmSource:params.get('utm_source')||null,utmMedium:params.get('utm_medium')||null,utmCampaign:params.get('utm_campaign')||null,utmContent:params.get('utm_content')||null,landingPath:location.pathname,referrer:document.referrer||null};
+    function source(){return tracking.utmSource||((document.referrer||'').includes('instagram')?'instagram':(document.referrer||'').includes('facebook')?'facebook':(document.referrer||'').includes('tiktok')?'tiktok':'direct')}
+    function setLoading(value){const btn=document.getElementById('submitBtn');btn.disabled=value;btn.textContent=value?'Entrando para a lista...':'Quero ser um dos Primeiros Nexa';btn.classList.toggle('opacity-60',value)}
+    form.addEventListener('submit',async event=>{event.preventDefault();const msg=document.getElementById('formMsg');msg.textContent='';setLoading(true);try{const body={fullName:document.getElementById('fullName').value.trim(),email:document.getElementById('email').value.trim(),phone:document.getElementById('phone').value.trim(),preferredChannel:document.getElementById('preferredChannel').value,cryptoExperience:document.getElementById('cryptoExperience').value,primaryInterest:document.getElementById('primaryInterest').value,source:source(),campaign:tracking.utmCampaign||'primeiros_nexa',referredByCode:referredByCode||undefined,lgpdConsent:document.getElementById('lgpdConsent').checked,marketingConsent:document.getElementById('marketingConsent').checked,metadata:tracking};const response=await fetch(API+'/early-access/join',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const text=await response.text();let data={};try{data=text?JSON.parse(text):{}}catch{data={message:text}}if(!response.ok){const raw=data.message||data.error||'Não foi possível concluir agora.';throw new Error(Array.isArray(raw)?raw.join(', '):typeof raw==='object'?JSON.stringify(raw):String(raw))}const code=data.lead?.referralCode||'';const link=location.origin+'/primeiros-nexa'+(code?'?ref='+encodeURIComponent(code):'');document.getElementById('referralLink').value=link;document.getElementById('successMessage').textContent=data.alreadyRegistered?'Você já fazia parte da lista. Seus dados foram atualizados e sua prioridade foi preservada.':'Seu interesse foi registrado. A abertura será gradual e os convites chegarão pelos canais informados.';document.getElementById('formArea').classList.add('hidden');document.getElementById('successArea').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'})}catch(error){msg.textContent=error.message;msg.className='text-sm text-rose-300 text-center min-h-5'}finally{setLoading(false)}});
+    async function copyReferral(){const field=document.getElementById('referralLink');await navigator.clipboard.writeText(field.value);const button=event.currentTarget;const old=button.textContent;button.textContent='Copiado';setTimeout(()=>button.textContent=old,1400)}
+    if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
+  </script>
+</body>
+</html>
