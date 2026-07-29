@@ -61,6 +61,29 @@ assert.match(netlify, /to = "\/primeiros-nexa\.html"/);
 assert.match(netlify, /from = "\/api\/v1\/\*"/);
 assert.match(netlify, /NEXA_PORTAL_COMMIT = "5b4bfe9f79dcedfc8511ef48345a80d6c2218c0e"/);
 
+for (const legacyRoute of [
+  '/cadastro',
+  '/cadastro.html',
+  '/login',
+  '/login.html',
+  '/entrar',
+  '/app',
+  '/app.html',
+  '/portal.html',
+  '/painel',
+  '/painel.html',
+  '/historico',
+  '/historico.html',
+  '/depositos',
+  '/depositos.html',
+]) {
+  const escaped = legacyRoute.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const rule = new RegExp(
+    `from = "${escaped}"[\\s\\S]{0,100}to = "\\/portal\\/"[\\s\\S]{0,70}status = 301[\\s\\S]{0,70}force = true`,
+  );
+  assert.match(netlify, rule, `Rota legada não unificada: ${legacyRoute}`);
+}
+
 assert.match(buildSite, /nexa-react-app\.git/);
 assert.match(buildSite, /5b4bfe9f79dcedfc8511ef48345a80d6c2218c0e/);
 assert.match(buildSite, /VITE_BASE_PATH: '\/portal\/'/);
@@ -72,4 +95,4 @@ for (const content of [index, early, pj, merchant, admin, adminJs]) {
   assert.doesNotMatch(content, /PRIVY_APP_SECRET|PRIVY_SECRET_KEY|MASTER_WALLET_PRIVATE_KEY/);
 }
 
-console.log('Nexa launch site validated: strategy, same-origin Privy portal, PJ pricing and safe operations passed.');
+console.log('Nexa launch site validated: strategy, unified Privy portal routes, PJ pricing and safe operations passed.');
