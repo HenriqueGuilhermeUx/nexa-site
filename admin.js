@@ -564,6 +564,18 @@ function filteredClients() {
   );
 }
 
+function canDeleteIncompleteClient(client) {
+  const kycStatus = String(client?.kycStatus || '').toLowerCase();
+  return Boolean(
+    client &&
+      kycStatus !== 'approved' &&
+      ledgerUsdc(client) === 0 &&
+      !client.walletAddress &&
+      !client.privyUserId &&
+      !client.privyWalletId,
+  );
+}
+
 function renderClientes() {
   const rows = filteredClients();
   const all = clients();
@@ -588,8 +600,12 @@ function renderClientes() {
     '<div class="card notice"><b>Bloquear</b> interrompe o acesso. <b>Arquivar</b> encerra operacionalmente a conta. Nenhuma dessas ações apaga ledger, transações, KYC ou auditoria.</div>' +
     `<div class="card scroll"><table><thead><tr><th>Nome</th><th>Contato</th><th>Status</th><th>Saldo oficial</th><th>Ações</th></tr></thead><tbody>${rows
       .map((user) => {
-        const deleteButton = user.isTestOrAdmin
-          ? `<button class="small-btn red" onclick="deleteTestClient('${user.id}')">Excluir teste</button>`
+        const canDelete =
+          user.isTestOrAdmin || canDeleteIncompleteClient(user);
+        const deleteButton = canDelete
+          ? `<button class="small-btn red" onclick="deleteIncompleteClient('${user.id}')">${
+              user.isTestOrAdmin ? 'Excluir teste' : 'Excluir incompleto'
+            }</button>`
           : '';
         return `<tr><td><b>${esc(user.fullName || '—')}</b><br><span class="muted">${esc(
           user.cpfCnpj || user.cpf || '—',
@@ -654,26 +670,50 @@ async function toggleArchive(id, archived) {
   }
 }
 
-async function deleteTestClient(id) {
+async function deleteIncompleteClient(id) {
   const client = clientById(id);
-  if (!client.isTestOrAdmin) {
-    return toast('Exclusão definitiva só existe para conta de teste vazia.', true);
+  const canDelete =
+    client.isTestOrAdmin || canDeleteIncompleteClient(client);
+  if (!canDelete) {
+    return toast(
+      'Exclusão definitiva só é permitida para cadastro incompleto e vazio. Use Arquivar para os demais clientes.',
+      true,
+    );
   }
+
   const reason =
-    prompt('Motivo obrigatório da exclusão da conta de teste:', 'Conta criada exclusivamente para QA') || '';
+    prompt(
+      'Motivo obrigatório da exclusão:',
+      client.isTestOrAdmin
+        ? 'Conta criada exclusivamente para QA'
+        : 'Cadastro incompleto sem KYC, carteira ou histórico financeiro',
+    ) || '';
   if (!reason.trim()) return;
+
   const confirmEmail =
     prompt('Digite exatamente o e-mail da conta para confirmar:', '') || '';
-  if (confirmEmail.trim().toLowerCase() !== String(client.email || '').toLowerCase()) {
+  if (
+    confirmEmail.trim().toLowerCase() !==
+    String(client.email || '').toLowerCase()
+  ) {
     return toast('O e-mail de confirmação não corresponde.', true);
   }
-  if (!confirm('Excluir definitivamente esta conta de TESTE sem histórico?')) return;
+
+  const label = client.isTestOrAdmin
+    ? 'esta conta de teste vazia'
+    : 'este cadastro incompleto';
+  if (!confirm(`Excluir definitivamente ${label}?`)) return;
+
   try {
     await call(`/admin/users/${encodeURIComponent(id)}`, {
       method: 'DELETE',
       body: JSON.stringify({ reason, confirmEmail }),
     });
-    toast('Conta de teste excluída');
+    toast(
+      client.isTestOrAdmin
+        ? 'Conta de teste excluída'
+        : 'Cadastro incompleto excluído',
+    );
     await refresh();
   } catch (error) {
     toast(error.message, true);
