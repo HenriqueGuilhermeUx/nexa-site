@@ -13,11 +13,13 @@ const merchant = read('merchant.html');
 const admin = read('admin.html');
 const adminJs = read('admin.js');
 const netlify = read('netlify.toml');
+const buildSite = read('scripts/build-site.mjs');
 
 assert.match(index, /Cripto sem complicação/i);
 assert.match(index, /Primeiros Nexa/i);
 assert.match(index, /Pix → USDC/i);
 assert.match(index, /sem promessa de rendimento/i);
+assert.match(index, /href="\/portal"/);
 assert.doesNotMatch(index, /Aave V3 real|20%.*performance fee|Ecossistema em operação/i);
 
 assert.match(early, /\/early-access\/join/);
@@ -50,12 +52,24 @@ assert.match(adminJs, /record-usdc-purchase/);
 assert.match(adminJs, /treasury-admin\/trades\/sell-usdc/);
 assert.doesNotMatch(adminJs, /finishPayment\(/);
 
+assert.match(netlify, /command = "node scripts\/build-site\.mjs"/);
+assert.match(netlify, /from = "\/portal"/);
+assert.match(netlify, /to = "\/portal\/index\.html"/);
+assert.match(netlify, /from = "\/portal\/\*"/);
 assert.match(netlify, /from = "\/primeiros-nexa"/);
 assert.match(netlify, /to = "\/primeiros-nexa\.html"/);
 assert.match(netlify, /from = "\/api\/v1\/\*"/);
+assert.match(netlify, /NEXA_PORTAL_COMMIT = "5b4bfe9f79dcedfc8511ef48345a80d6c2218c0e"/);
+
+assert.match(buildSite, /nexa-react-app\.git/);
+assert.match(buildSite, /5b4bfe9f79dcedfc8511ef48345a80d6c2218c0e/);
+assert.match(buildSite, /VITE_BASE_PATH: '\/portal\/'/);
+assert.match(buildSite, /npm', \['run', 'check'\]/);
+assert.match(buildSite, /financialExecutionEnabled: false/);
+assert.doesNotMatch(buildSite, /PRIVY_APP_SECRET|PRIVY_SECRET_KEY|MASTER_WALLET_PRIVATE_KEY/);
 
 for (const content of [index, early, pj, merchant, admin, adminJs]) {
   assert.doesNotMatch(content, /PRIVY_APP_SECRET|PRIVY_SECRET_KEY|MASTER_WALLET_PRIVATE_KEY/);
 }
 
-console.log('Nexa launch site validated: strategy, early access, PJ pricing and safe operations passed.');
+console.log('Nexa launch site validated: strategy, same-origin Privy portal, PJ pricing and safe operations passed.');
