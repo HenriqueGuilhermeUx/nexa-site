@@ -1,514 +1,180 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Portal Nexa PJ | Recebimentos Pix e USDC</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Portal Nexa PJ | Checkout Pix com liquidação BRL ou USDC</title>
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="apple-touch-icon" href="/apple-touch-icon.svg">
   <link rel="icon" href="/favicon.svg">
-  <meta name="theme-color" content="#041f2c">
+  <meta name="theme-color" content="#020617">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    body{font-family:Inter,system-ui,sans-serif;background:#020617;color:white}
-    .bgx{background:radial-gradient(circle at 20% 10%,rgba(99,102,241,.28),transparent 30%),radial-gradient(circle at 80% 20%,rgba(34,211,238,.16),transparent 28%),linear-gradient(135deg,#020617,#0f172a 55%,#111827)}
-    .glass{background:rgba(15,23,42,.72);border:1px solid rgba(148,163,184,.18);backdrop-filter:blur(18px)}
-    .card{background:linear-gradient(180deg,rgba(30,41,59,.8),rgba(15,23,42,.78));border:1px solid rgba(148,163,184,.18)}
+    body{font-family:Inter,system-ui,sans-serif;background:#020617;color:#fff}
+    .bgx{background:radial-gradient(circle at 18% 8%,rgba(79,70,229,.26),transparent 31%),radial-gradient(circle at 82% 16%,rgba(6,182,212,.16),transparent 29%),linear-gradient(135deg,#020617,#0f172a 55%,#111827)}
+    .glass{background:rgba(15,23,42,.78);border:1px solid rgba(148,163,184,.18);backdrop-filter:blur(18px)}
+    .card{background:linear-gradient(180deg,rgba(30,41,59,.84),rgba(15,23,42,.82));border:1px solid rgba(148,163,184,.18)}
     .grad{background:linear-gradient(90deg,#a5b4fc,#fff,#5eead4);-webkit-background-clip:text;background-clip:text;color:transparent}
-    .glow{box-shadow:0 0 45px rgba(99,102,241,.35)}
+    .glow{box-shadow:0 0 45px rgba(79,70,229,.32)}
     input,textarea,select{background:#020617;border:1px solid rgba(148,163,184,.25);color:white}
-    input:focus,textarea:focus,select:focus{outline:none;border-color:#6366f1}
-    .hidden{display:none!important}
+    input:focus,textarea:focus,select:focus{outline:none;border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.12)}
+    .hidden{display:none!important}.pill{display:inline-flex;align-items:center;border-radius:999px;padding:.35rem .7rem;font-size:.72rem;font-weight:800}
+    .ok{background:rgba(16,185,129,.14);color:#6ee7b7}.wait{background:rgba(245,158,11,.14);color:#fcd34d}.bad{background:rgba(244,63,94,.14);color:#fda4af}.info{background:rgba(59,130,246,.14);color:#93c5fd}
+    .step{border-left:3px solid #334155;padding-left:1rem}.step.done{border-color:#10b981}.step.active{border-color:#f59e0b}
   </style>
 </head>
-<body class="bgx min-h-screen pb-10">
-  <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-950/85 backdrop-blur-xl border-b border-white/10">
+<body class="bgx min-h-screen pb-12">
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-950/90 backdrop-blur-xl border-b border-white/10">
     <div class="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between">
-      <a href="/" class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl bg-indigo-500 flex items-center justify-center font-black glow">N</div>
-        <span class="font-black text-xl">Portal Nexa PJ</span>
-      </a>
-      <div class="hidden md:flex gap-6 text-sm text-slate-300">
-        <a class='hover:text-white' href='/pj'>Empresas</a>
-        <a class='hover:text-white' href='/portal'>Portal Nexa</a>
-        <a href="/" class="hover:text-white">Home</a>
-      </div>
-      <button onclick="logout()" class="bg-white/10 hover:bg-white/15 border border-white/10 px-4 py-2 rounded-xl font-bold">Sair</button>
+      <a href="/" class="flex items-center gap-3"><div class="w-10 h-10 rounded-2xl bg-indigo-500 flex items-center justify-center font-black glow">N</div><span class="font-black text-xl">Portal Nexa PJ</span></a>
+      <div class="hidden md:flex gap-6 text-sm text-slate-300"><a href="/pj" class="hover:text-white">Nexa PJ</a><a href="/portal" class="hover:text-white">Conta Nexa</a><a href="/suporte" class="hover:text-white">Suporte</a></div>
+      <button id="logoutBtn" onclick="logout()" class="hidden bg-white/10 border border-white/10 px-4 py-2 rounded-xl font-bold">Sair</button>
     </div>
   </nav>
 
   <main class="pt-28 px-5 max-w-7xl mx-auto">
     <section class="glass rounded-[2rem] p-8 md:p-10 mb-8">
-      <span class="inline-block px-4 py-2 rounded-full bg-cyan-500/10 text-cyan-300 font-black text-sm mb-5">Portal Nexa PJ</span>
-      <h1 class="text-4xl md:text-6xl font-black leading-tight">
-        Receba Pix, gere QR Code e acompanhe tudo no <span class="grad">Portal Nexa PJ.</span>
-      </h1>
-      <p class="text-slate-300 text-lg md:text-xl mt-5 max-w-4xl">
-        Use sua conta Nexa para acessar o Portal PJ. Cadastre a empresa, gere cobranças, acompanhe transações e liquide seus recebimentos em BRL ou USDC.
-      </p>
+      <span class="inline-block px-4 py-2 rounded-full bg-cyan-500/10 text-cyan-300 font-black text-sm mb-5">CHECKOUT NEXA PJ</span>
+      <h1 class="text-4xl md:text-6xl font-black leading-tight">Receba Pix. Acompanhe tudo. <span class="grad">Liquide com transparência.</span></h1>
+      <p class="text-slate-300 text-lg md:text-xl mt-5 max-w-4xl">A cobrança é feita em reais. A empresa escolhe BRL/Pix ou USDC, e cada etapa fica registrada no portal. Valores em USDC antes da compra são estimativas; o extrato final mostra o resultado realmente liquidado.</p>
     </section>
 
     <section id="loginArea" class="max-w-xl mx-auto">
       <div class="glass rounded-[2rem] p-8">
         <h2 class="text-3xl font-black mb-3">Entrar no Portal PJ</h2>
-        <p class="text-slate-400 mb-6">Use o mesmo login da sua conta Nexa.</p>
+        <p class="text-slate-400 mb-6">Use o mesmo e-mail e senha da sua conta Nexa.</p>
         <input id="email" class="w-full p-4 rounded-2xl mb-3" type="email" placeholder="E-mail" autocomplete="email">
         <input id="password" class="w-full p-4 rounded-2xl mb-4" type="password" placeholder="Senha" autocomplete="current-password">
         <button onclick="login()" class="w-full bg-indigo-500 hover:bg-indigo-600 p-4 rounded-2xl font-black glow">Entrar</button>
-        <a class='block text-center mt-5 text-cyan-300 font-bold hover:text-white' href='/cadastro'>Ainda não tenho conta Nexa</a>
-        <pre id="loginMsg" class="mt-5 bg-slate-950 border border-white/10 rounded-2xl p-4 overflow-auto text-xs text-slate-300 max-h-52">Aguardando login...</pre>
+        <a href="/cadastro" class="block text-center mt-5 text-cyan-300 font-bold">Criar conta Nexa</a>
+        <div id="loginMsg" class="mt-5 text-sm text-slate-400">Aguardando login.</div>
       </div>
     </section>
 
     <section id="appArea" class="hidden">
-      <div class="grid lg:grid-cols-4 gap-5 mb-8">
-        <div class="card rounded-3xl p-6">
-          <p class="text-slate-400 text-sm">Status</p>
-          <h3 id="merchantStatus" class="text-3xl font-black mt-2">-</h3>
-        </div>
-        <div class="card rounded-3xl p-6">
-          <p class="text-slate-400 text-sm">Recebido USDC</p>
-          <h3 id="merchantUsdc" class="text-3xl font-black mt-2">0.00000000</h3>
-        </div>
-        <div class="card rounded-3xl p-6">
-          <p class="text-slate-400 text-sm">Transações</p>
-          <h3 id="merchantTxs" class="text-3xl font-black mt-2">0</h3>
-        </div>
-        <div class="card rounded-3xl p-6">
-          <p class="text-slate-400 text-sm">Taxa Nexa PJ</p>
-          <h3 class="text-3xl font-black mt-2">1,9%</h3>
-        </div>
+      <div id="notice" class="hidden mb-6 rounded-2xl p-4 border"></div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-7">
+        <div class="card rounded-3xl p-5"><p class="text-slate-400 text-sm">Empresa</p><h3 id="merchantStatus" class="text-2xl font-black mt-2">—</h3></div>
+        <div class="card rounded-3xl p-5"><p class="text-slate-400 text-sm">Recebido em USDC</p><h3 id="merchantUsdc" class="text-2xl font-black mt-2">0</h3></div>
+        <div class="card rounded-3xl p-5"><p class="text-slate-400 text-sm">Recebido em BRL</p><h3 id="merchantBrl" class="text-2xl font-black mt-2">R$ 0,00</h3></div>
+        <div class="card rounded-3xl p-5"><p class="text-slate-400 text-sm">Transações</p><h3 id="merchantTxs" class="text-2xl font-black mt-2">0</h3></div>
+        <div class="card rounded-3xl p-5"><p class="text-slate-400 text-sm">Taxa atual</p><h3 id="merchantFee" class="text-2xl font-black mt-2">—</h3></div>
       </div>
 
       <div class="grid lg:grid-cols-2 gap-6">
-        <div class="glass rounded-[2rem] p-7">
-          <h2 class="text-3xl font-black mb-2">Cadastro da empresa</h2>
-          <p class="text-slate-400 mb-6">Cadastra sua empresa no backend Nexa. Se a empresa já existir, use Configurações para atualizar Pix, wallet e liquidação.</p>
-          <div class="grid md:grid-cols-2 gap-4">
+        <section class="glass rounded-[2rem] p-7">
+          <div class="flex justify-between gap-4 items-start mb-5"><div><span class="text-indigo-300 text-xs font-black tracking-widest">EMPRESA</span><h2 class="text-3xl font-black mt-2">Dados e recebimento</h2></div><span id="walletBadge" class="pill wait">Carteira pendente</span></div>
+          <p class="text-slate-400 mb-5">A Nexa reutiliza automaticamente a carteira vinculada à sua conta. Uma wallet externa só é necessária quando você preferir outro destino.</p>
+          <div class="grid md:grid-cols-2 gap-3">
             <input id="businessName" class="p-4 rounded-2xl" placeholder="Nome da empresa">
             <input id="cnpj" class="p-4 rounded-2xl" placeholder="CNPJ ou CPF">
             <input id="merchantEmail" class="p-4 rounded-2xl" placeholder="E-mail da empresa">
             <input id="merchantPhone" class="p-4 rounded-2xl" placeholder="Telefone">
             <input id="pixKey" class="p-4 rounded-2xl md:col-span-2" placeholder="Chave Pix da empresa">
-            <input id="externalWallet" class="p-4 rounded-2xl md:col-span-2" placeholder="Carteira 0x própria opcional">
           </div>
           <button onclick="registerMerchant()" class="w-full mt-5 bg-indigo-500 hover:bg-indigo-600 p-4 rounded-2xl font-black">Salvar empresa</button>
-        </div>
+        </section>
 
-        <div class="glass rounded-[2rem] p-7">
-          <h2 class="text-3xl font-black mb-2">QR Code e cobrança</h2>
-          <p class="text-slate-400 mb-6">Gere QR fixo ou cobrança com valor. No backend atual, o valor da cobrança é enviado em USDC e a API converte para Pix/BRL.</p>
-          <button onclick="getStaticQr()" class="w-full bg-cyan-500 hover:bg-cyan-600 p-4 rounded-2xl font-black mb-4">Gerar QR Code fixo</button>
-          <div class="grid md:grid-cols-2 gap-4">
-            <input id="chargeAmount" class="p-4 rounded-2xl" placeholder="Valor em USDC. Ex: 20">
-            <input id="chargeDescription" class="p-4 rounded-2xl" placeholder="Descrição">
+        <section class="glass rounded-[2rem] p-7">
+          <span class="text-emerald-300 text-xs font-black tracking-widest">NOVA COBRANÇA</span>
+          <h2 class="text-3xl font-black mt-2 mb-2">Gerar Pix em reais</h2>
+          <p class="text-slate-400 mb-5">Informe o valor que seu cliente pagará. Antes de gerar o QR, confira a estimativa da taxa e da liquidação.</p>
+          <div class="grid md:grid-cols-2 gap-3">
+            <input id="chargeAmount" class="p-4 rounded-2xl" inputmode="decimal" placeholder="Valor em R$. Ex.: 1000,00">
+            <input id="chargeDescription" class="p-4 rounded-2xl" placeholder="Descrição da venda">
           </div>
-          <button onclick="generateChargeQr()" class="w-full mt-4 bg-emerald-500 hover:bg-emerald-600 p-4 rounded-2xl font-black">Gerar cobrança com valor</button>
-          <div id="qrBox" class="hidden mt-6">
+          <button onclick="quoteCharge()" class="w-full mt-4 bg-white/10 border border-white/10 p-4 rounded-2xl font-black">Calcular estimativa</button>
+          <div id="quoteBox" class="hidden card rounded-2xl p-5 mt-4"></div>
+          <button id="generateBtn" onclick="generateChargeQr()" class="hidden w-full mt-4 bg-emerald-500 hover:bg-emerald-600 p-4 rounded-2xl font-black">Gerar QR Code Pix</button>
+          <div id="qrBox" class="hidden mt-6 text-center">
             <div id="qrcode" class="bg-white rounded-3xl p-5 inline-block"></div>
-            <textarea id="copyPaste" readonly class="w-full p-4 rounded-2xl mt-4 text-xs h-32"></textarea>
-            <button onclick="copyPix()" class="w-full mt-3 bg-white/10 hover:bg-white/15 border border-white/10 p-3 rounded-2xl font-bold">Copiar Pix</button>
+            <textarea id="copyPaste" readonly class="w-full p-4 rounded-2xl mt-4 text-xs h-28"></textarea>
+            <button onclick="copyPix()" class="w-full mt-3 bg-white/10 border border-white/10 p-3 rounded-2xl font-bold">Copiar Pix</button>
           </div>
-        </div>
+        </section>
 
-        <div class="glass rounded-[2rem] p-7">
-          <h2 class="text-3xl font-black mb-2">Liquidação</h2>
-          <p class="text-slate-400 mb-6">Executa a liquidação das transações PJ pendentes conforme configuração da empresa.</p>
-          <button onclick="settleMerchant()" class="w-full bg-amber-500 hover:bg-amber-600 p-4 rounded-2xl font-black">Executar liquidação</button>
-        </div>
+        <section class="glass rounded-[2rem] p-7">
+          <span class="text-cyan-300 text-xs font-black tracking-widest">CONFIGURAÇÕES</span>
+          <h2 class="text-3xl font-black mt-2 mb-2">Como receber</h2>
+          <p class="text-slate-400 mb-5">A taxa muda conforme a forma de liquidação. A configuração vale para as próximas cobranças.</p>
+          <label class="block text-sm text-slate-300 mb-2">Moeda de liquidação</label>
+          <select id="settlementMode" class="w-full p-4 rounded-2xl mb-3" onchange="updateFeePreview()"><option value="USDC">USDC — taxa 1,49%</option><option value="BRL">BRL/Pix — taxa 2,49%</option></select>
+          <label class="block text-sm text-slate-300 mb-2">Destino do USDC</label>
+          <select id="settlementWalletMode" class="w-full p-4 rounded-2xl mb-3" onchange="toggleExternalWallet()"><option value="NEXA_WALLET">Carteira Nexa/Privy vinculada</option><option value="EXTERNAL_WALLET">Outra carteira 0x</option></select>
+          <input id="externalWallet" class="hidden w-full p-4 rounded-2xl mb-3" placeholder="0x...">
+          <button onclick="updateSettings()" class="w-full bg-cyan-500 hover:bg-cyan-600 p-4 rounded-2xl font-black">Salvar configurações</button>
+        </section>
 
-        <div class="glass rounded-[2rem] p-7">
-          <h2 class="text-3xl font-black mb-2">Configurações</h2>
-          <p class="text-slate-400 mb-6">Atualize Pix, moeda de liquidação e destino da carteira.</p>
-          <select id="settlementMode" class="w-full p-4 rounded-2xl mb-3">
-            <option value="USDC">Liquidar em USDC</option>
-            <option value="BRL">Liquidar em BRL/Pix</option>
-          </select>
-          <select id="settlementWalletMode" class="w-full p-4 rounded-2xl mb-3">
-            <option value="NEXA_WALLET">Usar wallet Nexa</option>
-            <option value="EXTERNAL_WALLET">Enviar para carteira 0x externa</option>
-          </select>
-          <button onclick="updateSettings()" class="w-full bg-white/10 hover:bg-white/15 border border-white/10 p-4 rounded-2xl font-black">Salvar configurações</button>
-        </div>
+        <section class="glass rounded-[2rem] p-7">
+          <span class="text-amber-300 text-xs font-black tracking-widest">LIQUIDAÇÕES</span>
+          <h2 class="text-3xl font-black mt-2 mb-2">Acompanhar processamento</h2>
+          <p class="text-slate-400 mb-5">O portal não força uma liquidação. Ele mostra as cobranças e o estágio real de cada uma.</p>
+          <button onclick="loadSettlementStatus()" class="w-full bg-amber-500 hover:bg-amber-600 p-4 rounded-2xl font-black">Atualizar status</button>
+          <div id="settlementList" class="mt-4 space-y-3"><p class="text-slate-500">Nenhuma liquidação carregada.</p></div>
+        </section>
       </div>
 
-      <div class="glass rounded-[2rem] p-7 mt-6">
-        <div class="flex flex-col md:flex-row justify-between gap-4 mb-6">
-          <div>
-            <h2 class="text-3xl font-black">Transações PJ</h2>
-            <p class="text-slate-400">Últimos recebimentos, cobranças, taxas e valores líquidos.</p>
-          </div>
-          <button onclick="loadTransactions()" class="bg-white/10 hover:bg-white/15 border border-white/10 px-5 py-3 rounded-2xl font-bold">Atualizar</button>
-        </div>
+      <section class="glass rounded-[2rem] p-7 mt-6">
+        <div class="flex flex-col md:flex-row justify-between gap-4 mb-6"><div><span class="text-indigo-300 text-xs font-black tracking-widest">EXTRATO PJ</span><h2 class="text-3xl font-black mt-2">Cobranças e liquidações</h2><p class="text-slate-400 mt-2">Estimativas, taxas, valores efetivos e referências ficam no mesmo histórico.</p></div><button onclick="loadTransactions()" class="bg-white/10 border border-white/10 px-5 py-3 rounded-2xl font-bold self-start">Atualizar</button></div>
         <div id="txList" class="space-y-3"><p class="text-slate-400">Nenhuma transação carregada.</p></div>
-      </div>
+      </section>
 
-      <div class="glass rounded-[2rem] p-7 mt-6">
-        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
-          <div>
-            <span class="inline-block px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300 font-black text-xs mb-3">EM BREVE</span>
-            <h2 class="text-3xl font-black mb-2">Capital Inteligente</h2>
-            <p class="text-slate-400 max-w-3xl">
-              Esta área será a vitrine de parceiros de crédito e antecipação. Por enquanto, ela não executa análise, não consulta crédito e não envia dados para parceiros.
-            </p>
-          </div>
-          <a class='bg-white/10 hover:bg-white/15 border border-white/10 px-5 py-3 rounded-2xl font-bold text-center' href='/pj#capital'>Ver conceito na landing</a>
-        </div>
-      </div>
-
-      <div class="glass rounded-[2rem] p-7 mt-6">
-        <h2 class="text-2xl font-black mb-3">Resposta técnica</h2>
-        <pre id="debug" class="bg-slate-950 border border-white/10 rounded-2xl p-4 overflow-auto text-xs text-slate-300 max-h-80">Aguardando ações...</pre>
-      </div>
+      <details class="glass rounded-3xl p-6 mt-6"><summary class="font-bold cursor-pointer">Detalhes técnicos da última ação</summary><pre id="debug" class="mt-4 bg-slate-950 border border-white/10 rounded-2xl p-4 overflow-auto text-xs text-slate-300 max-h-80">Aguardando ações...</pre></details>
     </section>
   </main>
 
   <script>
-    const API = 'https://nexa-backend-p2u0.onrender.com/api/v1';
-    let token = localStorage.getItem('nexa_token') || '';
-    let user = null;
-    let lastPix = '';
+    const API='https://nexa-backend-p2u0.onrender.com/api/v1';
+    let token=localStorage.getItem('nexa_token')||'';
+    let user=null,dashboard=null,lastPix='',lastQuote=null,currentRequestId='';
+    const $=id=>document.getElementById(id);
+    const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const brl=v=>Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+    const usdc=v=>Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:8});
+    const fmtDate=v=>v?new Date(v).toLocaleString('pt-BR'):'—';
+    const headers=(json=true)=>({...(json?{'Content-Type':'application/json'}:{}),...(token?{Authorization:'Bearer '+token}:{})});
+    const requestId=()=>globalThis.crypto?.randomUUID?.()||('pj-'+Date.now()+'-'+Math.random().toString(36).slice(2));
 
-    function $(id){ return document.getElementById(id); }
+    function parseAmount(value){const s=String(value||'').trim().replace(/R\$/gi,'').replace(/\s/g,'');const normalized=s.includes(',')?s.replace(/\./g,'').replace(',','.') : s;const n=Number(normalized);return Number.isFinite(n)?n:0}
+    function show(data){$('debug').textContent=typeof data==='string'?data:JSON.stringify(data,null,2);console.log(data)}
+    function notice(message,type='info'){const el=$('notice');el.className='mb-6 rounded-2xl p-4 border '+(type==='bad'?'border-rose-500/30 bg-rose-500/10 text-rose-200':type==='ok'?'border-emerald-500/30 bg-emerald-500/10 text-emerald-200':'border-blue-500/30 bg-blue-500/10 text-blue-200');el.textContent=message;el.classList.remove('hidden')}
+    async function api(path,opt={}){const r=await fetch(API+path,{...opt,headers:{...headers(opt.body!==undefined),...(opt.headers||{})}});const text=await r.text();let data={};try{data=text?JSON.parse(text):{}}catch{data={message:text}}if(r.status===401){logout(false);throw new Error('Sua sessão expirou. Entre novamente.')}if(!r.ok){const raw=data.message||data.error||data.code||('HTTP '+r.status);const msg=Array.isArray(raw)?raw.join(', '):typeof raw==='object'?JSON.stringify(raw):String(raw);const e=new Error(msg);e.data=data;e.status=r.status;throw e}return data}
+    function authUi(){const logged=!!token;$('loginArea').classList.toggle('hidden',logged);$('appArea').classList.toggle('hidden',!logged);$('logoutBtn').classList.toggle('hidden',!logged)}
+    function tokenFrom(data){return data.accessToken||data.access_token||data.token||data.tokens?.accessToken||''}
 
-    function show(data){
-      const text = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
-      if ($('debug')) $('debug').textContent = text;
-      if ($('loginMsg')) $('loginMsg').textContent = text;
-      console.log(data);
-    }
+    async function login(){try{const email=$('email').value.trim(),password=$('password').value;if(!email||!password)throw new Error('Informe e-mail e senha.');$('loginMsg').textContent='Entrando...';const data=await api('/auth/login',{method:'POST',body:JSON.stringify({email,password})});token=tokenFrom(data);if(!token)throw new Error('O login não retornou uma sessão válida.');localStorage.setItem('nexa_token',token);await loadMe();authUi();await loadAll();$('loginMsg').textContent='Acesso liberado.'}catch(e){$('loginMsg').textContent=e.message;notice(e.message,'bad')}}
+    async function loadMe(){const data=await api('/user/me',{headers:headers(false)});user=data.user||data;$('merchantEmail').value=user.email||'';$('merchantPhone').value=user.phone||'';return user}
+    function logout(showMessage=true){localStorage.removeItem('nexa_token');token='';user=null;dashboard=null;authUi();if(showMessage)notice('Sessão encerrada.')}
 
-    function headers(json = true){
-      const h = {};
-      if (json) h['Content-Type'] = 'application/json';
-      if (token) h.Authorization = 'Bearer ' + token;
-      return h;
-    }
+    function hydrate(data){dashboard=data;const m=data.merchant||{};$('merchantStatus').textContent=m.businessName||m.status||'Ativa';$('merchantUsdc').textContent=usdc(data.totalSalesUsdc||0)+' USDC';$('merchantBrl').textContent=brl(data.totalSalesBrl||0);$('merchantTxs').textContent=String(data.totalTransactions||0);$('businessName').value=m.businessName||$('businessName').value;$('cnpj').value=m.cnpj||$('cnpj').value;$('pixKey').value=m.pixKey||$('pixKey').value;$('settlementMode').value=m.settlementCurrency||'USDC';$('settlementWalletMode').value=m.settlementWalletMode||'NEXA_WALLET';$('externalWallet').value=m.externalWalletAddress||'';toggleExternalWallet();updateFeePreview();const ready=!!m.walletReady||/^0x[a-fA-F0-9]{40}$/.test(String(m.walletAddress||m.externalWalletAddress||''));$('walletBadge').className='pill '+(ready?'ok':'wait');$('walletBadge').textContent=ready?'Carteira pronta':'Carteira pendente';if(m.settlementCurrency==='USDC'&&!ready)notice('Sua conta ainda precisa concluir a carteira Nexa/Privy ou informar uma wallet externa para receber USDC.','info')}
+    async function loadDashboard(){try{const data=await api('/merchant/dashboard',{headers:headers(false)});hydrate(data);return data}catch(e){if(e.status===400){$('merchantStatus').textContent='Cadastrar';return null}throw e}}
+    async function registerMerchant(){try{const payload={businessName:$('businessName').value.trim(),cnpj:$('cnpj').value.trim(),email:$('merchantEmail').value.trim()||user?.email||'',phone:$('merchantPhone').value.trim(),pixKey:$('pixKey').value.trim(),settlementCurrency:$('settlementMode').value,settlementWalletMode:$('settlementWalletMode').value,externalWalletAddress:$('externalWallet').value.trim()};if(!payload.businessName||!payload.cnpj||!payload.email)throw new Error('Informe empresa, CNPJ/CPF e e-mail.');const data=await api('/merchant/register',{method:'POST',body:JSON.stringify(payload)});show(data);notice('Dados da empresa salvos.','ok');await loadAll()}catch(e){notice(e.message,'bad');show(e.data||e.message)}}
+    function toggleExternalWallet(){$('externalWallet').classList.toggle('hidden',$('settlementWalletMode').value!=='EXTERNAL_WALLET')}
+    function updateFeePreview(){const mode=$('settlementMode').value;$('merchantFee').textContent=mode==='BRL'?'2,49%':'1,49%'}
+    async function updateSettings(){try{const payload={settlementCurrency:$('settlementMode').value,settlementWalletMode:$('settlementWalletMode').value,externalWalletAddress:$('externalWallet').value.trim(),pixKey:$('pixKey').value.trim(),settlementAuto:false};const data=await api('/merchant/settings',{method:'PUT',body:JSON.stringify(payload)});show(data);notice('Configurações atualizadas.','ok');lastQuote=null;$('quoteBox').classList.add('hidden');$('generateBtn').classList.add('hidden');await loadDashboard()}catch(e){notice(e.message,'bad');show(e.data||e.message)}}
 
-    async function jsonFetch(url, options = {}){
-      const response = await fetch(url, options);
-      const text = await response.text();
-      let data = {};
-      try { data = text ? JSON.parse(text) : {}; } catch (error) { data = { raw: text }; }
-      return { ok: response.ok, status: response.status, data };
-    }
+    function renderQuote(q){const usdcMode=q.settlementCurrency==='USDC';$('quoteBox').innerHTML='<div class="flex justify-between gap-3"><div><p class="text-slate-400 text-sm">Cliente paga</p><b class="text-2xl">'+brl(q.chargeAmountBrl)+'</b></div><span class="pill info">Estimativa</span></div><div class="grid grid-cols-2 gap-3 mt-4 text-sm"><div><span class="text-slate-400">Taxa Nexa</span><b class="block">'+brl(q.fees.serviceFeeBrl)+' ('+q.fees.serviceFeePercent+'%)</b></div><div><span class="text-slate-400">Empresa recebe</span><b class="block">'+(usdcMode?usdc(q.merchant.estimatedUsdc)+' USDC estimados':brl(q.merchant.estimatedBrl))+'</b></div></div><p class="text-xs text-amber-200 mt-4">'+(usdcMode?'O USDC exibido é uma estimativa. O valor final será o USDC líquido realmente comprado com '+brl(q.merchant.brlPurchaseBudget)+'.':'O valor final depende da confirmação do Pix e do custo real do Pix Out.')+'</p>';$('quoteBox').classList.remove('hidden');$('generateBtn').classList.remove('hidden')}
+    async function quoteCharge(){try{const amountBrl=parseAmount($('chargeAmount').value);if(amountBrl<=0)throw new Error('Informe um valor em reais maior que zero.');lastQuote=await api('/merchant/checkout/quote',{method:'POST',body:JSON.stringify({amountBrl})});currentRequestId=requestId();renderQuote(lastQuote);show(lastQuote)}catch(e){lastQuote=null;$('generateBtn').classList.add('hidden');notice(e.message,'bad');show(e.data||e.message)}}
+    async function generateChargeQr(){try{const amountBrl=parseAmount($('chargeAmount').value);if(!lastQuote||Number(lastQuote.chargeAmountBrl)!==amountBrl){await quoteCharge();if(!lastQuote)return}const data=await api('/merchant/qrcode',{method:'POST',body:JSON.stringify({amountBrl,description:$('chargeDescription').value.trim()||'Cobrança Nexa PJ',clientRequestId:currentRequestId||requestId()})});show(data);renderQr(data.qr||data);notice('Cobrança criada. Compartilhe o Pix com o cliente.','ok');await loadAll()}catch(e){const safe=e.data?.code==='MERCHANT_CHECKOUT_SAFE_MODE';notice(safe?'O checkout está em homologação final. A estimativa está disponível, mas o QR real ainda não foi liberado.':e.message,safe?'info':'bad');show(e.data||e.message)}}
+    function renderQr(data){const code=data.copyPasteCode||data.qrCode||data.brCode||'';const image=data.qrCodeImage||'';$('qrcode').innerHTML='';lastPix=code;if(code){new QRCode($('qrcode'),{text:code,width:220,height:220});$('copyPaste').value=code}else if(image){$('qrcode').innerHTML='<img alt="QR Code Pix" style="width:220px;height:220px" src="'+esc(image)+'">';$('copyPaste').value=''}else{throw new Error('QR Code não encontrado na resposta.')} $('qrBox').classList.remove('hidden')}
+    async function copyPix(){const value=lastPix||$('copyPaste').value;if(!value)return;await navigator.clipboard.writeText(value);notice('Pix copia e cola copiado.','ok')}
 
-    function tokenFrom(data){
-      return data.accessToken || data.token || data.access_token || data.tokens?.accessToken || data.tokens?.access_token || data.data?.accessToken || data.data?.token || data.auth?.accessToken || '';
-    }
+    const labels={awaiting_pix:'Aguardando pagamento Pix',pix_confirmed_fee_pending:'Pix recebido — conferindo tarifa',awaiting_usdc_purchase:'Comprando USDC',awaiting_usdc_payout:'USDC pronto para envio',awaiting_brl_payout:'BRL pronto para Pix',completed:'Concluído',failed:'Falhou',cancelled:'Cancelado'};
+    function statusPill(status){const cls=status==='completed'?'ok':['failed','cancelled'].includes(status)?'bad':'wait';return '<span class="pill '+cls+'">'+esc(labels[status]||status||'—')+'</span>'}
+    function finalValue(tx){if(tx.settlementCurrency==='USDC')return tx.merchantPayoutUsdc!=null?usdc(tx.merchantPayoutUsdc)+' USDC':'Estimativa: '+usdc(tx.amountUsdc)+' USDC';return tx.merchantPayoutBrl!=null?brl(tx.merchantPayoutBrl):'Aguardando valor final'}
+    function txCard(tx){return '<article class="card rounded-2xl p-5"><div class="flex flex-col md:flex-row md:items-start justify-between gap-4"><div><div class="flex flex-wrap gap-2 items-center">'+statusPill(tx.status)+'<span class="text-xs text-slate-500">'+fmtDate(tx.createdAt)+'</span></div><h3 class="font-black text-lg mt-3">'+esc(tx.description||'Cobrança Nexa PJ')+'</h3><p class="text-slate-400 text-sm mt-1">Cliente pagou '+brl(tx.amountBrl)+' · Liquidação '+esc(tx.settlementCurrency||'—')+'</p></div><div class="md:text-right"><p class="text-slate-400 text-xs">Empresa recebe</p><b class="text-xl">'+finalValue(tx)+'</b></div></div><div class="grid sm:grid-cols-3 gap-3 mt-4 text-sm"><div><span class="text-slate-500">Taxa Nexa</span><b class="block">'+brl(tx.serviceFeeBrl||0)+'</b></div><div><span class="text-slate-500">Custo Pix In</span><b class="block">'+brl(tx.pixInFeeBrl||0)+'</b></div><div><span class="text-slate-500">Referência</span><b class="block break-all">'+esc(tx.payoutReference||tx.providerReference||tx.pixTransactionId||'aguardando')+'</b></div></div></article>'}
+    async function loadTransactions(){try{const data=await api('/merchant/transactions?limit=50&offset=0',{headers:headers(false)});const list=data.transactions||[];$('txList').innerHTML=list.length?list.map(txCard).join(''):'<p class="text-slate-400">Nenhuma cobrança registrada.</p>';show(data)}catch(e){$('txList').innerHTML='<p class="text-rose-300">'+esc(e.message)+'</p>';show(e.data||e.message)}}
+    async function loadSettlementStatus(){try{const data=await api('/merchant/settle',{method:'POST',headers:headers(false)});const pending=data.pending||[];$('settlementList').innerHTML=pending.length?pending.map(p=>'<div class="step '+(p.status==='completed'?'done':'active')+'"><b>'+esc(labels[p.status]||p.status)+'</b><p class="text-sm text-slate-400 mt-1">Cobrança '+brl(p.chargeAmountBrl)+' · '+esc(p.settlementCurrency)+'</p></div>').join(''):'<p class="text-emerald-300">Nenhuma liquidação pendente.</p>';show(data)}catch(e){$('settlementList').innerHTML='<p class="text-rose-300">'+esc(e.message)+'</p>';show(e.data||e.message)}}
+    async function loadAll(){const data=await loadDashboard();if(data){await Promise.all([loadTransactions(),loadSettlementStatus()])}}
 
-    function parseAmount(value){
-      const normalized = String(value || '').replace(/USDC/gi, '').replace(/R\$/gi, '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
-      const n = Number(normalized);
-      return Number.isFinite(n) ? n : 0;
-    }
-
-    function extractQr(data){
-      return data?.copyPasteCode || data?.qrCode || data?.brCode || data?.pixCopyPaste || data?.copyPaste || data?.code || data?.payload || data?.data?.copyPasteCode || data?.data?.qrCode || data?.data?.brCode || data?.data?.pixCopyPaste || data?.data?.copyPaste || data?.data?.code || '';
-    }
-
-    function isExternalWalletMode(){
-      return $('settlementWalletMode')?.value === 'EXTERNAL_WALLET' || !!String($('externalWallet')?.value || '').trim();
-    }
-
-    function isValidWallet(address){
-      return /^0x[a-fA-F0-9]{40}$/.test(String(address || '').trim());
-    }
-
-    function showAuthArea(){
-      const logged = !!token;
-      $('loginArea').classList.toggle('hidden', logged);
-      $('appArea').classList.toggle('hidden', !logged);
-    }
-
-    async function login(){
-      const email = $('email').value.trim();
-      const password = $('password').value;
-      if (!email || !password) { show('Informe e-mail e senha.'); return; }
-
-      try {
-        show('Entrando...');
-        const res = await jsonFetch(API + '/auth/login', {
-          method: 'POST',
-          headers: headers(true),
-          body: JSON.stringify({ email, password })
-        });
-
-        show(res.data);
-        if (!res.ok) return;
-
-        token = tokenFrom(res.data);
-        if (!token) { show({ erro: 'Login respondeu, mas não retornou token.', response: res.data }); return; }
-
-        localStorage.setItem('nexa_token', token);
-        await loadMe();
-        showAuthArea();
-        await loadAll();
-      } catch (error) {
-        show('Erro login: ' + error.message);
-      }
-    }
-
-    async function loadMe(){
-      const res = await jsonFetch(API + '/user/me', { headers: headers(false) });
-      if (!res.ok) throw new Error('Sessão inválida ou expirada.');
-      user = res.data.user || res.data;
-      return user;
-    }
-
-    function logout(){
-      localStorage.removeItem('nexa_token');
-      token = '';
-      user = null;
-      showAuthArea();
-      show('Sessão encerrada');
-    }
-
-    function buildMerchantPayload(){
-      const externalWalletAddress = String($('externalWallet').value || '').trim();
-      const settlementCurrency = $('settlementMode').value || 'USDC';
-      const settlementWalletMode = isExternalWalletMode() ? 'EXTERNAL_WALLET' : 'NEXA_WALLET';
-
-      if (settlementWalletMode === 'EXTERNAL_WALLET' && !isValidWallet(externalWalletAddress)) {
-        throw new Error('Para usar carteira externa, informe uma wallet 0x válida.');
-      }
-
-      return {
-        businessName: $('businessName').value.trim(),
-        cnpj: $('cnpj').value.trim(),
-        email: $('merchantEmail').value.trim(),
-        phone: $('merchantPhone').value.trim(),
-        pixKey: $('pixKey').value.trim(),
-        externalWalletAddress,
-        settlementCurrency,
-        settlementWalletMode
-      };
-    }
-
-    async function registerMerchant(){
-      try {
-        const payload = buildMerchantPayload();
-        if (!payload.businessName || !payload.cnpj || !payload.email) {
-          show('Informe nome da empresa, CNPJ/CPF e e-mail antes de salvar.');
-          return;
-        }
-
-        const res = await jsonFetch(API + '/merchant/register', {
-          method: 'POST',
-          headers: headers(true),
-          body: JSON.stringify(payload)
-        });
-
-        show({ sentPayload: payload, response: res.data, status: res.status });
-        if (res.ok) await loadAll();
-      } catch (error) {
-        show('Erro ao salvar empresa: ' + error.message);
-      }
-    }
-
-    function hydrateFormFromDashboard(data){
-      const merchant = data.merchant || data.dashboard?.merchant || null;
-      if (!merchant) return;
-
-      if (merchant.pixKey && $('pixKey')) $('pixKey').value = merchant.pixKey;
-      if (merchant.externalWalletAddress && $('externalWallet')) $('externalWallet').value = merchant.externalWalletAddress;
-      if (merchant.settlementCurrency && $('settlementMode')) $('settlementMode').value = merchant.settlementCurrency;
-      if (merchant.settlementWalletMode && $('settlementWalletMode')) $('settlementWalletMode').value = merchant.settlementWalletMode;
-    }
-
-    async function loadDashboard(){
-      try {
-        const res = await jsonFetch(API + '/merchant/dashboard', { headers: headers(false) });
-        const data = res.data;
-
-        if (!res.ok) {
-          $('merchantStatus').textContent = 'cadastre';
-          $('merchantUsdc').textContent = '0.00000000';
-          $('merchantTxs').textContent = '0';
-          show({ aviso: 'Empresa PJ ainda não cadastrada ou dashboard indisponível.', status: res.status, response: data });
-          return;
-        }
-
-        hydrateFormFromDashboard(data);
-        const merchant = data.merchant || data.dashboard?.merchant || data;
-        $('merchantStatus').textContent = merchant.status || data.status || 'ativo';
-        $('merchantUsdc').textContent = Number(data.totalSalesUsdc || data.dashboard?.totalSalesUsdc || merchant.totalSalesUsdc || 0).toFixed(8);
-        $('merchantTxs').textContent = String(data.totalTransactions || data.dashboard?.totalTransactions || merchant.totalTransactions || 0);
-        show(data);
-      } catch (error) {
-        show('Erro dashboard: ' + error.message);
-      }
-    }
-
-    async function getStaticQr(){
-      try {
-        const res = await jsonFetch(API + '/merchant/qrcode/static', { headers: headers(false) });
-        show({ response: res.data, status: res.status });
-        if (!res.ok) return;
-        renderQr(extractQr(res.data), res.data.qrCodeImage || res.data.data?.qrCodeImage || '');
-      } catch (error) {
-        show('Erro QR fixo: ' + error.message);
-      }
-    }
-
-    async function generateChargeQr(){
-      try {
-        const amount = parseAmount($('chargeAmount').value);
-        if (!amount || amount <= 0) { show('Informe um valor em USDC maior que zero.'); return; }
-
-        const payload = {
-          amount,
-          description: $('chargeDescription').value || 'Cobrança Nexa PJ'
-        };
-
-        const res = await jsonFetch(API + '/merchant/qrcode', {
-          method: 'POST',
-          headers: headers(true),
-          body: JSON.stringify(payload)
-        });
-
-        show({ sentPayload: payload, response: res.data, status: res.status });
-        if (!res.ok) return;
-        renderQr(extractQr(res.data), res.data.qrCodeImage || res.data.data?.qrCodeImage || '');
-        await loadAll();
-      } catch (error) {
-        show('Erro cobrança: ' + error.message);
-      }
-    }
-
-    function renderQr(code, image){
-      $('qrcode').innerHTML = '';
-
-      if (code) {
-        lastPix = code;
-        new QRCode($('qrcode'), { text: code, width: 220, height: 220 });
-        $('copyPaste').value = code;
-        $('qrBox').classList.remove('hidden');
-        return;
-      }
-
-      if (image) {
-        $('qrcode').innerHTML = '<img alt="QR Code Pix" style="width:220px;height:220px" src="' + image + '">';
-        $('copyPaste').value = '';
-        $('qrBox').classList.remove('hidden');
-        return;
-      }
-
-      show('QR não encontrado na resposta.');
-    }
-
-    function copyPix(){
-      const value = lastPix || $('copyPaste').value;
-      if (!value) { show('Nenhum Pix copia e cola disponível.'); return; }
-      navigator.clipboard.writeText(value);
-      show('Pix copiado.');
-    }
-
-    async function loadTransactions(){
-      try {
-        const res = await jsonFetch(API + '/merchant/transactions?limit=20&offset=0', { headers: headers(false) });
-        const data = res.data;
-
-        if (!res.ok) {
-          $('txList').innerHTML = '<p class="text-slate-400">Cadastre sua empresa para carregar transações PJ.</p>';
-          return;
-        }
-
-        show(data);
-        const list = data.transactions || data.data || (Array.isArray(data) ? data : []);
-        $('txList').innerHTML = list.length
-          ? list.map(tx => `
-            <div class="card rounded-2xl p-4 flex justify-between gap-4">
-              <div>
-                <b>${tx.customerName || tx.description || 'Pagamento PJ'}</b>
-                <p class="text-slate-400 text-sm">${tx.createdAt ? new Date(tx.createdAt).toLocaleString('pt-BR') : ''}</p>
-              </div>
-              <div class="text-right">
-                <b>R$ ${Number(tx.amountBrl || 0).toFixed(2)}</b>
-                <p class="text-slate-400 text-sm">${Number(tx.netAmount || tx.amountUsdc || 0).toFixed(8)} USDC · ${tx.status || 'completed'}</p>
-              </div>
-            </div>`).join('')
-          : '<p class="text-slate-400">Nenhuma transação PJ carregada.</p>';
-      } catch (error) {
-        show('Erro transações: ' + error.message);
-      }
-    }
-
-    async function settleMerchant(){
-      try {
-        const res = await jsonFetch(API + '/merchant/settle', {
-          method: 'POST',
-          headers: headers(false)
-        });
-        show({ response: res.data, status: res.status });
-        if (res.ok) await loadAll();
-      } catch (error) {
-        show('Erro liquidação: ' + error.message);
-      }
-    }
-
-    async function updateSettings(){
-      try {
-        const externalWalletAddress = String($('externalWallet').value || '').trim();
-        const settlementWalletMode = $('settlementWalletMode').value || (externalWalletAddress ? 'EXTERNAL_WALLET' : 'NEXA_WALLET');
-
-        if (settlementWalletMode === 'EXTERNAL_WALLET' && !isValidWallet(externalWalletAddress)) {
-          show('Para usar carteira externa, informe uma wallet 0x válida.');
-          return;
-        }
-
-        const payload = {
-          pixKey: $('pixKey').value.trim(),
-          settlementCurrency: $('settlementMode').value || 'USDC',
-          settlementWalletMode,
-          externalWalletAddress
-        };
-
-        const res = await jsonFetch(API + '/merchant/settings', {
-          method: 'PUT',
-          headers: headers(true),
-          body: JSON.stringify(payload)
-        });
-
-        show({ sentPayload: payload, response: res.data, status: res.status });
-        if (res.ok) await loadAll();
-      } catch (error) {
-        show('Erro configurações: ' + error.message);
-      }
-    }
-
-    async function loadAll(){
-      await loadDashboard();
-      await loadTransactions();
-    }
-
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(() => {});
-    }
-
-    (async () => {
-      if (token) {
-        try {
-          await loadMe();
-          showAuthArea();
-          await loadAll();
-        } catch (error) {
-          logout();
-        }
-      } else {
-        showAuthArea();
-      }
-    })();
+    if('serviceWorker' in navigator)serviceWorker.register('/sw.js').catch(()=>{});
+    (async()=>{authUi();if(token){try{await loadMe();authUi();await loadAll()}catch(e){logout(false);notice(e.message,'bad')}}})();
   </script>
 
-<div class="mt-6 flex flex-wrap justify-center gap-6 text-sm">
-  <a class='hover:text-white' href='/privacidade'>Política de Privacidade</a>
-  <a class='hover:text-white' href='/termos'>Termos de Uso</a>
-  <a class='hover:text-white' href='/lgpd'>LGPD</a>
-  <a class='hover:text-white' href='/suporte'>Suporte</a>
-  <a class='hover:text-white' href='/excluir-conta'>Excluir conta</a>
-</div>
+  <div class="mt-8 flex flex-wrap justify-center gap-6 text-sm text-slate-400"><a href="/privacidade">Privacidade</a><a href="/termos">Termos</a><a href="/lgpd">LGPD</a><a href="/suporte">Suporte</a></div>
 </body>
 </html>
