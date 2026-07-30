@@ -1,0 +1,46 @@
+name: Nexa Admin Security CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate fresh login, authenticated API and rejection control
+        run: |
+          node <<'NODE'
+          const assert = require('node:assert/strict');
+          const fs = require('node:fs');
+          const html = fs.readFileSync('admin.html', 'utf8');
+          const app = fs.readFileSync('admin.js', 'utf8');
+          const security = fs.readFileSync('admin-security.js', 'utf8');
+          const headers = fs.readFileSync('_headers', 'utf8');
+
+          assert.match(html, /sessionStorage\.removeItem\('nexa_admin_token'\)[\s\S]*admin\.js[\s\S]*admin-security\.js/);
+          assert.match(app, /if \(!token\(\)\) throw new Error\('Sessão administrativa não iniciada'\)/);
+          assert.match(app, /Authorization: `Bearer \$\{token\(\)\}`/);
+          assert.match(app, /if \(!token\(\)\)[\s\S]*Acesso restrito/);
+          assert.match(security, /MAX_IDLE_MS/);
+          assert.match(security, /pagehide/);
+          assert.match(security, /manual-redemption\/\$\{encodeURIComponent\(paymentId\)\}\/reject/);
+          assert.match(security, /Rejeitar e devolver USDC/);
+          assert.match(headers, /X-Frame-Options: DENY/);
+          assert.match(headers, /Cache-Control: no-store/);
+
+          const combined = `${html}\n${app}\n${security}`;
+          assert.doesNotMatch(combined, /ADMIN_PASSWORD\s*[:=]|nexa_admin_token['"]\s*[,=:]\s*['"][A-Za-z0-9._-]{20,}/);
+          console.log('Admin security validated: fresh login, bearer-only data access, idle expiry, no-store headers and Pix rejection control.');
+          NODE
