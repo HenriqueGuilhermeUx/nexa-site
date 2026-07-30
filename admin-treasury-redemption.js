@@ -29,12 +29,16 @@
       )}</div>`;
     }
 
+    const soldAlready =
+      estimate.blockReason === 'REAL_USDC_SALE_ALREADY_REGISTERED';
     const cashTone = estimate.canPayFromTreasury ? 'goodbox' : 'critical';
     const cashText = estimate.canPayFromTreasury
       ? 'Caixa BRL e reserva USDC suficientes para pagar sem vender USDC.'
-      : `Liquidação pelo caixa bloqueada. Falta ${brl(
-          estimate.shortageBrl || 0,
-        )} em BRL e/ou ${n(estimate.reserveShortageUsdc || 0, 8)} USDC na reserva contábil.`;
+      : soldAlready
+        ? 'Pagamento pelo caixa bloqueado: uma venda real de USDC já foi registrada para este resgate.'
+        : `Liquidação pelo caixa bloqueada. Falta ${brl(
+            estimate.shortageBrl || 0,
+          )} em BRL e/ou ${n(estimate.reserveShortageUsdc || 0, 8)} USDC na reserva contábil.`;
 
     return `<div class="rule-box"><b>Estimativa segura de devolução</b><br>
       USDC reservado: <b>${n(estimate.reservedUsdc, 8)} USDC</b><br>
@@ -50,7 +54,7 @@
       Saída total do caixa: ${brl(estimate.cashRequiredBrl)}<br>
       <small>Fonte: ${esc(estimate.source)} · consultado ${quoteTime(
         estimate.fetchedAt,
-      )} · regra: menor entre cotação da solicitação e bid atual.</small>
+      )} · regra: menor entre cotação da solicitação e bid atual. É uma referência conservadora, não uma ordem executável de venda.</small>
     </div><div class="card ${cashTone}"><b>${cashText}</b><br>
       Caixa BRL disponível: ${brl(estimate.operationalBrlAvailable || 0)}<br>
       Reserva USDC disponível: ${n(estimate.reserveUsdcAvailable || 0, 8)} USDC
@@ -90,7 +94,7 @@
           ),
         ),
       )}</div>` +
-      '<div class="card notice"><b>Opções de liquidação:</b> use o caixa BRL para manter o USDC na tesouraria, ou registre uma venda real quando o caixa não for suficiente. A cotação segura é sempre o menor valor entre a cotação da solicitação e o bid atual.</div>' +
+      '<div class="card notice"><b>Opções de liquidação:</b> use o caixa BRL para manter o USDC na tesouraria, ou registre uma venda real quando o caixa não for suficiente. A referência conservadora usa o menor valor entre a cotação da solicitação e o bid atual.</div>' +
       `<div class="grid2">${
         open
           .map((payment) => {
@@ -123,7 +127,11 @@
             } else {
               const treasuryButton = estimate?.canPayFromTreasury
                 ? `<button class="green" onclick="prepareTreasuryCash('${payment.id}')">Congelar valor e pagar com caixa BRL</button>`
-                : '<button class="ghost" disabled>Caixa BRL/reserva insuficiente</button>';
+                : `<button class="ghost" disabled>${
+                    estimate?.blockReason === 'REAL_USDC_SALE_ALREADY_REGISTERED'
+                      ? 'Venda real já registrada'
+                      : 'Caixa BRL/reserva insuficiente'
+                  }</button>`;
               actions = `${treasuryButton}<button onclick="openRedemptionSale('${payment.id}',${Number(
                 payment.amountUsdc || 0,
               )})">Registrar venda real de USDC</button>`;
@@ -149,7 +157,11 @@
   window.prepareTreasuryCash = async function prepareTreasuryCash(paymentId) {
     const estimate = estimateFor(paymentId);
     if (!estimate?.canPayFromTreasury) {
-      return toast('Caixa BRL ou reserva USDC insuficiente.', true);
+      const message =
+        estimate?.blockReason === 'REAL_USDC_SALE_ALREADY_REGISTERED'
+          ? 'Uma venda real de USDC já foi registrada. Conclua pelo fluxo da venda.'
+          : 'Caixa BRL ou reserva USDC insuficiente.';
+      return toast(message, true);
     }
     if (
       !confirm(
