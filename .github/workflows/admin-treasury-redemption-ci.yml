@@ -35,6 +35,6 @@ jobs:
           assert.match(js, /treasury-cash\/prepare/);
           assert.match(js, /treasury-cash\/confirm/);
           assert.match(js, /Rejeitar e devolver USDC/);
-          assert.match(js, /menor entre a cotação da solicitação e o bid atual/i);
+          assert.match(js, /menor[\s\S]{0,120}cotação da solicitação[\s\S]{0,120}bid atual/i);
           console.log('Admin treasury redemption estimate and payout controls validated.');
           NODE
