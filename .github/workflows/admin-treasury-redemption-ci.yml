@@ -1,0 +1,40 @@
+name: Admin Treasury Redemption CI
+
+on:
+  pull_request:
+    paths:
+      - 'admin.html'
+      - 'admin-treasury-redemption.js'
+      - 'admin-security.js'
+      - '.github/workflows/admin-treasury-redemption-ci.yml'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check JavaScript syntax
+        run: node --check admin-treasury-redemption.js
+      - name: Validate estimate and payout controls
+        run: |
+          node <<'NODE'
+          const assert = require('node:assert/strict');
+          const fs = require('node:fs');
+          const html = fs.readFileSync('admin.html', 'utf8');
+          const js = fs.readFileSync('admin-treasury-redemption.js', 'utf8');
+          assert.match(html, /admin\.js[\s\S]*admin-treasury-redemption\.js[\s\S]*admin-security\.js/);
+          assert.match(js, /payment\/admin\/redemption-estimates/);
+          assert.match(js, /Cotação segura usada/);
+          assert.match(js, /Fee Nexa/);
+          assert.match(js, /Woovi \/ Pix Out/);
+          assert.match(js, /Pix líquido estimado/);
+          assert.match(js, /treasury-cash\/prepare/);
+          assert.match(js, /treasury-cash\/confirm/);
+          assert.match(js, /Rejeitar e devolver USDC/);
+          assert.match(js, /menor entre a cotação da solicitação e o bid atual/i);
+          console.log('Admin treasury redemption estimate and payout controls validated.');
+          NODE
