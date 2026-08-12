@@ -57,12 +57,23 @@
     return 'yellow';
   }
 
+  function enrichedClients() {
+    const base = clients();
+    const users = Array.isArray(data?.users) ? data.users : [];
+    const usersById = new Map(users.map((user) => [user.id, user]));
+
+    return base.map((client) => ({
+      ...client,
+      ...(usersById.get(client.id) || {}),
+    }));
+  }
+
   function clientForRow(row) {
     const reportButton = row.querySelector('button[onclick*="report("]');
     const onclick = reportButton?.getAttribute('onclick') || '';
     const match = onclick.match(/report\('([^']+)'\)/);
     if (!match) return null;
-    return clients().find((client) => client.id === match[1]) || null;
+    return enrichedClients().find((client) => client.id === match[1]) || null;
   }
 
   function renderDiditInfo(row, client) {
@@ -131,7 +142,7 @@
     const toolbar = root.querySelector('.toolbar');
     if (!toolbar || toolbar.querySelector('[data-sync-all-kyc]')) return;
 
-    const eligible = clients().filter((client) => Boolean(client.diditSessionId));
+    const eligible = enrichedClients().filter((client) => Boolean(client.diditSessionId));
 
     const button = document.createElement('button');
     button.type = 'button';
@@ -158,7 +169,7 @@
   }
 
   async function syncAllKyc() {
-    const eligible = clients().filter((client) => Boolean(client.diditSessionId));
+    const eligible = enrichedClients().filter((client) => Boolean(client.diditSessionId));
 
     if (!eligible.length) {
       toast('Nenhuma sessão Didit para sincronizar');
