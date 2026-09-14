@@ -1,39 +1,154 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Entrar | Nexa</title><script src="https://cdn.tailwindcss.com"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>body{font-family:'Inter',system-ui,sans-serif}.gradient-bg{background:linear-gradient(135deg,#0F172A 0%,#1E293B 100%)}.cta-glow{box-shadow:0 0 40px rgba(99,102,241,.35)}</style>
-<script>const API_URL='https://nexa-backend-p2u0.onrender.com/api/v1';</script></head>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#0F172A">
+  <title>Entrar | Nexa</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>body{font-family:'Inter',system-ui,sans-serif}.gradient-bg{background:linear-gradient(135deg,#0F172A 0%,#1E293B 100%)}.cta-glow{box-shadow:0 0 40px rgba(99,102,241,.35)}.hidden{display:none}</style>
+  <script>const API_URL='https://nexa-backend-p2u0.onrender.com/api/v1';</script>
+</head>
 <body class="gradient-bg text-white min-h-screen">
-  <div class="min-h-screen flex items-center justify-center px-4">
-    <form id="loginForm" class="w-full max-w-md bg-slate-900/90 border border-white/10 p-8 rounded-2xl shadow-2xl">
+  <div class="min-h-screen flex items-center justify-center px-4 py-8">
+    <section class="w-full max-w-md bg-slate-900/90 border border-white/10 p-8 rounded-2xl shadow-2xl">
       <a href="/" class="inline-flex items-center gap-3 mb-8"><span class="w-10 h-10 bg-indigo-500 rounded-xl flex items-center justify-center font-bold text-xl">N</span><span class="text-xl font-bold">Nexa</span></a>
-      <h1 class="text-3xl font-extrabold mb-2">Entrar</h1>
-      <p class="text-slate-400 mb-6">Acesse sua experiência Pix/USDC.</p>
-      <label class="block text-sm text-slate-300 mb-2">E-mail</label>
-      <input id="email" type="email" required class="w-full mb-4 p-3 rounded-lg bg-slate-800 border border-white/10 outline-none focus:border-indigo-500" placeholder="voce@email.com">
-      <label class="block text-sm text-slate-300 mb-2">Senha</label>
-      <input id="password" type="password" required class="w-full mb-6 p-3 rounded-lg bg-slate-800 border border-white/10 outline-none focus:border-indigo-500" placeholder="Sua senha">
-      <button id="submitBtn" class="w-full bg-indigo-500 hover:bg-indigo-600 p-3 rounded-lg font-bold cta-glow">Entrar</button>
-      <p id="msg" class="mt-4 text-sm text-center"></p>
-      <p class="mt-6 text-sm text-slate-400 text-center">Ainda não tem conta? <a class='text-indigo-400 hover:text-indigo-300' href='/cadastro'>Criar conta</a></p>
-    </form>
+
+      <form id="loginForm">
+        <h1 class="text-3xl font-extrabold mb-2">Entrar</h1>
+        <p class="text-slate-400 mb-6">Acesse sua experiência Pix/USDC.</p>
+        <label class="block text-sm text-slate-300 mb-2">E-mail</label>
+        <input id="email" type="email" required autocomplete="email" class="w-full mb-4 p-3 rounded-lg bg-slate-800 border border-white/10 outline-none focus:border-indigo-500" placeholder="voce@email.com">
+        <label class="block text-sm text-slate-300 mb-2">Senha</label>
+        <input id="password" type="password" required autocomplete="current-password" class="w-full mb-4 p-3 rounded-lg bg-slate-800 border border-white/10 outline-none focus:border-indigo-500" placeholder="Sua senha">
+        <button id="submitBtn" class="w-full bg-indigo-500 hover:bg-indigo-600 p-3 rounded-lg font-bold cta-glow">Entrar</button>
+        <button type="button" id="forgotBtn" class="w-full mt-3 text-sm text-indigo-300 hover:text-indigo-200">Esqueci minha senha</button>
+        <p class="mt-6 text-sm text-slate-400 text-center">Ainda não tem conta? <a class="text-indigo-400 hover:text-indigo-300" href="/cadastro">Criar conta</a></p>
+      </form>
+
+      <form id="forgotForm" class="hidden">
+        <h1 class="text-3xl font-extrabold mb-2">Recuperar senha</h1>
+        <p class="text-slate-400 mb-6">Informe seu e-mail. Se ele estiver cadastrado, enviaremos um código de uso único.</p>
+        <label class="block text-sm text-slate-300 mb-2">E-mail</label>
+        <input id="recoveryEmail" type="email" required autocomplete="email" class="w-full mb-4 p-3 rounded-lg bg-slate-800 border border-white/10 outline-none focus:border-indigo-500" placeholder="voce@email.com">
+        <button id="sendCodeBtn" class="w-full bg-indigo-500 hover:bg-indigo-600 p-3 rounded-lg font-bold cta-glow">Enviar código</button>
+        <button type="button" data-back-login class="w-full mt-3 text-sm text-slate-300 hover:text-white">Voltar para entrar</button>
+      </form>
+
+      <form id="resetForm" class="hidden">
+        <h1 class="text-3xl font-extrabold mb-2">Definir nova senha</h1>
+        <p class="text-slate-400 mb-6">Digite o código de 6 dígitos recebido por e-mail. O código expira e só pode ser usado uma vez.</p>
+        <label class="block text-sm text-slate-300 mb-2">E-mail</label>
+        <input id="resetEmail" type="email" required autocomplete="email" class="w-full mb-4 p-3 rounded-lg bg-slate-800 border border-white/10 outline-none focus:border-indigo-500">
+        <label class="block text-sm text-slate-300 mb-2">Código</label>
+        <input id="resetCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" required class="w-full mb-4 p-3 tracking-[.3em] rounded-lg bg-slate-800 border border-white/10 outline-none focus:border-indigo-500" placeholder="000000">
+        <label class="block text-sm text-slate-300 mb-2">Nova senha</label>
+        <input id="newPassword" type="password" minlength="8" required autocomplete="new-password" class="w-full mb-4 p-3 rounded-lg bg-slate-800 border border-white/10 outline-none focus:border-indigo-500" placeholder="Mínimo de 8 caracteres">
+        <label class="block text-sm text-slate-300 mb-2">Confirmar nova senha</label>
+        <input id="confirmPassword" type="password" minlength="8" required autocomplete="new-password" class="w-full mb-4 p-3 rounded-lg bg-slate-800 border border-white/10 outline-none focus:border-indigo-500" placeholder="Repita a nova senha">
+        <button id="resetBtn" class="w-full bg-indigo-500 hover:bg-indigo-600 p-3 rounded-lg font-bold cta-glow">Redefinir senha</button>
+        <button type="button" id="resendBtn" class="w-full mt-3 text-sm text-indigo-300 hover:text-indigo-200">Reenviar código</button>
+        <button type="button" data-back-login class="w-full mt-3 text-sm text-slate-300 hover:text-white">Voltar para entrar</button>
+      </form>
+
+      <p id="msg" class="mt-4 text-sm text-center" aria-live="polite"></p>
+    </section>
   </div>
 <script>
-document.getElementById('loginForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const msg=document.getElementById('msg'); const btn=document.getElementById('submitBtn');
-  msg.textContent='Entrando...'; msg.className='mt-4 text-sm text-center text-slate-300'; btn.disabled=true;
-  try {
-    const res=await fetch(API_URL+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email.value,password:password.value})});
-    const data=await res.json().catch(()=>({}));
-    if(!res.ok) throw new Error(data.message || 'Não foi possível entrar');
-    localStorage.setItem('nexa_access_token', data.accessToken);
-    localStorage.setItem('nexa_refresh_token', data.refreshToken);
-    localStorage.setItem('nexa_user', JSON.stringify(data.user));
-    window.location.href='/app.html';
-  } catch(err) {
-    msg.textContent=err.message; msg.className='mt-4 text-sm text-center text-red-400'; btn.disabled=false;
+const loginForm=document.getElementById('loginForm');
+const forgotForm=document.getElementById('forgotForm');
+const resetForm=document.getElementById('resetForm');
+const msg=document.getElementById('msg');
+const email=document.getElementById('email');
+const password=document.getElementById('password');
+const recoveryEmail=document.getElementById('recoveryEmail');
+const resetEmail=document.getElementById('resetEmail');
+const resetCode=document.getElementById('resetCode');
+const newPassword=document.getElementById('newPassword');
+const confirmPassword=document.getElementById('confirmPassword');
+
+function show(view){
+  loginForm.classList.toggle('hidden',view!=='login');
+  forgotForm.classList.toggle('hidden',view!=='forgot');
+  resetForm.classList.toggle('hidden',view!=='reset');
+  msg.textContent='';
+}
+function status(text,kind='neutral'){
+  msg.textContent=text;
+  msg.className='mt-4 text-sm text-center '+(kind==='error'?'text-red-400':kind==='ok'?'text-emerald-400':'text-slate-300');
+}
+async function api(path,body){
+  const res=await fetch(API_URL+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const data=await res.json().catch(()=>({}));
+  if(!res.ok){
+    const raw=data.message||data.error||'Não foi possível concluir a operação.';
+    throw new Error(Array.isArray(raw)?raw.join(', '):String(raw));
   }
+  return data;
+}
+
+loginForm.addEventListener('submit',async(e)=>{
+  e.preventDefault();
+  const btn=document.getElementById('submitBtn');
+  status('Entrando...'); btn.disabled=true;
+  try{
+    const data=await api('/auth/login',{email:email.value.trim().toLowerCase(),password:password.value});
+    localStorage.setItem('nexa_access_token',data.accessToken);
+    localStorage.setItem('nexa_refresh_token',data.refreshToken);
+    localStorage.setItem('nexa_user',JSON.stringify(data.user));
+    window.location.href='/app.html';
+  }catch(err){status(err.message,'error');btn.disabled=false;}
 });
-</script></body></html>
+
+document.getElementById('forgotBtn').addEventListener('click',()=>{
+  recoveryEmail.value=email.value.trim().toLowerCase();
+  show('forgot');
+});
+
+document.querySelectorAll('[data-back-login]').forEach((button)=>button.addEventListener('click',()=>show('login')));
+
+async function requestCode(targetEmail){
+  const clean=String(targetEmail||'').trim().toLowerCase();
+  if(!clean) throw new Error('Informe seu e-mail.');
+  await api('/auth/forgot-password',{email:clean});
+  resetEmail.value=clean;
+  show('reset');
+  status('Se o e-mail estiver cadastrado, o código foi enviado. Verifique também o spam.','ok');
+}
+
+forgotForm.addEventListener('submit',async(e)=>{
+  e.preventDefault();
+  const btn=document.getElementById('sendCodeBtn');
+  status('Solicitando código...'); btn.disabled=true;
+  try{await requestCode(recoveryEmail.value);}catch(err){status(err.message,'error');}finally{btn.disabled=false;}
+});
+
+document.getElementById('resendBtn').addEventListener('click',async()=>{
+  const btn=document.getElementById('resendBtn');
+  status('Solicitando novo código...'); btn.disabled=true;
+  try{await requestCode(resetEmail.value);status('Se o e-mail estiver cadastrado, um novo código foi solicitado.','ok');}catch(err){status(err.message,'error');}finally{btn.disabled=false;}
+});
+
+resetForm.addEventListener('submit',async(e)=>{
+  e.preventDefault();
+  const btn=document.getElementById('resetBtn');
+  const code=resetCode.value.replace(/\D/g,'');
+  if(code.length!==6)return status('Digite os 6 dígitos do código.','error');
+  if(newPassword.value.length<8)return status('A nova senha deve ter pelo menos 8 caracteres.','error');
+  if(newPassword.value!==confirmPassword.value)return status('As senhas não conferem.','error');
+  status('Redefinindo senha...'); btn.disabled=true;
+  try{
+    await api('/auth/reset-password',{email:resetEmail.value.trim().toLowerCase(),code,newPassword:newPassword.value});
+    email.value=resetEmail.value.trim().toLowerCase();
+    password.value=''; resetCode.value=''; newPassword.value=''; confirmPassword.value='';
+    show('login');
+    status('Senha redefinida. Entre novamente com sua nova senha.','ok');
+  }catch(err){status(err.message,'error');}finally{btn.disabled=false;}
+});
+</script>
+</body>
+</html>
