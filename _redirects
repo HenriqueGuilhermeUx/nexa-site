@@ -1,3 +1,7 @@
+/login  /login.html  200!
+/login/  /login.html  200!
+/recuperar-senha  /recuperar-senha.html  200!
+/recuperar-senha/  /recuperar-senha.html  200!
 /admin  /admin.html  200!
 /admin/  /admin.html  200!
 /docs  https://nexa-backend-p2u0.onrender.com/docs  200!
