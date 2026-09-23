@@ -9,26 +9,168 @@
   <main class="max-w-5xl mx-auto px-4 py-10">
     <h1 class="text-3xl font-extrabold mb-2">Painel Nexa</h1>
     <p id="welcome" class="text-slate-400 mb-8">Carregando...</p>
+
     <div class="grid md:grid-cols-3 gap-6 mb-8">
       <div class="bg-slate-900 border border-white/10 rounded-2xl p-6"><div class="text-sm text-slate-400 mb-2">API</div><div id="apiStatus" class="text-xl font-bold">Verificando...</div></div>
       <div class="bg-slate-900 border border-white/10 rounded-2xl p-6"><div class="text-sm text-slate-400 mb-2">Saldo USDC</div><div class="text-xl font-bold">$ 0.00</div><p class="text-xs text-slate-500 mt-2">Mock até plugar Privy/Z.ro</p></div>
       <div class="bg-slate-900 border border-white/10 rounded-2xl p-6"><div class="text-sm text-slate-400 mb-2">Spread Nexa</div><div class="text-xl font-bold">1,5%</div><p class="text-xs text-slate-500 mt-2">Pix ⇄ USDC</p></div>
     </div>
+
+    <section class="bg-slate-900 border border-indigo-500/30 rounded-2xl p-6 mb-8">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5">
+        <div>
+          <div class="text-sm text-indigo-300 font-semibold mb-1">Open Finance • piloto controlado</div>
+          <h2 class="text-2xl font-bold">Trazer R$ 10 para a Nexa</h2>
+          <p class="text-slate-400 mt-2">Escolha seu banco. Você autoriza o pagamento no ambiente do próprio banco.</p>
+        </div>
+        <div class="text-right">
+          <div class="text-sm text-slate-400">Valor do piloto</div>
+          <div class="text-2xl font-extrabold">R$ 10,00</div>
+        </div>
+      </div>
+
+      <div id="ofUnavailable" class="hidden text-sm text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 mb-4"></div>
+      <div id="ofControls" class="hidden">
+        <label class="block text-sm text-slate-300 mb-2" for="ofBank">Banco de origem</label>
+        <select id="ofBank" class="w-full p-3 rounded-lg bg-slate-800 border border-white/10 outline-none focus:border-indigo-500 mb-4"></select>
+        <button id="ofStartBtn" onclick="startOpenFinanceDeposit()" class="w-full md:w-auto bg-indigo-500 hover:bg-indigo-600 disabled:opacity-50 px-6 py-3 rounded-lg font-bold cta-glow">Continuar no banco</button>
+      </div>
+      <div id="ofMsg" class="mt-4 text-sm text-slate-300" aria-live="polite"></div>
+      <div id="ofResult" class="hidden mt-4 bg-slate-950/60 border border-white/10 rounded-xl p-4 text-sm"></div>
+    </section>
+
     <div class="grid md:grid-cols-2 gap-6">
       <button class="bg-indigo-500/20 border border-indigo-500/40 rounded-2xl p-6 text-left"><div class="text-xl font-bold mb-2">Depositar via Pix</div><p class="text-slate-400">Em breve: gerar QR Pix e converter para USDC.</p></button>
       <button class="bg-emerald-500/20 border border-emerald-500/40 rounded-2xl p-6 text-left"><div class="text-xl font-bold mb-2">Pagar Pix com USDC</div><p class="text-slate-400">Em breve: ler QR Pix e liquidar com parceiro.</p></button>
     </div>
   </main>
 <script>
-const token=localStorage.getItem('nexa_access_token'); const user=JSON.parse(localStorage.getItem('nexa_user')||'null');
+const token=localStorage.getItem('nexa_access_token');
+const user=JSON.parse(localStorage.getItem('nexa_user')||'null');
 if(!token) window.location.href='/login.html';
 document.getElementById('welcome').textContent = user ? 'Olá, '+(user.fullName || user.email)+'. Sua conta foi conectada ao backend.' : 'Conta conectada.';
-async function checkHealth(){
- try{ const r=await fetch(API_URL+'/health'); const d=await r.json(); document.getElementById('apiStatus').textContent=d.status==='ok'?'Online':'Indefinida'; }
- catch{ document.getElementById('apiStatus').textContent='Offline'; }
+
+async function request(path, options={}){
+  const res=await fetch(API_URL+path,{
+    ...options,
+    headers:{
+      'Content-Type':'application/json',
+      'Authorization':'Bearer '+token,
+      ...(options.headers||{})
+    }
+  });
+  const data=await res.json().catch(()=>({}));
+  if(!res.ok){
+    const raw=data.message||data.error||('HTTP '+res.status);
+    throw new Error(Array.isArray(raw)?raw.join(', '):String(raw));
+  }
+  return data;
 }
+
+async function checkHealth(){
+  try{ const r=await fetch(API_URL+'/health'); const d=await r.json(); document.getElementById('apiStatus').textContent=d.status==='ok'?'Online':'Indefinida'; }
+  catch{ document.getElementById('apiStatus').textContent='Offline'; }
+}
+
+function participantId(p){ return p.identificador||p.idParticipante||p.id||p.ispb||''; }
+function participantName(p){ return p.nome||p.name||p.nomeParticipante||participantId(p)||'Banco'; }
+
+function setOfMessage(text, kind='neutral'){
+  const el=document.getElementById('ofMsg');
+  el.textContent=text;
+  el.className='mt-4 text-sm '+(kind==='error'?'text-red-400':kind==='ok'?'text-emerald-400':'text-slate-300');
+}
+
+function showDepositStatus(data){
+  if(!data) return;
+  const box=document.getElementById('ofResult');
+  box.classList.remove('hidden');
+  const status=String(data.status||'').toUpperCase();
+  const label=status==='CREDITED'?'Creditado':status==='PAID'?'Pago, aguardando crédito':status==='FAILED'?'Falhou':'Aguardando confirmação';
+  box.innerHTML='<div class="font-semibold mb-1">Último depósito: '+label+'</div>'+
+    '<div class="text-slate-400">Valor: R$ '+Number(data.amountBrl||10).toFixed(2).replace('.',',')+'</div>'+
+    (data.paymentId?'<div class="text-slate-500 mt-1 break-all">ID: '+String(data.paymentId)+'</div>':'');
+}
+
+async function loadOpenFinance(){
+  const unavailable=document.getElementById('ofUnavailable');
+  const controls=document.getElementById('ofControls');
+  try{
+    setOfMessage('Validando Open Finance...');
+    const status=await request('/open-finance/efi/status');
+    if(!status.enabled || !status.configured || !status.destinationConfigured || !status.paymentInitiationEnabled){
+      unavailable.textContent='Open Finance ainda não está liberado para esta conta.';
+      unavailable.classList.remove('hidden');
+      setOfMessage('');
+      return;
+    }
+    const data=await request('/open-finance/efi/participants');
+    const participants=Array.isArray(data.participants)?data.participants:[];
+    const select=document.getElementById('ofBank');
+    select.innerHTML='';
+    participants
+      .filter(p=>participantId(p))
+      .sort((a,b)=>participantName(a).localeCompare(participantName(b),'pt-BR'))
+      .forEach((p)=>{
+        const option=document.createElement('option');
+        option.value=participantId(p);
+        option.textContent=participantName(p);
+        select.appendChild(option);
+      });
+    if(!select.options.length) throw new Error('Nenhum banco disponível no momento.');
+    controls.classList.remove('hidden');
+    setOfMessage('Pronto. O valor está limitado a R$ 10 neste piloto.','ok');
+
+    const params=new URLSearchParams(window.location.search);
+    const returnedPaymentId=params.get('paymentId');
+    if(returnedPaymentId){
+      localStorage.setItem('nexa_of_payment_id',returnedPaymentId);
+      setOfMessage('Retorno do banco recebido. Confirmando pagamento...');
+      try{ showDepositStatus(await request('/open-finance/efi/deposit/status?paymentId='+encodeURIComponent(returnedPaymentId))); }
+      catch(err){ setOfMessage('Retorno recebido. A confirmação financeira pode levar alguns instantes: '+err.message); }
+    }else{
+      const saved=localStorage.getItem('nexa_of_payment_id');
+      if(saved){
+        try{ showDepositStatus(await request('/open-finance/efi/deposit/status?paymentId='+encodeURIComponent(saved))); }
+        catch{}
+      }else{
+        try{
+          const latest=await request('/open-finance/efi/deposit/latest');
+          if(latest && latest.found) showDepositStatus(latest);
+        }catch{}
+      }
+    }
+  }catch(err){
+    unavailable.textContent='Não foi possível carregar o Open Finance: '+err.message;
+    unavailable.classList.remove('hidden');
+    setOfMessage('','error');
+  }
+}
+
+async function startOpenFinanceDeposit(){
+  const btn=document.getElementById('ofStartBtn');
+  const participantId=document.getElementById('ofBank').value;
+  if(!participantId){ setOfMessage('Selecione um banco.','error'); return; }
+  btn.disabled=true;
+  setOfMessage('Criando pagamento de R$ 10,00 na Efí...');
+  try{
+    const data=await request('/open-finance/efi/deposit/start',{
+      method:'POST',
+      body:JSON.stringify({amountBrl:10,participantId})
+    });
+    if(!data.paymentId || !data.redirectURI) throw new Error('Resposta de iniciação incompleta.');
+    localStorage.setItem('nexa_of_payment_id',String(data.paymentId));
+    setOfMessage('Pagamento criado. Abrindo seu banco...','ok');
+    window.location.assign(String(data.redirectURI));
+  }catch(err){
+    setOfMessage(err.message,'error');
+    btn.disabled=false;
+  }
+}
+
 function logout(){ localStorage.clear(); window.location.href='/'; }
 checkHealth();
+loadOpenFinance();
 </script>
 <div class="mt-6 flex flex-wrap justify-center gap-6 text-sm">
   <a class='hover:text-white' href='/privacidade'>Política de Privacidade</a>
