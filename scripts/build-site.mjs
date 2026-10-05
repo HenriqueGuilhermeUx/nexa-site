@@ -18,7 +18,7 @@ const repository =
   'https://github.com/HenriqueGuilhermeUx/nexa-react-app.git';
 const commit =
   process.env.NEXA_PORTAL_COMMIT ||
-  '5b4bfe9f79dcedfc8511ef48345a80d6c2218c0e';
+  '2621945c47805c5f62c910ddefb627078200fa5c';
 
 function applySharedDesignSystem() {
   const stylesheet = '<link rel="stylesheet" href="/nexa-2026.css">';
