@@ -3,91 +3,125 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Nexa: a plataforma brasileira de acesso simples a ativos digitais. Entre para os Primeiros Nexa e receba prioridade nos primeiros convites.">
-  <meta name="theme-color" content="#020617">
-  <meta property="og:title" content="Nexa — Cripto sem complicação">
-  <meta property="og:description" content="Uma forma mais simples de acessar USDC usando Pix. Faça parte dos Primeiros Nexa.">
+  <meta name="description" content="Nexa Wallet: sua carteira para acessar e usar ativos digitais com uma experiência simples, Wallet-First e feita para brasileiros.">
+  <meta name="theme-color" content="#06111F">
+  <meta property="og:title" content="Nexa Wallet — Cripto sem complicação">
+  <meta property="og:description" content="Sua carteira. Seus ativos. A complexidade fica por trás.">
   <meta property="og:type" content="website">
-  <title>Nexa — Cripto sem complicação</title>
+  <title>Nexa Wallet — Sua carteira. Seus ativos.</title>
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="apple-touch-icon" href="/apple-touch-icon.svg">
   <link rel="icon" href="/favicon.svg">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/nexa-2026.css">
   <style>
-    :root{color-scheme:dark}*{box-sizing:border-box}html{scroll-behavior:smooth}body{font-family:Inter,system-ui,sans-serif;background:#020617;color:#fff;margin:0}.bgx{background:radial-gradient(circle at 18% 8%,rgba(79,70,229,.3),transparent 30%),radial-gradient(circle at 82% 15%,rgba(6,182,212,.17),transparent 29%),linear-gradient(135deg,#020617,#0f172a 56%,#111827)}.glass{background:rgba(15,23,42,.74);border:1px solid rgba(148,163,184,.18);backdrop-filter:blur(18px)}.card{background:linear-gradient(180deg,rgba(30,41,59,.82),rgba(15,23,42,.8));border:1px solid rgba(148,163,184,.18)}.grad{background:linear-gradient(90deg,#a5b4fc,#fff,#5eead4);-webkit-background-clip:text;background-clip:text;color:transparent}.glow{box-shadow:0 0 45px rgba(79,70,229,.3)}.noise{position:relative}.noise:before{content:"";position:absolute;inset:0;opacity:.035;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}.eyebrow{font-size:.75rem;letter-spacing:.18em;font-weight:900;text-transform:uppercase}.ring{box-shadow:0 0 0 1px rgba(148,163,184,.18),0 22px 80px rgba(2,6,23,.48)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}.hero-grid{display:grid;grid-template-columns:1.03fr .97fr;gap:4rem;align-items:center}.phone{max-width:360px;margin:auto;border:1px solid #2a5573;background:linear-gradient(180deg,#0a192b,#07131f);border-radius:42px;padding:18px;box-shadow:0 40px 90px rgba(0,0,0,.45)}.phone-notch{width:108px;height:23px;margin:-5px auto 22px;background:#020811;border-radius:0 0 15px 15px}.wallet-row{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid #17344e}.token{width:40px;height:40px;border-radius:20px;display:grid;place-items:center;background:#102a42;border:1px solid #2b5677;font-weight:900}.fluid{position:absolute;border-radius:48% 52% 60% 40%;background:linear-gradient(145deg,rgba(35,75,255,.65),rgba(49,215,255,.22));filter:blur(.2px);opacity:.55;pointer-events:none}@media(max-width:900px){.hero-grid{grid-template-columns:1fr;gap:2.5rem}.phone{max-width:330px}}
   </style>
 </head>
-<body class="bgx noise min-h-screen">
-  <nav class="fixed inset-x-0 top-0 z-50 bg-slate-950/88 backdrop-blur-xl border-b border-white/10">
-    <div class="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between">
-      <a href="/" class="flex items-center gap-3" aria-label="Nexa início"><div class="w-10 h-10 rounded-2xl bg-indigo-500 flex items-center justify-center font-black glow">N</div><span class="font-black text-xl">Nexa</span></a>
-      <div class="hidden lg:flex items-center gap-7 text-sm text-slate-300"><a href="#como-funciona" class="hover:text-white">Como funciona</a><a href="#confianca" class="hover:text-white">Confiança</a><a href="/pj" class="hover:text-white">Nexa PJ</a><a href="#faq" class="hover:text-white">Dúvidas</a></div>
-      <div class="flex items-center gap-2 sm:gap-3"><a href="/portal" class="hidden sm:inline-flex bg-white/10 border border-white/10 px-4 py-2.5 rounded-xl font-bold">Entrar</a><a href="/primeiros-nexa" class="bg-indigo-500 hover:bg-indigo-600 px-4 sm:px-5 py-2.5 rounded-xl font-black glow">Quero acesso primeiro</a></div>
+<body class="min-h-screen overflow-x-hidden">
+  <nav class="fixed inset-x-0 top-0 z-50 border-b border-white/10" style="background:rgba(6,17,31,.86);backdrop-filter:blur(20px)">
+    <div class="max-w-7xl mx-auto px-5 h-[72px] flex items-center justify-between">
+      <a href="/" class="nexa-brand" aria-label="Nexa início">
+        <img src="/icon.svg" alt="" class="w-10 h-10 rounded-xl">
+        <span><span class="nexa-wordmark">NEX<span class="accent">A</span></span><span class="nexa-wallet-label">WALLET</span></span>
+      </a>
+      <div class="hidden lg:flex items-center gap-8 text-sm" style="color:var(--nexa-muted)">
+        <a href="#wallet">A Wallet</a><a href="#como-funciona">Como funciona</a><a href="#controle">Controle</a><a href="/pj">Nexa PJ</a>
+      </div>
+      <div class="flex items-center gap-2 sm:gap-3">
+        <a href="/portal" class="nexa-secondary px-4 py-2.5 rounded-xl font-bold">Entrar</a>
+        <a href="/cadastro" class="nexa-primary px-4 sm:px-5 py-2.5 rounded-xl font-extrabold">Começar na Nexa</a>
+      </div>
     </div>
   </nav>
 
   <main>
-    <header class="pt-32 pb-20 px-5">
-      <div class="max-w-7xl mx-auto grid lg:grid-cols-[1.1fr_.9fr] gap-12 items-center">
+    <header class="relative pt-36 pb-24 px-5 overflow-hidden">
+      <div class="fluid w-[520px] h-[310px] -right-40 top-12 rotate-[-20deg]"></div>
+      <div class="fluid w-[420px] h-[210px] -left-48 bottom-2 rotate-[25deg]" style="opacity:.25"></div>
+      <div class="max-w-7xl mx-auto hero-grid relative">
         <div>
-          <div class="inline-flex glass rounded-full px-4 py-2 text-sm font-black text-cyan-200 mb-7">A abertura da Nexa será gradual</div>
-          <h1 class="text-5xl md:text-7xl font-black leading-[1.02] mb-7">O futuro dos ativos digitais não precisa parecer <span class="grad">complicado.</span></h1>
-          <p class="text-xl md:text-2xl text-slate-300 leading-relaxed max-w-3xl">A Nexa aproxima Pix, USDC e uma experiência feita para brasileiros. Você não precisa dominar toda a tecnologia para começar.</p>
-          <div class="flex flex-col sm:flex-row gap-4 mt-9"><a href="/primeiros-nexa" class="bg-indigo-500 hover:bg-indigo-600 px-8 py-4 rounded-2xl font-black text-center glow">Quero ser um dos Primeiros Nexa</a><a href="#como-funciona" class="bg-white/10 hover:bg-white/15 border border-white/10 px-8 py-4 rounded-2xl font-black text-center">Entender em 1 minuto</a></div>
-          <div class="mt-8 flex flex-wrap gap-3 text-xs font-bold"><span class="px-3 py-2 rounded-full bg-emerald-500/10 text-emerald-300">Acesso por ondas</span><span class="px-3 py-2 rounded-full bg-cyan-500/10 text-cyan-300">Produto inicial: Pix → USDC</span><span class="px-3 py-2 rounded-full bg-indigo-500/10 text-indigo-300">Sem promessa de rendimento</span></div>
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full nexa-surface text-sm font-bold mb-7" style="color:var(--nexa-cyan)">A Nexa evoluiu.</div>
+          <h1 class="text-5xl md:text-7xl font-extrabold leading-[.98] tracking-[-.045em] max-w-4xl">Sua wallet.<br><span class="grad">Seus ativos.</span></h1>
+          <p class="text-xl md:text-2xl leading-relaxed max-w-3xl mt-7" style="color:var(--nexa-muted)">Uma carteira digital feita para simplificar o acesso e o uso de ativos digitais. A tecnologia trabalha por trás. O controle permanece com você.</p>
+          <div class="flex flex-col sm:flex-row gap-4 mt-9">
+            <a href="/cadastro" class="nexa-primary px-8 py-4 rounded-2xl font-extrabold text-center">Começar na Nexa</a>
+            <a href="#wallet" class="nexa-secondary px-8 py-4 rounded-2xl font-extrabold text-center">Conhecer a Wallet</a>
+          </div>
+          <div class="mt-8 flex flex-wrap gap-3 text-xs font-bold">
+            <span class="px-3 py-2 rounded-full nexa-surface" style="color:var(--nexa-silver)">Wallet-First</span>
+            <span class="px-3 py-2 rounded-full nexa-surface" style="color:var(--nexa-cyan)">Pix → USDC</span>
+            <span class="px-3 py-2 rounded-full nexa-surface" style="color:var(--nexa-muted)">Sem promessa de rendimento</span>
+          </div>
         </div>
 
-        <div class="glass rounded-[2.5rem] p-5 sm:p-7 ring">
-          <div class="bg-slate-950/85 rounded-[2rem] p-6 sm:p-8 border border-white/10">
-            <div class="flex items-center justify-between mb-8"><div><p class="eyebrow text-cyan-300">Experiência Nexa</p><h2 class="text-2xl font-black mt-2">Complexidade por trás. Clareza na frente.</h2></div><span class="text-3xl">↗</span></div>
-            <div class="space-y-4">
-              <div class="card rounded-2xl p-5 flex items-center gap-4"><div class="w-12 h-12 rounded-2xl bg-emerald-500/15 flex items-center justify-center text-xl">⚡</div><div><b>Você envia um Pix</b><p class="text-sm text-slate-400 mt-1">Um meio familiar para o brasileiro.</p></div></div>
-              <div class="card rounded-2xl p-5 flex items-center gap-4"><div class="w-12 h-12 rounded-2xl bg-indigo-500/15 flex items-center justify-center text-xl">◎</div><div><b>A Nexa mostra taxas e etapas</b><p class="text-sm text-slate-400 mt-1">Cotação é referência; liquidação exige confirmação real.</p></div></div>
-              <div class="card rounded-2xl p-5 flex items-center gap-4"><div class="w-12 h-12 rounded-2xl bg-cyan-500/15 flex items-center justify-center text-xl">◈</div><div><b>O USDC chega à carteira vinculada</b><p class="text-sm text-slate-400 mt-1">Com histórico e referências da operação.</p></div></div>
+        <div class="relative nexa-float">
+          <div class="phone">
+            <div class="phone-notch"></div>
+            <div class="flex items-center justify-between mb-7"><div><div class="nexa-wordmark text-sm">NEX<span class="accent">A</span></div><div class="text-[9px] tracking-[.3em] mt-1" style="color:var(--nexa-muted-2)">WALLET</div></div><span style="color:var(--nexa-muted)">◯</span></div>
+            <p class="text-xs" style="color:var(--nexa-muted)">Valor da carteira</p>
+            <div class="text-4xl font-extrabold mt-2">US$ 1.025,43</div>
+            <p class="text-xs mt-2" style="color:var(--nexa-muted-2)">Exemplo visual da experiência</p>
+            <div class="grid grid-cols-4 gap-2 mt-7 text-center">
+              <div><div class="w-12 h-12 mx-auto rounded-full grid place-items-center font-black" style="background:#31D7FF;color:#06111F">+</div><div class="text-[10px] mt-2" style="color:var(--nexa-silver)">Adicionar</div></div><div><div class="w-12 h-12 mx-auto rounded-full grid place-items-center font-black" style="background:#102A42;color:#31D7FF">⇄</div><div class="text-[10px] mt-2" style="color:var(--nexa-silver)">Converter</div></div><div><div class="w-12 h-12 mx-auto rounded-full grid place-items-center font-black" style="background:#102A42;color:#31D7FF">↗</div><div class="text-[10px] mt-2" style="color:var(--nexa-silver)">Enviar</div></div><div><div class="w-12 h-12 mx-auto rounded-full grid place-items-center font-black" style="background:#102A42;color:#31D7FF">↓</div><div class="text-[10px] mt-2" style="color:var(--nexa-silver)">Sacar</div></div>
+            </div>
+            <div class="mt-8">
+              <p class="text-sm font-bold mb-2">Meus ativos</p>
+              <div class="wallet-row"><div class="token" style="color:#31D7FF">$</div><div class="flex-1"><b>USDC</b><div class="text-xs" style="color:var(--nexa-muted-2)">Stablecoin ligada ao dólar</div></div><div class="text-right"><b>1.250,00</b><div class="text-xs" style="color:var(--nexa-muted-2)">USDC</div></div></div>
+              <div class="wallet-row"><div class="token" style="color:#F59E0B">₿</div><div class="flex-1"><b>Bitcoin</b><div class="text-xs" style="color:var(--nexa-muted-2)">BTC</div></div><div class="text-right text-xs" style="color:var(--nexa-muted)">Disponibilidade no produto</div></div>
+              <div class="wallet-row border-0"><div class="token" style="color:#D5E2EF">Au</div><div class="flex-1"><b>Ouro Digital</b><div class="text-xs" style="color:var(--nexa-muted-2)">PAXG</div></div><div class="text-right text-xs" style="color:var(--nexa-muted)">Disponibilidade no produto</div></div>
             </div>
           </div>
         </div>
       </div>
     </header>
 
-    <section class="py-20 px-5 bg-slate-950/38">
-      <div class="max-w-6xl mx-auto text-center"><p class="eyebrow text-indigo-300">Você não é o problema</p><h2 class="text-4xl md:text-6xl font-black mt-4">As plataformas foram criadas para especialistas.</h2><p class="text-xl text-slate-400 mt-6 max-w-3xl mx-auto">Redes, carteiras, taxas, tokens, bridges e telas confusas afastam pessoas que só querem entender e acessar ativos digitais com segurança. A Nexa existe para simplificar essa jornada.</p></div>
-    </section>
-
-    <section id="como-funciona" class="py-24 px-5">
-      <div class="max-w-7xl mx-auto"><div class="max-w-3xl mb-12"><p class="eyebrow text-cyan-300">Produto inicial</p><h2 class="text-4xl md:text-5xl font-black mt-4">Pix → USDC, sem esconder as etapas.</h2><p class="text-xl text-slate-400 mt-5">A experiência é simples, mas a informação continua clara.</p></div>
-        <div class="grid md:grid-cols-3 gap-5">
-          <article class="card rounded-3xl p-7"><span class="text-indigo-300 font-black">01</span><h3 class="text-2xl font-black mt-5">Entre com Pix</h3><p class="text-slate-400 mt-3 leading-relaxed">Informe o valor em reais e veja as condições antes de confirmar.</p></article>
-          <article class="card rounded-3xl p-7"><span class="text-cyan-300 font-black">02</span><h3 class="text-2xl font-black mt-5">Acompanhe a operação</h3><p class="text-slate-400 mt-3 leading-relaxed">O histórico diferencia estimativa, pagamento, compra e liquidação.</p></article>
-          <article class="card rounded-3xl p-7"><span class="text-emerald-300 font-black">03</span><h3 class="text-2xl font-black mt-5">Receba na carteira</h3><p class="text-slate-400 mt-3 leading-relaxed">A carteira individual vinculada à conta é o destino dos novos usuários diretos.</p></article>
+    <section id="wallet" class="py-24 px-5">
+      <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-14 items-center">
+        <div><p class="nexa-kicker">Wallet-First</p><h2 class="text-4xl md:text-6xl font-extrabold tracking-tight mt-4">A wallet está no centro da experiência.</h2><p class="text-xl mt-6 leading-relaxed" style="color:var(--nexa-muted)">A Nexa não quer transformar você em especialista em redes, bridges ou gas. A infraestrutura fica por trás enquanto você acessa uma carteira individual e entende o que realmente importa.</p></div>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <article class="nexa-surface rounded-3xl p-6"><div class="text-2xl" style="color:var(--nexa-cyan)">01</div><h3 class="text-xl font-bold mt-4">Sua carteira</h3><p class="mt-2 text-sm leading-relaxed" style="color:var(--nexa-muted)">A experiência parte de uma wallet vinculada ao usuário.</p></article>
+          <article class="nexa-surface rounded-3xl p-6"><div class="text-2xl" style="color:var(--nexa-cyan)">02</div><h3 class="text-xl font-bold mt-4">Seus ativos</h3><p class="mt-2 text-sm leading-relaxed" style="color:var(--nexa-muted)">USDC é a base inicial. Outros ativos aparecem conforme disponibilidade real.</p></article>
+          <article class="nexa-surface rounded-3xl p-6"><div class="text-2xl" style="color:var(--nexa-cyan)">03</div><h3 class="text-xl font-bold mt-4">Menos passos</h3><p class="mt-2 text-sm leading-relaxed" style="color:var(--nexa-muted)">Adicionar, converter, enviar e sacar com linguagem simples.</p></article>
+          <article class="nexa-surface rounded-3xl p-6"><div class="text-2xl" style="color:var(--nexa-cyan)">04</div><h3 class="text-xl font-bold mt-4">Mais clareza</h3><p class="mt-2 text-sm leading-relaxed" style="color:var(--nexa-muted)">Status e confirmações aparecem sem transformar blockchain na interface principal.</p></article>
         </div>
       </div>
     </section>
 
-    <section id="confianca" class="py-24 px-5 bg-slate-950/38">
-      <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center"><div><p class="eyebrow text-emerald-300">Simplicidade com estrutura</p><h2 class="text-4xl md:text-5xl font-black mt-4">Clareza, controle e conciliação.</h2><p class="text-xl text-slate-400 mt-5">Simplificar não significa esconder. A Nexa foi desenhada para registrar as etapas importantes e bloquear movimentações sem confirmação ou lastro.</p><a href="/primeiros-nexa" class="inline-flex mt-8 text-cyan-300 font-black">Fazer parte da abertura gradual →</a></div>
-        <div class="grid sm:grid-cols-2 gap-4"><div class="glass rounded-3xl p-6"><div class="text-3xl">🔐</div><h3 class="text-xl font-black mt-4">Carteira individual</h3><p class="text-slate-400 text-sm mt-2">Vinculada ao usuário nos novos perfis diretos.</p></div><div class="glass rounded-3xl p-6"><div class="text-3xl">🧾</div><h3 class="text-xl font-black mt-4">Histórico auditável</h3><p class="text-slate-400 text-sm mt-2">Valores, taxas, referências e status registrados.</p></div><div class="glass rounded-3xl p-6"><div class="text-3xl">🛡️</div><h3 class="text-xl font-black mt-4">Verificação de identidade</h3><p class="text-slate-400 text-sm mt-2">Parte da proteção da conta e da operação.</p></div><div class="glass rounded-3xl p-6"><div class="text-3xl">⛔</div><h3 class="text-xl font-black mt-4">Bloqueio de prejuízo</h3><p class="text-slate-400 text-sm mt-2">Liquidação real não nasce de cotação estimada.</p></div></div>
+    <section id="como-funciona" class="py-24 px-5" style="background:rgba(4,14,26,.45)">
+      <div class="max-w-7xl mx-auto">
+        <p class="nexa-kicker">Comece pelo que você já conhece</p>
+        <h2 class="text-4xl md:text-6xl font-extrabold mt-4 max-w-4xl">Pix é a porta de entrada. A wallet é o produto.</h2>
+        <p class="text-xl mt-5 max-w-3xl" style="color:var(--nexa-muted)">No Brasil, a jornada começa de forma familiar: você adiciona com Pix e o USDC chega à sua experiência Wallet-First depois das confirmações necessárias.</p>
+        <div class="grid md:grid-cols-3 gap-5 mt-12">
+          <article class="nexa-surface rounded-3xl p-7"><span class="nexa-kicker">01</span><h3 class="text-2xl font-bold mt-4">Adicionar</h3><p class="mt-3" style="color:var(--nexa-muted)">Informe o valor, confira taxas e gere o Pix.</p></article>
+          <article class="nexa-surface rounded-3xl p-7"><span class="nexa-kicker">02</span><h3 class="text-2xl font-bold mt-4">Confirmar</h3><p class="mt-3" style="color:var(--nexa-muted)">A Nexa acompanha provider e blockchain antes de considerar a operação concluída.</p></article>
+          <article class="nexa-surface rounded-3xl p-7"><span class="nexa-kicker">03</span><h3 class="text-2xl font-bold mt-4">Usar</h3><p class="mt-3" style="color:var(--nexa-muted)">Seu USDC passa a fazer parte da sua wallet e das funcionalidades disponíveis.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="controle" class="py-24 px-5">
+      <div class="max-w-6xl mx-auto text-center">
+        <p class="nexa-kicker">Autonomia sem jargão</p>
+        <h2 class="text-4xl md:text-6xl font-extrabold mt-4">A complexidade fica por trás.<br><span class="grad">O controle fica com você.</span></h2>
+        <p class="text-xl mt-6 max-w-3xl mx-auto" style="color:var(--nexa-muted)">Wallet-First significa simplificar tecnologia sem apresentar a Nexa como exchange, plataforma de trading ou banco. Segurança é explicada por mecanismos reais — nunca por promessas absolutas.</p>
       </div>
     </section>
 
     <section class="py-24 px-5">
-      <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-8">
-        <a href="/primeiros-nexa" class="glass rounded-[2rem] p-8 sm:p-10 block hover:border-indigo-300/50 transition"><p class="eyebrow text-indigo-300">Para pessoas</p><h2 class="text-4xl font-black mt-4">Primeiros Nexa</h2><p class="text-slate-300 text-lg mt-4">Prioridade nos convites, novidades antes do público e participação na construção da experiência.</p><span class="inline-block mt-7 font-black text-cyan-300">Quero receber acesso primeiro →</span></a>
-        <a href="/pj" class="glass rounded-[2rem] p-8 sm:p-10 block hover:border-emerald-300/50 transition"><p class="eyebrow text-emerald-300">Para empresas</p><h2 class="text-4xl font-black mt-4">Nexa PJ</h2><p class="text-slate-300 text-lg mt-4">Checkout Pix com liquidação em BRL ou USDC, taxas claras e conciliação por etapa.</p><span class="inline-block mt-7 font-black text-emerald-300">Conhecer o checkout PJ →</span></a>
+      <div class="max-w-5xl mx-auto nexa-surface rounded-[2rem] p-9 sm:p-14 text-center relative overflow-hidden">
+        <div class="fluid w-[360px] h-[180px] -right-20 -top-16"></div>
+        <p class="nexa-kicker relative">Nexa Wallet</p>
+        <h2 class="text-4xl md:text-6xl font-extrabold mt-5 relative">Cripto sem complicação.</h2>
+        <p class="text-xl mt-6 max-w-3xl mx-auto relative" style="color:var(--nexa-muted)">Uma experiência feita para quem quer acessar ativos digitais sem precisar dominar toda a tecnologia antes.</p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4 mt-9 relative"><a href="/cadastro" class="nexa-primary px-8 py-4 rounded-2xl font-extrabold">Criar minha Nexa</a><a href="/primeiros-nexa" class="nexa-secondary px-8 py-4 rounded-2xl font-extrabold">Comunidade Primeiros Nexa</a></div>
       </div>
     </section>
-
-    <section id="faq" class="py-24 px-5 bg-slate-950/38">
-      <div class="max-w-4xl mx-auto"><p class="eyebrow text-cyan-300">Dúvidas comuns</p><h2 class="text-4xl md:text-5xl font-black mt-4 mb-10">Comece pela clareza.</h2>
-        <div class="space-y-4"><details class="glass rounded-2xl p-6"><summary class="font-black cursor-pointer">O que é USDC?</summary><p class="text-slate-400 mt-4 leading-relaxed">É um ativo digital criado para acompanhar o valor do dólar. Ele não elimina riscos e não representa uma conta bancária em dólar.</p></details><details class="glass rounded-2xl p-6"><summary class="font-black cursor-pointer">Entrar nos Primeiros Nexa abre uma conta?</summary><p class="text-slate-400 mt-4 leading-relaxed">Não. A lista registra seu interesse e suas preferências. Cadastro financeiro, KYC e carteira acontecem apenas quando o convite é liberado e você decide avançar.</p></details><details class="glass rounded-2xl p-6"><summary class="font-black cursor-pointer">A Nexa promete lucro ou rendimento?</summary><p class="text-slate-400 mt-4 leading-relaxed">Não. A comunicação da Nexa é sobre acesso, simplicidade e controle, sem promessa de valorização ou enriquecimento.</p></details><details class="glass rounded-2xl p-6"><summary class="font-black cursor-pointer">Quando receberei o convite?</summary><p class="text-slate-400 mt-4 leading-relaxed">A abertura será gradual. Os convites serão enviados por ondas conforme os testes, a capacidade operacional e o perfil informado na lista.</p></details></div>
-      </div>
-    </section>
-
-    <section class="py-24 px-5"><div class="max-w-5xl mx-auto glass rounded-[2.5rem] p-9 sm:p-14 text-center ring"><p class="eyebrow text-indigo-300">Primeiros Nexa</p><h2 class="text-4xl md:text-6xl font-black mt-5">A primeira comunidade da Nexa começa agora.</h2><p class="text-xl text-slate-300 mt-6 max-w-3xl mx-auto">Receba prioridade nos primeiros convites e ajude a construir uma forma mais simples de acessar ativos digitais.</p><a href="/primeiros-nexa" class="inline-flex mt-9 bg-indigo-500 hover:bg-indigo-600 px-8 py-4 rounded-2xl font-black glow">Quero ser um dos primeiros</a></div></section>
   </main>
 
-  <footer class="border-t border-white/10 bg-slate-950/70"><div class="max-w-7xl mx-auto px-5 py-10 flex flex-col md:flex-row gap-6 justify-between text-sm text-slate-400"><div><b class="text-white">Nexa</b><p class="mt-2">Cripto sem complicação.</p></div><div class="flex flex-wrap gap-5"><a href="/privacidade">Privacidade</a><a href="/termos">Termos</a><a href="/lgpd">LGPD</a><a href="/suporte">Suporte</a><a href="/portal">Entrar</a></div></div></footer>
+  <footer class="border-t border-white/10"><div class="max-w-7xl mx-auto px-5 py-10 flex flex-col md:flex-row gap-6 justify-between text-sm" style="color:var(--nexa-muted-2)"><div><div class="nexa-wordmark">NEX<span class="accent">A</span></div><p class="mt-2">WALLET · Cripto sem complicação.</p></div><div class="flex flex-wrap gap-5"><a href="/privacidade">Privacidade</a><a href="/termos">Termos</a><a href="/lgpd">LGPD</a><a href="/suporte">Suporte</a><a href="/portal">Entrar</a></div></div></footer>
   <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});</script>
 </body>
 </html>
