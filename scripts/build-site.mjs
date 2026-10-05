@@ -1,5 +1,13 @@
 import {execFileSync} from 'node:child_process';
-import {cpSync, existsSync, mkdirSync, rmSync} from 'node:fs';
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
 import {resolve} from 'node:path';
 
 const root = process.cwd();
@@ -12,12 +20,31 @@ const commit =
   process.env.NEXA_PORTAL_COMMIT ||
   '5b4bfe9f79dcedfc8511ef48345a80d6c2218c0e';
 
+function applySharedDesignSystem() {
+  const stylesheet = '<link rel="stylesheet" href="/nexa-2026.css">';
+  for (const file of readdirSync(root)) {
+    if (!file.endsWith('.html')) continue;
+    const target = resolve(root, file);
+    let html = readFileSync(target, 'utf8');
+    if (!html.includes('/nexa-2026.css') && html.includes('</head>')) {
+      html = html.replace('</head>', `${stylesheet}\n</head>`);
+    }
+    html = html.replace(
+      /<meta name="theme-color" content="[^"]*">/g,
+      '<meta name="theme-color" content="#06111F">',
+    );
+    writeFileSync(target, html);
+  }
+}
+
 function run(command, args, options = {}) {
   execFileSync(command, args, {
     stdio: 'inherit',
     ...options,
   });
 }
+
+applySharedDesignSystem();
 
 rmSync(portalSource, {recursive: true, force: true});
 rmSync(portalOutput, {recursive: true, force: true});
