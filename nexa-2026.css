@@ -1,0 +1,95 @@
+:root{
+  color-scheme:dark;
+  --nexa-bg:#06111F;
+  --nexa-bg-2:#0A192B;
+  --nexa-card:#0E2138;
+  --nexa-elevated:#132A45;
+  --nexa-border:#203B59;
+  --nexa-text:#F4F8FC;
+  --nexa-muted:#A9BCD0;
+  --nexa-muted-2:#70879F;
+  --nexa-blue:#218BFF;
+  --nexa-cyan:#31D7FF;
+  --nexa-silver:#D5E2EF;
+  --nexa-success:#35D69A;
+  --nexa-warning:#F3C86B;
+  --nexa-danger:#FF6B7A;
+  --nexa-gradient:linear-gradient(115deg,#234BFF 0%,#22AFFF 52%,#32E3E0 100%);
+}
+html{background:var(--nexa-bg)}
+body{
+  background:
+    radial-gradient(circle at 76% -10%,rgba(49,215,255,.16),transparent 32%),
+    radial-gradient(circle at 8% 18%,rgba(33,139,255,.12),transparent 28%),
+    linear-gradient(160deg,#06111F 0%,#071522 42%,#06111F 100%)!important;
+  color:var(--nexa-text)!important;
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+}
+::selection{background:rgba(49,215,255,.25);color:#fff}
+a{transition:color .2s ease,background .2s ease,border-color .2s ease,transform .2s ease}
+input,select,textarea{
+  background:#091827!important;
+  border-color:var(--nexa-border)!important;
+  color:var(--nexa-text)!important;
+  border-radius:14px!important;
+}
+input:focus,select:focus,textarea:focus{
+  outline:none!important;
+  border-color:var(--nexa-cyan)!important;
+  box-shadow:0 0 0 4px rgba(49,215,255,.09)!important;
+}
+button,[class*="bg-indigo-500"],[class*="bg-indigo-600"]{
+  background:var(--nexa-gradient)!important;
+  color:#fff!important;
+  border-color:rgba(113,229,255,.5)!important;
+}
+[class*="text-indigo-"],.text-purple-300,.text-purple-400{color:var(--nexa-cyan)!important}
+[class*="border-indigo-"]{border-color:var(--nexa-blue)!important}
+[class*="accent-indigo-"]{accent-color:var(--nexa-cyan)!important}
+[class*="bg-slate-900"],[class*="bg-slate-800"]{background-color:var(--nexa-card)!important}
+[class*="bg-slate-950"]{background-color:rgba(6,17,31,.9)!important}
+[class*="text-slate-300"]{color:var(--nexa-silver)!important}
+[class*="text-slate-400"]{color:var(--nexa-muted)!important}
+[class*="text-slate-500"]{color:var(--nexa-muted-2)!important}
+.glass{
+  background:rgba(10,25,43,.72)!important;
+  border-color:rgba(70,116,150,.32)!important;
+  box-shadow:0 26px 80px rgba(0,0,0,.18);
+}
+.card{
+  background:linear-gradient(180deg,rgba(14,33,56,.96),rgba(9,25,42,.92))!important;
+  border-color:rgba(55,100,135,.36)!important;
+}
+.grad{
+  background:var(--nexa-gradient)!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  color:transparent!important;
+}
+.glow{box-shadow:0 0 42px rgba(34,175,255,.16)!important}
+.nexa-brand{display:inline-flex;align-items:center;gap:12px;text-decoration:none;color:var(--nexa-text)}
+.nexa-mark{
+  width:42px;height:42px;border-radius:14px;display:grid;place-items:center;
+  background:linear-gradient(145deg,#0A1C34,#102C4A);border:1px solid #2A5877;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 14px 30px rgba(0,0,0,.2);
+}
+.nexa-mark svg{width:30px;height:30px}
+.nexa-wordmark{font-weight:800;letter-spacing:.22em;font-size:1.08rem;color:var(--nexa-silver)}
+.nexa-wordmark .accent{color:var(--nexa-cyan)}
+.nexa-wallet-label{display:block;color:var(--nexa-muted-2);font-size:.55rem;letter-spacing:.42em;margin-top:2px}
+.nexa-primary{
+  background:var(--nexa-gradient)!important;border:1px solid rgba(113,229,255,.45)!important;
+  box-shadow:0 14px 38px rgba(33,139,255,.18)!important;
+}
+.nexa-secondary{background:#10243B!important;border:1px solid #264764!important;color:var(--nexa-silver)!important}
+.nexa-premium{color:var(--nexa-silver)!important;border-color:#416982!important;background:#10263D!important}
+.nexa-surface{background:var(--nexa-card)!important;border:1px solid var(--nexa-border)!important}
+.nexa-kicker{color:var(--nexa-cyan);font-size:.72rem;letter-spacing:.18em;font-weight:800;text-transform:uppercase}
+.nexa-hero-orb{
+  position:absolute;border-radius:999px;filter:blur(0);pointer-events:none;opacity:.8;
+  background:radial-gradient(circle at 30% 30%,rgba(65,225,255,.7),rgba(25,108,255,.2) 55%,transparent 72%);
+}
+@media(prefers-reduced-motion:no-preference){
+  .nexa-float{animation:nexaFloat 7s ease-in-out infinite}
+  @keyframes nexaFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+}
