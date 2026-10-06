@@ -172,6 +172,7 @@ async function refresh() {
     $('status').textContent = 'Carregando painel...';
     const [
       ops,
+      financialControl,
       users,
       treasury,
       clientsFull,
@@ -185,6 +186,7 @@ async function refresh() {
       trades,
     ] = await Promise.all([
       safeCall('/admin/ops-center', {}),
+      safeCall('/admin/financial-control', null),
       safeCall('/admin/users', []),
       safeCall('/treasury-admin/dashboard', {}),
       safeCall('/treasury-admin/clients-full', {}),
@@ -209,6 +211,7 @@ async function refresh() {
 
     data = {
       ops: ops || {},
+      financialControl: financialControl || null,
       users: Array.isArray(users) ? users : users?.users || [],
       treasury: treasury || {},
       clientsFull: clientsFull || {},
@@ -222,19 +225,6 @@ async function refresh() {
       trades: trades || { trades: [] },
       ledgerBalances: {},
     };
-
-    await Promise.all(
-      clients().map(async (client) => {
-        try {
-          const balance = await call(
-            `/ledger/balance?userId=${encodeURIComponent(client.id)}&mode=real`,
-          );
-          data.ledgerBalances[client.id] = balance.balances || {};
-        } catch {
-          data.ledgerBalances[client.id] = {};
-        }
-      }),
-    );
 
     $('status').textContent = 'Painel carregado';
     $('lastUpdated').textContent = `Atualizado ${new Date().toLocaleTimeString('pt-BR')}`;
@@ -274,18 +264,77 @@ function isRealClient(client) {
   );
 }
 
+function financialControl() {
+  return data.financialControl || null;
+}
+
+function financialReady() {
+  return Boolean(financialControl()?.success);
+}
+
+function customerWalletRows() {
+  return financialControl()?.customerWallets?.data?.wallets || [];
+}
+
+function walletSnapshot(client) {
+  const address = String(client?.walletAddress || '').toLowerCase();
+  return (
+    customerWalletRows().find(
+      (item) =>
+        item.userId === client?.id ||
+        (address &&
+          String(item.walletAddress || '').toLowerCase() === address),
+    ) || null
+  );
+}
+
+function walletUsdc(client) {
+  const snapshot = walletSnapshot(client);
+  return snapshot?.readable === true && Number.isFinite(Number(snapshot.usdc))
+    ? Number(snapshot.usdc)
+    : null;
+}
+
+function privyTreasuryUsdc() {
+  const value =
+    financialControl()?.providers?.privyTreasury?.data?.polygon?.usdcBalance;
+  return Number.isFinite(Number(value)) ? Number(value) : null;
+}
+
+function pendingDeliveryUsdc() {
+  return Number(
+    financialControl()?.operations?.treasuryDeliveries?.pendingUsdc || 0,
+  );
+}
+
+function deliveryCoverage() {
+  return financialControl()?.treasury?.deliveryCoverage || null;
+}
+
+function providerValue(value, formatter = (item) => String(item)) {
+  return value === null || value === undefined || Number.isNaN(Number(value))
+    ? '<span class="muted">indisponível</span>'
+    : formatter(value);
+}
+
+function probeBadge(ok, labelOk = 'online', labelFail = 'indisponível') {
+  return pill(ok ? labelOk : labelFail, ok ? 'green' : 'red');
+}
+
 function officialClientUsdcLiability() {
-  return clients()
-    .filter(isRealClient)
-    .reduce((sum, client) => sum + ledgerUsdc(client), 0);
+  return Number(
+    financialControl()?.customerWallets?.data?.totalUsdcOnchain || 0,
+  );
 }
 
 function treasuryUsdc() {
-  return Number(data.treasury?.reserves?.treasuryUsdc || 0);
+  const current = privyTreasuryUsdc();
+  return current === null ? 0 : current;
 }
 
 function officialReserveGap() {
-  return treasuryUsdc() - officialClientUsdcLiability();
+  const coverage = deliveryCoverage();
+  return Number(coverage?.availableAfterPending || 0);
 }
 
 function payments() {
