@@ -408,7 +408,33 @@ function renderOps() {
       !['failed', 'cancelled'].includes(String(transaction.status).toLowerCase()),
   );
   const early = data.earlySummary || {};
-  const gap = officialReserveGap();
+  const fc = financialControl();
+  const privyUsdc = privyTreasuryUsdc();
+  const pendingUsdc = pendingDeliveryUsdc();
+  const coverage = deliveryCoverage();
+  const customerWalletTotal =
+    fc?.customerWallets?.data?.totalUsdcOnchain ?? null;
+  const warnings = fc?.health?.warnings || [];
+
+  const topFinance = financialReady()
+    ? `<div class="grid">${card(
+        'Privy Treasury · USDC',
+        providerValue(privyUsdc, (value) => n(value, 8)),
+        coverage?.status === 'underfunded' ? 'bad' : 'ok',
+      )}${card(
+        'Entregas pendentes',
+        n(pendingUsdc, 8) + ' USDC',
+        pendingUsdc > 0 ? 'warn' : 'ok',
+      )}${card(
+        'Wallets clientes · on-chain',
+        providerValue(customerWalletTotal, (value) => n(value, 8) + ' USDC'),
+      )}${card(
+        'Alertas financeiros',
+        String(warnings.length),
+        warnings.length ? 'warn' : 'ok',
+      )}</div>`
+    : '<div class="card notice bad"><b>Controle financeiro indisponível.</b> O endpoint Wallet-First ainda não respondeu. Não use os números legados como fonte de verdade.</div>';
+
   $('content').innerHTML =
     `<div class="grid">${card('Primeiros Nexa', n(early.total || 0, 0))}${card(
       'Leads qualificados',
@@ -423,15 +449,8 @@ function renderOps() {
       openPayments.length,
       openPayments.length ? 'warn' : 'ok',
     )}</div>` +
-    `<div class="grid">${card('Clientes', clients().length)}${card(
-      'USDC clientes',
-      n(officialClientUsdcLiability(), 8),
-    )}${card('Tesouraria USDC', n(treasuryUsdc(), 8))}${card(
-      'Gap de reserva',
-      n(gap, 8),
-      gap >= 0 ? 'ok' : 'bad',
-    )}</div>` +
-    '<div class="card notice"><h3>Separação operacional</h3><p><b>Lead</b> é contato de aquisição. <b>Cliente</b> é conta criada. <b>Saldo</b> só existe no ledger ou na blockchain. <b>Liquidação</b> exige valores e referências reais.</p></div>';
+    topFinance +
+    '<div class="card notice"><h3>Wallet-First · fonte de verdade</h3><p><b>Saldo do cliente</b> vem da wallet on-chain. <b>Privy Treasury</b> é float operacional da Nexa. <b>Ledger</b> é diário de auditoria/reconciliação e não saldo spendable. <b>Coverage</b> compara Treasury com entregas ainda não concluídas — não com todos os ativos self-custodial dos clientes.</p></div>';
 }
 
 const leadLabels = {
