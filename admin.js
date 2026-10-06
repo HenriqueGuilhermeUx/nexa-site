@@ -376,7 +376,7 @@ function render() {
     clientes: 'Clientes',
     checkout: 'Checkout PJ',
     financeiro: 'Resgates Pix',
-    tesouraria: 'Tesouraria',
+    tesouraria: 'Controle Financeiro',
     crm: 'CRM',
     audit: 'Auditoria',
     raw: 'Debug',
