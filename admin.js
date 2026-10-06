@@ -1246,22 +1246,197 @@ async function confirmRedemptionPayout(paymentId) {
 }
 
 function renderTesouraria() {
-  const liability = officialClientUsdcLiability();
-  const treasury = treasuryUsdc();
-  const gap = officialReserveGap();
-  const accounts = data.treasury?.segregatedAccounts?.byType || {};
+  const fc = financialControl();
+  if (!fc?.success) {
+    $('content').innerHTML =
+      '<div class="card notice bad"><h3>Controle financeiro Wallet-First indisponível</h3><p>O painel não vai substituir dados ausentes por ledger ou posições manuais. Atualize quando o endpoint <code>/admin/financial-control</code> estiver disponível.</p></div>';
+    return;
+  }
+
+  const privy = fc.providers?.privyTreasury || {};
+  const privyData = privy.data || {};
+  const privyNative = privy.nativeGas || {};
+  const gas = fc.providers?.gasWallet || {};
+  const foxbit = fc.providers?.foxbit || {};
+  const woovi = fc.providers?.woovi || {};
+  const efi = fc.providers?.efi || {};
+  const customerWallets = fc.customerWallets?.data || {};
+  const deliveries = fc.operations?.treasuryDeliveries || {};
+  const replenishments = fc.operations?.replenishments || {};
+  const sweeps = fc.operations?.wooviFoxbitSweeps || {};
+  const cashouts = fc.operations?.cashouts || {};
+  const coverage = fc.treasury?.deliveryCoverage;
+  const warnings = fc.health?.warnings || [];
+  const accountingPositions = fc.treasury?.accountingPositions || [];
+
+  const treasuryAddress =
+    privyData?.config?.walletAddress ||
+    privyData?.privy?.address ||
+    null;
+  const treasuryPol =
+    privyNative?.data?.native?.balance ?? null;
+  const gasEth = gas?.data?.sponsorBalanceEth ?? null;
+  const foxbitBrl = foxbit?.brl?.available ?? null;
+  const foxbitUsdc = foxbit?.usdc?.available ?? null;
+  const wooviBrl =
+    woovi?.defaultAccount?.data?.availableBrl ?? null;
+  const efiStatus = efi?.status?.data || {};
+
+  const sourceRow = (name, status, value, source, checkedAt, detail = '') =>
+    `<tr><td><b>${esc(name)}</b><br><span class="muted">${esc(source)}</span></td><td>${status}</td><td><b>${value}</b>${detail ? `<br><span class="muted">${esc(detail)}</span>` : ''}</td><td><span class="muted">${checkedAt ? fmtDate(checkedAt) : '—'}</span></td></tr>`;
+
+  const providerRows = [
+    sourceRow(
+      'Privy Treasury',
+      probeBadge(privy.ok),
+      providerValue(
+        privyData?.polygon?.usdcBalance,
+        (value) => `${n(value, 8)} USDC`,
+      ),
+      treasuryAddress
+        ? `Privy + Polygon · ${String(treasuryAddress).slice(0, 8)}…${String(treasuryAddress).slice(-6)}`
+        : 'Privy + Polygon',
+      privy.checkedAt,
+      privyData?.readiness?.executionReady
+        ? 'Execução habilitada'
+        : 'Leitura/execução conforme gates',
+    ),
+    sourceRow(
+      'Gas da Treasury',
+      probeBadge(privyNative.ok),
+      providerValue(treasuryPol, (value) => `${n(value, 8)} POL`),
+      'Alchemy · Polygon native',
+      privyNative.checkedAt,
+    ),
+    sourceRow(
+      'Gas Sponsor',
+      probeBadge(gas.ok),
+      providerValue(gasEth, (value) => `${n(value, 8)} ETH`),
+      gas?.data?.sponsorAddress
+        ? `Privy · Base · ${String(gas.data.sponsorAddress).slice(0, 8)}…${String(gas.data.sponsorAddress).slice(-6)}`
+        : 'Privy · Base',
+      gas.checkedAt,
+    ),
+    sourceRow(
+      'Foxbit',
+      probeBadge(foxbit.ok),
+      `${providerValue(foxbitBrl, (value) => brl(value))} · ${providerValue(
+        foxbitUsdc,
+        (value) => `${n(value, 8)} USDC`,
+      )}`,
+      'Foxbit private accounts · available',
+      foxbit.checkedAt,
+    ),
+    sourceRow(
+      'Woovi',
+      probeBadge(woovi?.defaultAccount?.ok),
+      providerValue(wooviBrl, (value) => brl(value)),
+      'Woovi default account · available',
+      woovi?.defaultAccount?.checkedAt,
+      `${woovi?.subaccounts?.providerCount || 0} subconta(s) no provider`,
+    ),
+    sourceRow(
+      'Efí Open Finance',
+      probeBadge(efi?.status?.ok),
+      efiStatus?.enabled && efiStatus?.configured
+        ? 'Configurado'
+        : 'Não pronto',
+      'Efí · iniciação/reconciliação',
+      efi?.status?.checkedAt,
+      'Saldo bancário não é inventado: a integração atual não expõe cash balance',
+    ),
+  ].join('');
+
+  const warningHtml = warnings.length
+    ? `<div class="card notice bad"><h3>Atenção operacional</h3><div class="tag-list">${warnings
+        .map((item) => `<span class="pill red">${esc(item)}</span>`)
+        .join('')}</div><p class="muted">Resolva estados incertos por reconciliação. Não repita Pix, trade, sweep ou transferência apenas porque o painel marcou atenção.</p></div>`
+    : '<div class="card notice"><b>Financeiro sem alertas críticos no snapshot atual.</b> Continue usando provider/on-chain como fonte de verdade.</div>';
+
+  const coverageCard = coverage
+    ? `<div class="card"><h3>Cobertura operacional da Treasury</h3><div class="grid">${card(
+        'Privy Treasury',
+        `${n(coverage.treasuryUsdc || 0, 8)} USDC`,
+      )}${card(
+        'Entregas não concluídas',
+        `${n(coverage.pendingDeliveryUsdc || 0, 8)} USDC`,
+        Number(coverage.pendingDeliveryUsdc || 0) > 0 ? 'warn' : 'ok',
+      )}${card(
+        'Disponível após pendências',
+        `${n(coverage.availableAfterPending || 0, 8)} USDC`,
+        Number(coverage.availableAfterPending || 0) >= 0 ? 'ok' : 'bad',
+      )}${card(
+        'Status',
+        esc(coverage.status || '—'),
+        coverage.status === 'underfunded' ? 'bad' : 'ok',
+      )}</div><p class="muted">Esta cobertura olha somente obrigações de entrega ainda abertas. USDC que já está nas wallets self-custodial dos clientes não é passivo da Treasury.</p></div>`
+    : '<div class="card notice bad"><b>Cobertura indisponível:</b> não foi possível ler a Privy Treasury on-chain.</div>';
+
+  const positionRows = accountingPositions.length
+    ? accountingPositions
+        .map(
+          (item) =>
+            `<tr><td>${esc(item.asset)}</td><td>${n(
+              item.balance,
+              item.asset === 'BRL' ? 2 : 8,
+            )}</td><td>${esc(item.source || '—')}</td><td>${fmtDate(
+              item.updatedAt,
+            )}</td></tr>`,
+        )
+        .join('')
+    : '<tr><td colspan="4" class="muted">Sem posições contábeis manuais.</td></tr>';
+
   $('content').innerHTML =
-    `<div class="grid">${card('Tesouraria USDC', n(treasury, 8), 'ok')}${card(
-      'Passivo clientes',
-      n(liability, 8),
-    )}${card('Gap', n(gap, 8), gap >= 0 ? 'ok' : 'bad')}${card(
-      'Receita BRL',
-      brl(accounts.revenue?.BRL || 0),
+    `<div class="grid">${card(
+      'Privy Treasury',
+      providerValue(
+        privyData?.polygon?.usdcBalance,
+        (value) => `${n(value, 8)} USDC`,
+      ),
+      privy.ok ? 'ok' : 'bad',
+    )}${card(
+      'Foxbit disponível',
+      `${providerValue(foxbitBrl, (value) => brl(value))}<br><span class="muted">${providerValue(
+        foxbitUsdc,
+        (value) => `${n(value, 8)} USDC`,
+      )}</span>`,
+      foxbit.ok ? 'ok' : 'bad',
+    )}${card(
+      'Woovi disponível',
+      providerValue(wooviBrl, (value) => brl(value)),
+      woovi?.defaultAccount?.ok ? 'ok' : 'bad',
+    )}${card(
+      'Clientes on-chain',
+      providerValue(
+        customerWallets?.totalUsdcOnchain,
+        (value) => `${n(value, 8)} USDC`,
+      ),
     )}</div>` +
-    `<div class="card"><h3>Contas segregadas</h3><pre>${esc(
-      JSON.stringify(accounts, null, 2),
+    `<div class="grid">${card(
+      'Entregas pendentes',
+      `${deliveries.unresolved || 0} · ${n(deliveries.pendingUsdc || 0, 8)} USDC`,
+      deliveries.providerUncertain ? 'bad' : deliveries.unresolved ? 'warn' : 'ok',
+    )}${card(
+      'Reposições abertas',
+      replenishments.open || 0,
+      replenishments.manualReview ? 'bad' : replenishments.open ? 'warn' : 'ok',
+    )}${card(
+      'Sweeps Woovi→Foxbit',
+      sweeps.open || 0,
+      sweeps.manualReview ? 'bad' : sweeps.open ? 'warn' : 'ok',
+    )}${card(
+      'Saques em aberto',
+      `${cashouts.count || 0} · ${n(cashouts.usdc || 0, 8)} USDC`,
+      cashouts.count ? 'warn' : 'ok',
+    )}</div>` +
+    warningHtml +
+    coverageCard +
+    `<div class="card scroll"><h3>Fontes reais</h3><p class="muted">Nenhum valor indisponível é substituído silenciosamente por ledger ou posição manual.</p><table><thead><tr><th>Fonte</th><th>Estado</th><th>Saldo / estado</th><th>Consulta</th></tr></thead><tbody>${providerRows}</tbody></table></div>` +
+    `<div class="card"><h3>Efí · atividade Open Finance</h3><pre>${esc(
+      JSON.stringify(efi.activity || {}, null, 2),
     )}</pre></div>` +
-    '<div class="card notice"><b>Regra:</b> receita, reserva e caixa operacional são contas distintas. Toda compra e venda usa resultado real e referência idempotente.</div>';
+    `<div class="card scroll"><h3>Posições contábeis manuais / legado</h3><p class="muted">Estas posições não são tratadas como saldo real de provider. Servem apenas para contabilidade, migração e reconciliação.</p><table><thead><tr><th>Ativo</th><th>Posição</th><th>Fonte</th><th>Atualização</th></tr></thead><tbody>${positionRows}</tbody></table></div>` +
+    '<div class="card notice"><b>Regra operacional:</b> provider/on-chain é fonte de saldo; ledger é journal; estados <code>provider_uncertain</code> e <code>manual_review</code> exigem reconciliação antes de qualquer nova tentativa.</div>';
 }
 
 const crmStageLabels = {
