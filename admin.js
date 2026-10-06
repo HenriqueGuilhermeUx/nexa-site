@@ -653,8 +653,8 @@ function renderClientes() {
       all.filter((client) => client.kycStatus === 'approved').length,
       'ok',
     )}${card(
-      'Com saldo',
-      all.filter((client) => ledgerUsdc(client) > 0).length,
+      'Com USDC on-chain',
+      all.filter((client) => Number(walletUsdc(client) || 0) > 0).length,
     )}${card(
       'Bloqueados/arquivados',
       all.filter(
@@ -665,8 +665,8 @@ function renderClientes() {
     `<div class="toolbar compact"><input id="clientSearch" placeholder="Buscar cliente" value="${esc(
       clientFilter,
     )}"><button onclick="exportClientsCsv()">Exportar CSV</button></div>` +
-    '<div class="card notice"><b>Bloquear</b> interrompe o acesso. <b>Arquivar</b> encerra operacionalmente a conta. Nenhuma dessas ações apaga ledger, transações, KYC ou auditoria.</div>' +
-    `<div class="card scroll"><table><thead><tr><th>Nome</th><th>Contato</th><th>Status</th><th>Saldo oficial</th><th>Ações</th></tr></thead><tbody>${rows
+    '<div class="card notice"><b>Saldo exibido:</b> leitura on-chain da wallet do cliente. O ledger permanece disponível apenas como extrato de auditoria/reconciliação. <b>Bloquear</b> interrompe o acesso; <b>Arquivar</b> preserva o histórico.</div>' +
+    `<div class="card scroll"><table><thead><tr><th>Nome</th><th>Contato</th><th>Status</th><th>Wallet on-chain</th><th>Ações</th></tr></thead><tbody>${rows
       .map((user) => {
         const canDelete =
           user.isTestOrAdmin || canDeleteIncompleteClient(user);
@@ -684,9 +684,18 @@ function renderClientes() {
           user.kycStatus === 'approved' ? 'green' : 'yellow',
         )} ${user.isBlocked ? pill('bloqueado', 'red') : ''} ${
           user.isArchived ? pill('arquivado', 'gray') : ''
-        }</td><td><b>${n(ledgerUsdc(user), 8)} USDC</b><br><span class="muted">${brl(
-          data.ledgerBalances?.[user.id]?.BRL || 0,
-        )}</span></td><td><div class="row-actions"><button class="small-btn" onclick="report('${user.id}')">Extrato</button><button class="small-btn green" onclick="openClientCrm('${user.id}')">CRM</button><button class="small-btn yellow" onclick="toggleBlock('${user.id}',${!user.isBlocked})">${
+        }</td><td>${(() => {
+          const snapshot = walletSnapshot(user);
+          if (!user.walletAddress) return '<span class="muted">Sem wallet</span>';
+          if (!snapshot || snapshot.readable !== true) {
+            return `<b class="bad">Indisponível</b><br><span class="muted">${esc(
+              String(user.walletAddress).slice(0, 8) + '…' + String(user.walletAddress).slice(-6),
+            )}</span>`;
+          }
+          return `<b>${n(snapshot.usdc, 8)} USDC</b><br><span class="muted">${esc(
+            String(snapshot.walletAddress).slice(0, 8) + '…' + String(snapshot.walletAddress).slice(-6),
+          )}</span>`;
+        })()}</td><td><div class="row-actions"><button class="small-btn" onclick="report('${user.id}')">Ledger / auditoria</button><button class="small-btn green" onclick="openClientCrm('${user.id}')">CRM</button><button class="small-btn yellow" onclick="toggleBlock('${user.id}',${!user.isBlocked})">${
           user.isBlocked ? 'Desbloquear' : 'Bloquear'
         }</button><button class="small-btn ghost" onclick="toggleArchive('${user.id}',${!user.isArchived})">${
           user.isArchived ? 'Restaurar' : 'Arquivar'
@@ -801,9 +810,9 @@ async function report(id) {
       } | ${entry.description || ''}`;
     });
     openModal(
-      `<h2 id="modalTitle">Extrato de ${esc(
+      `<h2 id="modalTitle">Ledger de ${esc(
         client.fullName || 'Cliente',
-      )}</h2><p><b>Saldo atual:</b> ${n(
+      )}</h2><div class="rule-box"><b>Auditoria, não saldo spendable.</b> O saldo do cliente é lido da wallet on-chain.</div><p><b>Posição do journal:</b> ${n(
         ledgerUsdc(client),
         8,
       )} USDC</p><pre>${esc(rows.join('\n') || 'Nenhum lançamento encontrado.')}</pre>`,
@@ -814,15 +823,30 @@ async function report(id) {
 }
 
 function exportClientsCsv() {
-  const columns = ['fullName', 'email', 'phone', 'kycStatus', 'isBlocked', 'isArchived'];
+  const columns = [
+    'fullName',
+    'email',
+    'phone',
+    'kycStatus',
+    'isBlocked',
+    'isArchived',
+  ];
   const quote = (value) => `"${String(value ?? '').replace(/"/g, '""')}"`;
-  const rows = filteredClients().map((client) =>
-    [
+  const rows = filteredClients().map((client) => {
+    const snapshot = walletSnapshot(client);
+    return [
       ...columns.map((key) => quote(client[key])),
-      quote(ledgerUsdc(client)),
-    ].join(';'),
-  );
-  const csv = `\ufeff${[...columns, 'balanceUsdc'].join(';')}\n${rows.join('\n')}`;
+      quote(snapshot?.readable === true ? snapshot.usdc : ''),
+      quote(client.walletAddress || ''),
+      quote(snapshot?.readable === true ? 'onchain_readable' : 'unavailable'),
+    ].join(';');
+  });
+  const csv = `\ufeff${[
+    ...columns,
+    'walletUsdcOnchain',
+    'walletAddress',
+    'walletReadStatus',
+  ].join(';')}\n${rows.join('\n')}`;
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement('a');
