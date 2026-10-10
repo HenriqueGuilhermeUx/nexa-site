@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Nexa Global — a USDC-first wallet to send to Nexa users, reach Brazil through Pix, pay Brazilian bills and access BTC, ETH and digital gold.">
+  <meta name="theme-color" content="#06111F">
+  <meta property="og:title" content="Nexa Global — USDC with real utility">
+  <meta property="og:description" content="Fund with USDC or supported payment methods, send to Nexa users and use Brazil-focused utilities.">
+  <meta property="og:type" content="website">
+  <title>Nexa Global — USDC with real utility</title>
+  <link rel="icon" href="/favicon.svg">
+  <link rel="alternate" hreflang="en" href="/global">
+  <link rel="alternate" hreflang="pt-BR" href="/global/pt">
+  <link rel="alternate" hreflang="es" href="/global/es">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/nexa-2026.css">
+  <style>
+    *{box-sizing:border-box}html{scroll-behavior:smooth}
+    .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:4rem;align-items:center}
+    .global-card{background:linear-gradient(180deg,rgba(14,33,56,.98),rgba(7,19,31,.96));border:1px solid #2a5573;border-radius:32px;padding:24px;box-shadow:0 34px 80px rgba(0,0,0,.38)}
+    .route{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--nexa-border);background:#091827;border-radius:18px;margin-top:10px}
+    .route-icon{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:#102a42;color:#31d7ff;font-weight:900}
+    .pill{border:1px solid var(--nexa-border);background:#0e2138;border-radius:999px;padding:.55rem .8rem;font-size:.72rem;font-weight:800}
+    @media(max-width:900px){.hero-grid{grid-template-columns:1fr;gap:2.5rem}}
+  </style>
+</head>
+<body class="min-h-screen overflow-x-hidden">
+  <nav class="fixed inset-x-0 top-0 z-50 border-b border-white/10" style="background:rgba(6,17,31,.88);backdrop-filter:blur(20px)">
+    <div class="max-w-7xl mx-auto px-5 h-[72px] flex items-center justify-between">
+      <a href="/global" class="nexa-brand" aria-label="Nexa Global home">
+        <img src="/icon.svg" alt="" class="w-10 h-10 rounded-xl">
+        <span>
+          <span class="nexa-wordmark">NEX<span class="accent">A</span></span>
+          <span class="nexa-wallet-label">GLOBAL</span>
+        </span>
+      </a>
+      <div class="hidden lg:flex items-center gap-8 text-sm" style="color:var(--nexa-muted)">
+        <a href="#how">How it works</a>
+        <a href="#brazil">Brazil</a>
+        <a href="#assets">Assets</a>
+        <a href="#compliance">Identity</a>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="hidden sm:flex items-center gap-2 text-xs font-bold" style="color:var(--nexa-muted)">
+          <a href="/global">EN</a><span>·</span><a href="/global/pt">PT</a><span>·</span><a href="/global/es">ES</a>
+        </div>
+        <a href="#early-access" class="nexa-primary px-5 py-2.5 rounded-xl font-extrabold">Early access</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <header class="relative pt-36 pb-24 px-5 overflow-hidden">
+      <div class="max-w-7xl mx-auto hero-grid relative">
+        <div>
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full nexa-surface text-sm font-bold mb-7" style="color:var(--nexa-cyan)">USDC-first. Global by design.</div>
+          <h1 class="text-5xl md:text-7xl font-extrabold leading-[.98] tracking-[-.045em]">
+            Send globally.<br><span class="grad">Land in Brazil.</span>
+          </h1>
+          <p class="text-xl md:text-2xl leading-relaxed max-w-3xl mt-7" style="color:var(--nexa-muted)">
+            Nexa Global turns USDC into a simple way to send value to Nexa users, reach Brazil through Pix and pay Brazilian bills — without making banking infrastructure the user experience.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 mt-9">
+            <a href="#early-access" class="nexa-primary px-8 py-4 rounded-2xl font-extrabold text-center">Join Nexa Global</a>
+            <a href="#how" class="nexa-secondary px-8 py-4 rounded-2xl font-extrabold text-center">See how it works</a>
+          </div>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <span class="pill">USDC core</span>
+            <span class="pill">Nexa User</span>
+            <span class="pill">Pix Brazil</span>
+            <span class="pill">Brazilian bill pay</span>
+          </div>
+        </div>
+
+        <div class="global-card nexa-float">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="nexa-wordmark text-sm">NEX<span class="accent">A</span></div>
+              <div class="text-[9px] tracking-[.32em] mt-1" style="color:var(--nexa-muted-2)">GLOBAL</div>
+            </div>
+            <span class="pill" style="color:var(--nexa-cyan)">USDC</span>
+          </div>
+          <div class="mt-8">
+            <p class="text-xs" style="color:var(--nexa-muted)">Primary action</p>
+            <div class="text-3xl font-extrabold mt-2">Send to @Nexa User</div>
+            <p class="text-sm mt-2" style="color:var(--nexa-muted-2)">Find the person by username. Review USDC. Authorize from your wallet.</p>
+          </div>
+          <div class="mt-7">
+            <div class="route"><div class="route-icon">@</div><div><b>Send to Nexa User</b><div class="text-xs mt-1" style="color:var(--nexa-muted)">The global network effect</div></div></div>
+            <div class="route"><div class="route-icon">+</div><div><b>Add USDC</b><div class="text-xs mt-1" style="color:var(--nexa-muted)">Wallet, card, Apple Pay or Google Pay when available</div></div></div>
+            <div class="route"><div class="route-icon">PIX</div><div><b>Use Brazil</b><div class="text-xs mt-1" style="color:var(--nexa-muted)">Pix and Brazilian bill payment</div></div></div>
+            <div class="route"><div class="route-icon">₿</div><div><b>BTC · ETH · Gold</b><div class="text-xs mt-1" style="color:var(--nexa-muted)">Access supported digital assets with USDC</div></div></div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section id="how" class="py-24 px-5" style="background:rgba(4,14,26,.45)">
+      <div class="max-w-7xl mx-auto">
+        <p class="nexa-kicker">One core asset</p>
+        <h2 class="text-4xl md:text-6xl font-extrabold mt-4 max-w-4xl">Fiat can be the funding method.<br>USDC remains the product core.</h2>
+        <p class="text-xl mt-6 max-w-3xl" style="color:var(--nexa-muted)">
+          Bring USDC from an existing wallet or use a supported funding provider. Card, Apple Pay, Google Pay and other methods are shown only when available for the user's country and provider.
+        </p>
+        <div class="grid md:grid-cols-3 gap-5 mt-12">
+          <article class="nexa-surface rounded-3xl p-7"><span class="nexa-kicker">01</span><h3 class="text-2xl font-bold mt-4">Verify</h3><p class="mt-3" style="color:var(--nexa-muted)">Country-based onboarding and identity verification before financial features are unlocked.</p></article>
+          <article class="nexa-surface rounded-3xl p-7"><span class="nexa-kicker">02</span><h3 class="text-2xl font-bold mt-4">Add USDC</h3><p class="mt-3" style="color:var(--nexa-muted)">Transfer from a wallet or use an eligible funding method. The provider displays its quote and fees before confirmation.</p></article>
+          <article class="nexa-surface rounded-3xl p-7"><span class="nexa-kicker">03</span><h3 class="text-2xl font-bold mt-4">Use it</h3><p class="mt-3" style="color:var(--nexa-muted)">Send to a Nexa username, reach Brazil through Pix, pay a Brazilian bill or access supported assets.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="brazil" class="py-24 px-5">
+      <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <p class="nexa-kicker">Built for the Brazil connection</p>
+          <h2 class="text-4xl md:text-6xl font-extrabold mt-4">Family. Freelancers. Services. Life back home.</h2>
+          <p class="text-xl mt-6 leading-relaxed" style="color:var(--nexa-muted)">
+            Nexa Global is designed for Brazilians abroad and international users who need a simpler way to pay or send value to people in Brazil.
+          </p>
+        </div>
+        <div class="grid gap-4">
+          <article class="nexa-surface rounded-3xl p-7"><h3 class="text-2xl font-bold">Nexa User first</h3><p class="mt-3" style="color:var(--nexa-muted)">The primary route is username-to-username. The recipient stays inside the Nexa ecosystem and can use the Brazil utilities available to their account.</p></article>
+          <article class="nexa-surface rounded-3xl p-7"><h3 class="text-2xl font-bold">Brazilian bill pay</h3><p class="mt-3" style="color:var(--nexa-muted)">A Brazilian abroad can keep paying supported bills in Brazil with a scheduled payment experience.</p></article>
+          <article class="nexa-surface rounded-3xl p-7"><h3 class="text-2xl font-bold">Pix utility</h3><p class="mt-3" style="color:var(--nexa-muted)">Where enabled, USDC can be converted and settled through the Nexa Brazil payout infrastructure.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="assets" class="py-24 px-5" style="background:rgba(4,14,26,.45)">
+      <div class="max-w-6xl mx-auto">
+        <p class="nexa-kicker">Beyond transfers</p>
+        <h2 class="text-4xl md:text-6xl font-extrabold mt-4">BTC, ETH and digital gold.</h2>
+        <p class="text-xl mt-6 max-w-3xl" style="color:var(--nexa-muted)">Use USDC to access supported assets inside the same wallet-first experience. Availability depends on jurisdiction, liquidity and product eligibility.</p>
+      </div>
+    </section>
+
+    <section id="compliance" class="py-24 px-5">
+      <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12">
+        <div>
+          <p class="nexa-kicker">Country-aware onboarding</p>
+          <h2 class="text-4xl md:text-5xl font-extrabold mt-4">The app adapts to your country. It does not guess it.</h2>
+        </div>
+        <div>
+          <p class="text-lg leading-relaxed" style="color:var(--nexa-muted)">
+            Residence country, identity documents and applicable verification requirements determine the onboarding path. Device location may support risk controls, but it is not the source of truth for eligibility.
+          </p>
+          <p class="text-sm leading-relaxed mt-5" style="color:var(--nexa-muted-2)">
+            Services, limits, supported funding methods and digital assets may vary by country. Nexa Global does not promise local bank accounts or local fiat balances at launch.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="early-access" class="py-24 px-5">
+      <div class="max-w-5xl mx-auto nexa-surface rounded-[2rem] p-9 sm:p-14 text-center">
+        <p class="nexa-kicker">Nexa Global</p>
+        <h2 class="text-4xl md:text-6xl font-extrabold mt-5">USDC in. Brazil within reach.</h2>
+        <p class="text-xl mt-6 max-w-3xl mx-auto" style="color:var(--nexa-muted)">
+          Global onboarding is being opened country by country. Funding and payment methods depend on provider and jurisdiction availability.
+        </p>
+        <a href="/" class="inline-block nexa-secondary px-8 py-4 rounded-2xl font-extrabold mt-9">Back to Nexa Brazil</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-5 py-10 flex flex-col md:flex-row gap-6 justify-between text-sm" style="color:var(--nexa-muted-2)">
+      <div><div class="nexa-wordmark">NEX<span class="accent">A</span></div><p class="mt-2">GLOBAL · USDC-first.</p></div>
+      <div class="flex flex-wrap gap-5"><a href="/privacidade">Privacy</a><a href="/termos">Terms</a><a href="/suporte">Support</a><a href="/">Nexa Brazil</a></div>
+    </div>
+  </footer>
+</body>
+</html>
