@@ -1,9 +1,9 @@
 {
   "name": "Nexa Wallet",
   "short_name": "Nexa",
-  "description": "Nexa Wallet: sua wallet, seus ativos. Cripto sem complicação.",
-  "id": "/portal.html",
-  "start_url": "/portal.html",
+  "description": "Nexa Wallet 2.0.43 build 148: sua wallet, seus ativos.",
+  "id": "/wallet-v148.html",
+  "start_url": "/wallet-v148.html",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
@@ -17,13 +17,13 @@
   "prefer_related_applications": false,
   "icons": [
     {
-      "src": "/icon.svg",
+      "src": "/nexa-v148-icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "/maskable-icon.svg",
+      "src": "/nexa-v148-icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "maskable"
@@ -33,10 +33,22 @@
     {
       "name": "Ativos",
       "short_name": "Ativos",
-      "url": "/portal.html?tab=ativos",
+      "url": "/wallet-v148.html?tab=assets",
       "icons": [
         {
-          "src": "/icon.svg",
+          "src": "/nexa-v148-icon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Movimentar",
+      "short_name": "Movimentar",
+      "url": "/wallet-v148.html?tab=move",
+      "icons": [
+        {
+          "src": "/nexa-v148-icon.svg",
           "sizes": "any",
           "type": "image/svg+xml"
         }
@@ -45,10 +57,10 @@
     {
       "name": "Histórico",
       "short_name": "Histórico",
-      "url": "/portal.html?tab=historico",
+      "url": "/wallet-v148.html?tab=history",
       "icons": [
         {
-          "src": "/icon.svg",
+          "src": "/nexa-v148-icon.svg",
           "sizes": "any",
           "type": "image/svg+xml"
         }
@@ -57,10 +69,10 @@
     {
       "name": "Perfil",
       "short_name": "Perfil",
-      "url": "/portal.html?tab=perfil",
+      "url": "/wallet-v148.html?tab=profile",
       "icons": [
         {
-          "src": "/icon.svg",
+          "src": "/nexa-v148-icon.svg",
           "sizes": "any",
           "type": "image/svg+xml"
         }
