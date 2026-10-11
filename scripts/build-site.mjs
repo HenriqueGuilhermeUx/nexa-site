@@ -18,7 +18,7 @@ const repository =
   'https://github.com/HenriqueGuilhermeUx/nexa-react-app.git';
 const commit =
   process.env.NEXA_PORTAL_COMMIT ||
-  '2621945c47805c5f62c910ddefb627078200fa5c';
+  '20c885af5fa65510c2fd60300549173a54ce50c8';
 
 function applySharedDesignSystem() {
   const stylesheet = '<link rel="stylesheet" href="/nexa-2026.css">';
@@ -94,7 +94,7 @@ console.log(
       portalCommit: commit,
       publicPath: '/portal/',
       output: 'portal/',
-      financialExecutionEnabled: false,
+      financialExecutionEnabled: 'direct-transfer-only-with-user-privy-signature',
     },
     null,
     2,

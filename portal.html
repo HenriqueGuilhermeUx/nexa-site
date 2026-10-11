@@ -2,12 +2,16 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Nexa">
+  <meta name="format-detection" content="telephone=no">
   <title>Nexa | Portal Web</title>
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="apple-touch-icon" href="/apple-touch-icon.svg">
   <link rel="icon" href="/favicon.svg">
-  <meta name="theme-color" content="#041f2c">
+  <meta name="theme-color" content="#06111F">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -22,6 +26,8 @@
     input:focus,select:focus,textarea:focus{outline:none;border-color:#6366f1}
     .hidden{display:none!important}.tab.active{background:#4f46e5;color:white}
   </style>
+  <link rel="stylesheet" href="/nexa-2026.css">
+  <link rel="stylesheet" href="/nexa-pwa.css">
 </head>
 <body class="bgx min-h-screen">
 <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-950/85 backdrop-blur-xl border-b border-white/10">
@@ -44,6 +50,13 @@
     </div>
   </section>
   <section id="appArea" class="hidden">
+    <div class="nexa-pwa-brandbar">
+      <div class="nexa-pwa-brandlock">
+        <img class="nexa-pwa-brandicon" src="/icon.svg" alt="Nexa">
+        <div><div class="nexa-pwa-wordmark">NEXA</div><div class="nexa-pwa-tagline">WALLET · Cripto sem complicação.</div></div>
+      </div>
+      <button class="nexa-pwa-avatar" id="pwaAvatar" onclick="openTab('perfil')" aria-label="Abrir perfil">N</button>
+    </div>
     <section class="glass rounded-[2rem] p-7 mb-6">
       <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div>
@@ -72,6 +85,26 @@
       </div>
     </div>
     <div id="panel-resumo" class="panel">
+      <div class="nexa-pwa-hero">
+        <div class="nexa-pwa-hero-label">VALOR DA CARTEIRA</div>
+        <div id="pwaWalletValue" class="nexa-pwa-hero-value">0,00 USDC</div>
+        <div id="pwaWalletUnit" class="nexa-pwa-hero-unit">Saldo principal em USDC</div>
+        <div class="nexa-pwa-hero-hint">Sua wallet individual, com a complexidade técnica ficando por trás da experiência.</div>
+      </div>
+      <div class="nexa-pwa-actions">
+        <button class="nexa-pwa-action primary" onclick="location.href='/app.html'"><span class="nexa-pwa-action-icon">＋</span><span>Adicionar</span></button>
+        <button class="nexa-pwa-action" onclick="openTab('ativos')"><span class="nexa-pwa-action-icon">⇄</span><span>Converter</span></button>
+        <button class="nexa-pwa-action" onclick="pwaUnavailable('Enviar')"><span class="nexa-pwa-action-icon">↗</span><span>Enviar</span></button>
+        <button class="nexa-pwa-action" onclick="pwaUnavailable('Sacar')"><span class="nexa-pwa-action-icon">↓</span><span>Sacar</span></button>
+      </div>
+      <div class="nexa-pwa-section-head"><div><div class="nexa-pwa-kicker">MINHA WALLET</div><div class="nexa-pwa-title">Meus ativos</div></div><button class="nexa-pwa-link" onclick="openTab('ativos')">Ver todos</button></div>
+      <div class="nexa-pwa-assets">
+        <div class="nexa-pwa-asset"><div class="nexa-pwa-token">U</div><div class="nexa-pwa-asset-copy"><div class="nexa-pwa-asset-name">USDC</div><div class="nexa-pwa-asset-symbol">USDC</div></div><div id="pwaUsdc" class="nexa-pwa-asset-value">0,00 USDC</div></div>
+        <div class="nexa-pwa-asset"><div class="nexa-pwa-token" style="border-color:#F59E0B;color:#F59E0B">₿</div><div class="nexa-pwa-asset-copy"><div class="nexa-pwa-asset-name">Bitcoin</div><div class="nexa-pwa-asset-symbol">WBTC</div></div><div id="pwaWbtc" class="nexa-pwa-asset-value">0 WBTC</div></div>
+        <div class="nexa-pwa-asset"><div class="nexa-pwa-token" style="border-color:#D5E2EF;color:#D5E2EF">Au</div><div class="nexa-pwa-asset-copy"><div class="nexa-pwa-asset-name">Ouro Digital</div><div class="nexa-pwa-asset-symbol">PAXG</div></div><div id="pwaPaxg" class="nexa-pwa-asset-value">0 PAXG</div></div>
+      </div>
+      <div class="nexa-pwa-section-head"><div><div class="nexa-pwa-kicker">ATIVIDADE</div><div class="nexa-pwa-title">Movimentações</div></div><button class="nexa-pwa-link" onclick="openTab('historico')">Ver histórico</button></div>
+      <div class="card rounded-3xl p-5"><p class="text-slate-300 text-sm">Entradas, conversões e saques aparecem no histórico com seus status de processamento e conciliação.</p></div>
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
         <button class="card rounded-3xl p-7 text-left" data-go="carteira"><div class="text-4xl mb-3">🔐</div><h3 class="text-2xl font-black">Carteira</h3><p class="text-slate-400">Endereço e QR Code.</p></button>
         <button class="card rounded-3xl p-7 text-left" data-go="ativos"><div class="text-4xl mb-3">🟠</div><h3 class="text-2xl font-black">WBTC / PAXG</h3><p class="text-slate-400">Ativos digitais com entrega on-chain.</p></button>
@@ -94,20 +127,74 @@
     <div id="panel-recorrente" class="panel hidden"><div class="grid lg:grid-cols-2 gap-6"><div class="glass rounded-[2rem] p-7"><h2 class="text-3xl font-black mb-4">Cripto por assinatura</h2><input id="recAmount" class="w-full p-4 rounded-2xl mb-3" placeholder="Valor mensal em R$"><input id="recDay" class="w-full p-4 rounded-2xl mb-3" placeholder="Dia do mês" value="5"><select id="recAsset" class="w-full p-4 rounded-2xl mb-4"><option value="USDC">USDC</option><option value="WBTC">WBTC</option><option value="PAXG">PAXG</option></select><button id="recSaveBtn" class="bg-indigo-500 hover:bg-indigo-600 px-5 py-3 rounded-2xl font-black mr-2 mb-2">Salvar</button><button id="recLinkBtn" class="bg-cyan-500 hover:bg-cyan-600 px-5 py-3 rounded-2xl font-black mb-2">Autorizar Pix</button></div><div class="glass rounded-[2rem] p-7"><h2 class="text-3xl font-black mb-4">Atual</h2><div id="recBox" class="card rounded-2xl p-5 text-slate-300">Carregando...</div></div></div></div>
     <div id="panel-historico" class="panel hidden"><div class="glass rounded-[2rem] p-7"><h2 class="text-3xl font-black mb-4">Histórico</h2><button id="historyBtn" class="bg-white/10 border border-white/10 px-5 py-3 rounded-2xl font-black mb-4">Atualizar</button><div id="historyList" class="space-y-3 text-slate-300">Carregando...</div></div></div>
     <div id="panel-ecossistema" class="panel hidden"><div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5"><a class="card rounded-3xl p-7 block" href="https://healthwallet1.netlify.app" target="_blank"><div class="text-4xl mb-3">🏥</div><h3 class="text-2xl font-black">HealthWallet</h3><p class="text-slate-400">Saúde com IA.</p></a><a class="card rounded-3xl p-7 block" href="https://docwallet.netlify.app" target="_blank"><div class="text-4xl mb-3">📄</div><h3 class="text-2xl font-black">DocWallet</h3><p class="text-slate-400">Documentos.</p></a><a class="card rounded-3xl p-7 block" href="https://app.smartbots.club" target="_blank"><div class="text-4xl mb-3">🤖</div><h3 class="text-2xl font-black">Staff IA</h3><p class="text-slate-400">Assistente inteligente.</p></a><a class="card rounded-3xl p-7 block" href="https://f-insight.org" target="_blank"><div class="text-4xl mb-3">📈</div><h3 class="text-2xl font-black">F-Insight</h3><p class="text-slate-400">Inteligência financeira.</p></a></div></div>
+    <div id="panel-movimentar" class="panel hidden">
+      <div class="nexa-pwa-section-head"><div><div class="nexa-pwa-kicker">MOVIMENTAR</div><div class="nexa-pwa-title">O que você quer fazer?</div></div></div>
+      <div class="nexa-pwa-move-grid">
+        <button class="nexa-pwa-move-card" onclick="location.href='/app.html'"><span>＋</span><strong>Adicionar</strong><small>Entrada em reais pelos fluxos web já disponíveis.</small></button>
+        <button class="nexa-pwa-move-card" onclick="openTab('ativos')"><span>⇄</span><strong>Converter</strong><small>Simule ativos digitais usando seu saldo USDC.</small></button>
+        <button class="nexa-pwa-move-card" onclick="pwaUnavailable('Enviar')"><span>↗</span><strong>Enviar</strong><small>Requer autorização da wallet Privy no app nativo.</small></button>
+        <button class="nexa-pwa-move-card" onclick="pwaUnavailable('Sacar')"><span>↓</span><strong>Sacar</strong><small>Requer o fluxo wallet-first seguro do app nativo.</small></button>
+      </div>
+      <div id="pwaMoveMessage" class="glass rounded-[2rem] p-5 mt-4 hidden text-sm text-slate-300"></div>
+    </div>
+    <div id="panel-perfil" class="panel hidden">
+      <div class="nexa-pwa-section-head"><div><div class="nexa-pwa-kicker">MINHA NEXA</div><div class="nexa-pwa-title">Perfil e segurança</div></div></div>
+      <div class="glass rounded-[2rem] p-5">
+        <div class="nexa-pwa-profile-row"><span>Nome</span><strong id="pwaProfileName">—</strong></div>
+        <div class="nexa-pwa-profile-row"><span>E-mail</span><strong id="pwaProfileEmail">—</strong></div>
+        <div class="nexa-pwa-profile-row"><span>Nexa ID</span><strong id="pwaProfileUsername">—</strong></div>
+        <div class="nexa-pwa-profile-row"><span>Verificação</span><strong id="pwaProfileKyc">—</strong></div>
+        <div class="nexa-pwa-profile-row"><span>Wallet</span><strong id="pwaProfileWallet">—</strong></div>
+      </div>
+      <div class="glass rounded-[2rem] p-5">
+        <a class="nexa-pwa-menu-link" href="/identity">Identidade e wallet <span>›</span></a>
+        <a class="nexa-pwa-menu-link" href="/suporte">Suporte <span>›</span></a>
+        <a class="nexa-pwa-menu-link" href="/privacidade">Privacidade <span>›</span></a>
+        <a class="nexa-pwa-menu-link" href="/termos">Termos de Uso <span>›</span></a>
+        <a class="nexa-pwa-menu-link" href="/excluir-conta">Excluir conta <span>›</span></a>
+        <button class="nexa-pwa-menu-link w-full text-left" onclick="logout()">Sair da conta <span>›</span></button>
+      </div>
+    </div>
     <div class="glass rounded-[2rem] p-7 mt-6"><h2 class="text-2xl font-black mb-3">Resposta técnica</h2><pre id="debug" class="bg-slate-950 border border-white/10 rounded-2xl p-4 overflow-auto text-xs text-slate-300 max-h-80">Aguardando...</pre></div>
   </section>
+  <nav class="nexa-pwa-bottom-nav" aria-label="Navegação Nexa Wallet">
+    <button class="active" data-native-tab="resumo" onclick="openTab('resumo')"><span class="navico">⌂</span><span>Início</span></button>
+    <button data-native-tab="ativos" onclick="openTab('ativos')"><span class="navico">▣</span><span>Ativos</span></button>
+    <button class="center" data-native-tab="movimentar" onclick="openTab('movimentar')"><span class="navico">⇄</span><span>Movimentar</span></button>
+    <button data-native-tab="historico" onclick="openTab('historico')"><span class="navico">↺</span><span>Histórico</span></button>
+    <button data-native-tab="perfil" onclick="openTab('perfil')"><span class="navico">◯</span><span>Perfil</span></button>
+  </nav>
 </main>
 <script>
 const API='https://nexa-backend-p2u0.onrender.com/api/v1';
-let token=localStorage.getItem('nexa_token')||'';let user=null;let balances={BRL:0,USDC:0,WBTC:0,PAXG:0};let wallet='';
+let token=localStorage.getItem('nexa_access_token')||localStorage.getItem('nexa_token')||'';let refreshToken=localStorage.getItem('nexa_refresh_token')||'';let user=null;let balances={BRL:0,USDC:0,WBTC:0,PAXG:0};let wallet='';
 function $(id){return document.getElementById(id)}
 function log(x){const t=typeof x==='string'?x:JSON.stringify(x,null,2); if($('debug'))$('debug').textContent=t; if($('loginMsg'))$('loginMsg').textContent=t; console.log(x)}
 function h(json=true){const o={};if(json)o['Content-Type']='application/json';if(token)o.Authorization='Bearer '+token;return o}
 function amount(v){const s=String(v||'').replace(/R\$/gi,'').replace(/USDC/gi,'').replace(/\s/g,'').replace(/\./g,'').replace(',','.');const n=Number(s);return Number.isFinite(n)?n:0}
-async function jsonFetch(url,opt={}){const r=await fetch(url,opt);const text=await r.text();let data={};try{data=text?JSON.parse(text):{}}catch(e){data={raw:text}}return{ok:r.ok,status:r.status,data}}
+async function refreshSession(){
+  if(!refreshToken)return false;
+  try{
+    const r=await fetch(API+'/auth/refresh',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({refreshToken})});
+    const data=await r.json().catch(()=>({}));
+    if(!r.ok)return false;
+    const next=tokenFrom(data);if(!next)return false;
+    token=next;refreshToken=data.refreshToken||data.refresh_token||data.tokens?.refreshToken||refreshToken;
+    localStorage.setItem('nexa_access_token',token);localStorage.setItem('nexa_token',token);localStorage.setItem('nexa_refresh_token',refreshToken);
+    return true;
+  }catch{return false}
+}
+async function jsonFetch(url,opt={},retry=true){
+  let r=await fetch(url,opt);
+  if(r.status===401&&retry&&url!==API+'/auth/refresh'&&await refreshSession()){
+    const headers={...(opt.headers||{}),Authorization:'Bearer '+token};
+    r=await fetch(url,{...opt,headers});
+  }
+  const text=await r.text();let data={};try{data=text?JSON.parse(text):{}}catch(e){data={raw:text}}return{ok:r.ok,status:r.status,data}
+}
 function tokenFrom(d){return d.accessToken||d.token||d.access_token||d.tokens?.accessToken||d.tokens?.access_token||d.data?.accessToken||d.data?.token||d.auth?.accessToken||''}
-function showApp(){ $('loginArea').classList.add('hidden'); $('appArea').classList.remove('hidden'); }
-function showLogin(){ $('loginArea').classList.remove('hidden'); $('appArea').classList.add('hidden'); }
+function showApp(){ $('loginArea').classList.add('hidden'); $('appArea').classList.remove('hidden'); document.body.classList.add('nexa-authenticated'); }
+function showLogin(){ $('loginArea').classList.remove('hidden'); $('appArea').classList.add('hidden'); document.body.classList.remove('nexa-authenticated'); }
 async function login(){
   const email=$('loginEmail').value.trim();const password=$('loginPassword').value;
   if(!email||!password){log('Informe e-mail e senha.');return}
@@ -116,16 +203,28 @@ async function login(){
     const res=await jsonFetch(API+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
     if(!res.ok){log({erro:'Login recusado',status:res.status,response:res.data});return}
     token=tokenFrom(res.data); if(!token){log({erro:'Login respondeu, mas sem token',response:res.data});return}
-    localStorage.setItem('nexa_token',token); user=res.data.user||res.data.data?.user||{email}; showApp(); renderBasic();
+    refreshToken=res.data.refreshToken||res.data.refresh_token||res.data.tokens?.refreshToken||'';localStorage.setItem('nexa_access_token',token);localStorage.setItem('nexa_token',token);if(refreshToken)localStorage.setItem('nexa_refresh_token',refreshToken);if(res.data.user)localStorage.setItem('nexa_user',JSON.stringify(res.data.user)); user=res.data.user||res.data.data?.user||{email}; showApp(); renderBasic();
     await loadAll(); log({success:true,message:'Portal carregado',user,balances});
   }catch(e){log('Erro no login: '+e.message)}finally{$('loginBtn').disabled=false;$('loginBtn').textContent='Entrar'}
 }
 async function loadMe(){try{const res=await jsonFetch(API+'/user/me',{headers:h(false)});if(res.ok){user=res.data.user||res.data;wallet=user.walletAddress||user.wallet?.address||user.wallet?.walletAddress||''}}catch(e){} return user}
 async function loadBalances(){if(!user?.id)return;const urls=[API+'/ledger/balance?userId='+encodeURIComponent(user.id)+'&mode=real',API+'/ledger/balance?userId='+encodeURIComponent(user.id),API+'/ledger/balance'];for(const url of urls){try{const res=await jsonFetch(url,{headers:h(false)});if(!res.ok)continue;const b=res.data.balances||res.data.balance||res.data;balances={BRL:Number(b.BRL??b.brl??0),USDC:Number(b.USDC??b.usdc??0),WBTC:Number(b.WBTC??b.wbtc??0),PAXG:Number(b.PAXG??b.paxg??0)};return}catch(e){}}}
-function renderBasic(){ if(!user)return; const name=user.fullName||user.email||'cliente Nexa'; $('hello').textContent='Olá, '+name; $('userLine').textContent=(user.email||'')+' · '+(user.username?('@'+user.username):'Nexa ID'); $('saldoUsdc').textContent=Number(balances.USDC||0).toFixed(8); $('saldoBrl').textContent=Number(balances.BRL||0).toFixed(2); $('kycStatus').textContent=user.kycStatus||'-'; $('walletMini').textContent=wallet?wallet.slice(0,6)+'...'+wallet.slice(-4):'-'; $('walletFull').textContent=wallet||'Carteira não encontrada'; renderQr(); }
+function renderBasic(){ if(!user)return; const name=user.fullName||user.email||'cliente Nexa'; const first=String(name).split(' ')[0]||'N'; $('hello').textContent='Olá, '+first; $('userLine').textContent=(user.email||'')+' · '+(user.username?('@'+user.username):'Nexa ID'); $('saldoUsdc').textContent=Number(balances.USDC||0).toFixed(8); $('saldoBrl').textContent=Number(balances.BRL||0).toFixed(2); $('kycStatus').textContent=user.kycStatus||'-'; $('walletMini').textContent=wallet?wallet.slice(0,6)+'...'+wallet.slice(-4):'-'; $('walletFull').textContent=wallet||'Carteira não encontrada';
+  if($('pwaAvatar'))$('pwaAvatar').textContent=first.charAt(0).toUpperCase();
+  if($('pwaWalletValue'))$('pwaWalletValue').textContent=Number(balances.USDC||0).toLocaleString('pt-BR',{maximumFractionDigits:8})+' USDC';
+  if($('pwaUsdc'))$('pwaUsdc').textContent=Number(balances.USDC||0).toLocaleString('pt-BR',{maximumFractionDigits:8})+' USDC';
+  if($('pwaWbtc'))$('pwaWbtc').textContent=Number(balances.WBTC||0).toLocaleString('pt-BR',{maximumFractionDigits:8})+' WBTC';
+  if($('pwaPaxg'))$('pwaPaxg').textContent=Number(balances.PAXG||0).toLocaleString('pt-BR',{maximumFractionDigits:8})+' PAXG';
+  if($('pwaProfileName'))$('pwaProfileName').textContent=name;
+  if($('pwaProfileEmail'))$('pwaProfileEmail').textContent=user.email||'—';
+  if($('pwaProfileUsername'))$('pwaProfileUsername').textContent=user.username?'@'+String(user.username).replace(/^@/,''):'—';
+  if($('pwaProfileKyc'))$('pwaProfileKyc').textContent=user.kycStatus||'—';
+  if($('pwaProfileWallet'))$('pwaProfileWallet').textContent=wallet||'Carteira não encontrada';
+  renderQr(); }
 function renderQr(){const a=$('walletQr'); if(!a)return; a.innerHTML=''; if(wallet&&window.QRCode)new QRCode(a,{text:wallet,width:210,height:210})}
 async function loadAll(){await loadMe();await loadBalances();renderBasic();await Promise.allSettled([loadRewards(),loadRecurring(),loadHistory()])}
-function openTab(t){document.querySelectorAll('.panel').forEach(p=>p.classList.add('hidden'));document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));$('panel-'+t)?.classList.remove('hidden');document.querySelector('.tab[data-tab="'+t+'"]')?.classList.add('active'); if(t==='historico')loadHistory(); if(t==='rewards')loadRewards(); if(t==='recorrente')loadRecurring()}
+function openTab(t){document.querySelectorAll('.panel').forEach(p=>p.classList.add('hidden'));document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));document.querySelectorAll('[data-native-tab]').forEach(b=>b.classList.remove('active'));$('panel-'+t)?.classList.remove('hidden');document.querySelector('.tab[data-tab="'+t+'"]')?.classList.add('active');document.querySelector('[data-native-tab="'+t+'"]')?.classList.add('active');if(t==='historico')loadHistory();if(t==='rewards')loadRewards();if(t==='recorrente')loadRecurring();window.scrollTo({top:0,behavior:'smooth'})}
+function pwaUnavailable(action){openTab('movimentar');const box=$('pwaMoveMessage');if(!box)return;box.classList.remove('hidden');box.textContent=action+' com assinatura da sua wallet permanece no app Nexa nesta versão do PWA. Não criamos um atalho inseguro nem uma segunda carteira para simular essa operação.'}
 function copyWallet(){if(!wallet){log('Carteira não encontrada');return}navigator.clipboard.writeText(wallet);log('Carteira copiada')}
 function scan(){if(wallet)window.open('https://polygonscan.com/address/'+wallet,'_blank')}
 async function quoteAsset(){const toAsset=$('assetSymbol').value;const amountUsdc=amount($('assetAmount').value);if(!amountUsdc){log('Informe valor em USDC');return}const res=await jsonFetch(API+'/swap/investment-quote',{method:'POST',headers:h(true),body:JSON.stringify({userId:user.id,toAsset,amountUsdc})});$('assetResult').textContent=JSON.stringify(res.data,null,2);log(res.data)}
@@ -136,10 +235,23 @@ async function loadRecurring(){if(!user?.id||!$('recBox'))return;try{const res=a
 async function saveRecurring(){const payload={userId:user.id,amountBrl:amount($('recAmount').value),asset:$('recAsset').value,targetAsset:$('recAsset').value,dayOfMonth:Number($('recDay').value||5),frequency:'monthly',status:'active'};const res=await jsonFetch(API+'/recurring-pix/upsert',{method:'POST',headers:h(true),body:JSON.stringify(payload)});log({sentPayload:payload,response:res.data});await loadRecurring()}
 async function linkRecurring(){const res=await jsonFetch(API+'/recurring-pix/link-woovi',{method:'POST',headers:h(true),body:JSON.stringify({userId:user.id})});log(res.data);const url=res.data.url||res.data.link||res.data.paymentLinkUrl||res.data.checkoutUrl||res.data.data?.url;if(url)window.open(url,'_blank')}
 async function loadHistory(){if(!user?.id||!$('historyList'))return;const urls=[API+'/ledger/statement?userId='+encodeURIComponent(user.id)+'&limit=50&mode=real',API+'/transaction/history'];for(const url of urls){try{const res=await jsonFetch(url,{headers:h(false)});if(!res.ok)continue;const list=res.data.statement||res.data.transactions||res.data.history||res.data.data||(Array.isArray(res.data)?res.data:[]);$('historyList').innerHTML=list.length?list.map(x=>'<div class="card rounded-2xl p-4 flex justify-between gap-4"><div><b>'+(x.description||x.type||'Movimentação')+'</b><p class="text-slate-400 text-sm">'+(x.createdAt?new Date(x.createdAt).toLocaleString('pt-BR'):'')+'</p></div><b>'+Number(x.amount||x.amountUsdc||0).toFixed((x.asset==='BRL')?2:8)+' '+(x.asset||'USDC')+'</b></div>').join(''):'Nenhum histórico carregado.';return}catch(e){}}$('historyList').innerHTML='Não foi possível carregar histórico.'}
-function logout(){localStorage.removeItem('nexa_token');token='';user=null;balances={BRL:0,USDC:0};showLogin();log('Sessão encerrada')}
+function logout(){['nexa_token','nexa_access_token','nexa_refresh_token','nexa_user'].forEach(k=>localStorage.removeItem(k));token='';refreshToken='';user=null;balances={BRL:0,USDC:0,WBTC:0,PAXG:0};showLogin();log('Sessão encerrada')}
 function bind(){ $('loginBtn').addEventListener('click',login); $('loginPassword').addEventListener('keydown',e=>{if(e.key==='Enter')login()}); $('loginEmail').addEventListener('keydown',e=>{if(e.key==='Enter')login()}); $('logoutBtn').addEventListener('click',logout); $('refreshBtn').addEventListener('click',loadAll); document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.tab))); document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.go))); $('copyWalletBtn').addEventListener('click',copyWallet); $('scanBtn').addEventListener('click',scan); $('quoteBtn').addEventListener('click',quoteAsset); $('executeBtn').addEventListener('click',executeAsset); $('rewardBtn').addEventListener('click',rewardJoin); $('recSaveBtn').addEventListener('click',saveRecurring); $('recLinkBtn').addEventListener('click',linkRecurring)}
 if('serviceWorker'in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>null);
-document.addEventListener('DOMContentLoaded',async()=>{bind(); if(token){showApp();await loadAll();log('Sessão restaurada.')}});
+let deferredInstallPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;showInstallHint()});
+function showInstallHint(){
+  const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+  if(standalone||localStorage.getItem('nexaPwaInstallDismissed')==='1'||document.getElementById('nexaPwaInstall'))return;
+  const ios=/iPhone|iPad|iPod/i.test(navigator.userAgent);if(!ios&&!deferredInstallPrompt)return;
+  const box=document.createElement('div');box.id='nexaPwaInstall';box.className='nexa-pwa-install';
+  box.innerHTML='<div style="display:flex;gap:12px;align-items:flex-start"><img src="/icon.svg" alt="" style="width:48px;height:48px;border-radius:15px"><div style="flex:1"><b>Instalar Nexa Wallet</b><p style="margin:5px 0 0;color:#A9BCD0;font-size:13px;line-height:18px">'+(ios?'No Safari: Compartilhar → Adicionar à Tela de Início.':'Use a Nexa em tela cheia direto da sua tela inicial.')+'</p>'+(ios?'':'<button id="nexaInstallNow" style="margin-top:9px;padding:9px 13px;border-radius:12px;font-weight:800">Instalar</button>')+'</div><button id="nexaInstallClose" aria-label="Fechar" style="background:transparent!important;border:0!important;padding:4px;color:#A9BCD0!important">✕</button></div>';
+  document.body.appendChild(box);
+  box.querySelector('#nexaInstallClose').onclick=()=>{localStorage.setItem('nexaPwaInstallDismissed','1');box.remove()};
+  const install=box.querySelector('#nexaInstallNow');if(install)install.onclick=async()=>{if(!deferredInstallPrompt)return;await deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;box.remove()};
+}
+setTimeout(showInstallHint,1600);
+document.addEventListener('DOMContentLoaded',async()=>{bind();if(token){showApp();await loadAll();const requested=new URLSearchParams(location.search).get('tab');if(['resumo','ativos','movimentar','historico','perfil','carteira','rewards','recorrente'].includes(requested||''))openTab(requested);log('Sessão restaurada.')}});
 </script>
 
 <div class="mt-6 flex flex-wrap justify-center gap-6 text-sm">
