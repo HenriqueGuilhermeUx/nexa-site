@@ -10,6 +10,44 @@
   VITE_PRIVY_APP_ID = "cmpen2gm3007v0cjswjlyefji"
   VITE_PRIVY_CLIENT_ID = "client-WY6ZY2Ptr39FTjXumMRAfqM2Bx8m9DUWxcSgXg6CWaMyT"
 
+# Nexa Global domain alias. These rules become active only after
+# global.trynexa.com.br is assigned to this Netlify site.
+[[redirects]]
+  from = "https://global.trynexa.com.br/"
+  to = "/global.html"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "https://global.trynexa.com.br/pt"
+  to = "/global-pt.html"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "https://global.trynexa.com.br/es"
+  to = "/global-es.html"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "https://global.trynexa.com.br/global"
+  to = "https://global.trynexa.com.br/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://global.trynexa.com.br/global/pt"
+  to = "https://global.trynexa.com.br/pt"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://global.trynexa.com.br/global/es"
+  to = "https://global.trynexa.com.br/es"
+  status = 301
+  force = true
+
 [[redirects]]
   from = "/cadastro"
   to = "/portal/"
