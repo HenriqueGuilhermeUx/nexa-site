@@ -2,7 +2,7 @@
   "name": "Nexa Wallet",
   "short_name": "Nexa",
   "description": "Nexa Wallet: sua carteira para acessar e usar ativos digitais com simplicidade e controle.",
-  "start_url": "/portal/",
+  "start_url": "/portal.html",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
@@ -26,5 +26,7 @@
       "type": "image/svg+xml",
       "purpose": "maskable"
     }
-  ]
+  ],
+  "id": "/portal.html",
+  "prefer_related_applications": false
 }
