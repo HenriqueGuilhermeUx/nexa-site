@@ -63,5 +63,10 @@ loginForm.addEventListener('submit',async(e)=>{
   }catch(err){status(err.message,'error');btn.disabled=false;}
 });
 </script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));
+}
+</script>
 </body>
 </html>
