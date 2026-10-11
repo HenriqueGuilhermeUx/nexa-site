@@ -251,7 +251,7 @@ function showInstallHint(){
   const install=box.querySelector('#nexaInstallNow');if(install)install.onclick=async()=>{if(!deferredInstallPrompt)return;await deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;box.remove()};
 }
 setTimeout(showInstallHint,1600);
-document.addEventListener('DOMContentLoaded',async()=>{bind(); if(token){showApp();await loadAll();log('Sessão restaurada.')}});
+document.addEventListener('DOMContentLoaded',async()=>{bind();if(token){showApp();await loadAll();const requested=new URLSearchParams(location.search).get('tab');if(['resumo','ativos','movimentar','historico','perfil','carteira','rewards','recorrente'].includes(requested||''))openTab(requested);log('Sessão restaurada.')}});
 </script>
 
 <div class="mt-6 flex flex-wrap justify-center gap-6 text-sm">
