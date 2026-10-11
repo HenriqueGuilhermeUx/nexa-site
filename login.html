@@ -2,9 +2,12 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="referrer" content="no-referrer">
   <meta name="theme-color" content="#06111F">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="/manifest.webmanifest">
   <title>Entrar | Nexa</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -12,6 +15,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>body{font-family:'Inter',system-ui,sans-serif}.gradient-bg{background:linear-gradient(135deg,#0F172A 0%,#1E293B 100%)}.cta-glow{box-shadow:0 0 40px rgba(99,102,241,.35)}</style>
 <link rel="stylesheet" href="/nexa-2026.css">
+<link rel="stylesheet" href="/nexa-pwa.css">
 </head>
 <body class="gradient-bg text-white min-h-screen">
   <div class="min-h-screen flex items-center justify-center px-4 py-8">
@@ -59,7 +63,7 @@ loginForm.addEventListener('submit',async(e)=>{
     localStorage.setItem('nexa_access_token',data.accessToken);
     localStorage.setItem('nexa_refresh_token',data.refreshToken);
     localStorage.setItem('nexa_user',JSON.stringify(data.user));
-    window.location.href='/app.html';
+    window.location.href='/portal.html';
   }catch(err){status(err.message,'error');btn.disabled=false;}
 });
 </script>
