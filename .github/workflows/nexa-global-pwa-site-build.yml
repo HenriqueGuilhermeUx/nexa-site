@@ -1,0 +1,42 @@
+name: Nexa Global PWA Site Build
+
+on:
+  push:
+    branches:
+      - feat/nexa-global-site-v1
+    paths:
+      - '.github/workflows/nexa-global-pwa-site-build.yml'
+      - '.github/build-triggers/nexa-global-pwa-site-build.txt'
+      - 'scripts/build-site.mjs'
+      - 'netlify.toml'
+      - 'global.html'
+      - 'global-pt.html'
+      - 'global-es.html'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      CI: 'true'
+      NEXA_GLOBAL_MOBILE_COMMIT: '12bf8287bde94e5e357277f22277df2c6b2883a6'
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '20.19.4'
+      - name: Build site with Global PWA
+        run: node scripts/build-site.mjs
+      - name: Validate Global PWA output
+        run: |
+          test -s global-app/index.html
+          test -s global-app/manifest.webmanifest
+          test -s global-app/sw.js
+          test -s global-app/icon.png
+          grep -q '/global-app/' global-app/manifest.webmanifest
+          grep -q 'Install web app' global.html
+          grep -q 'Instalar web app' global-pt.html
