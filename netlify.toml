@@ -12,14 +12,14 @@
 
 [[redirects]]
   from = "/cadastro"
-  to = "/portal/"
-  status = 301
+  to = "/cadastro.html"
+  status = 200
   force = true
 
 [[redirects]]
-  from = "/cadastro.html"
-  to = "/portal/"
-  status = 301
+  from = "/cadastro/"
+  to = "/cadastro.html"
+  status = 200
   force = true
 
 [[redirects]]
