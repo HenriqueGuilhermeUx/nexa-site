@@ -26,7 +26,7 @@ const globalAppRepository =
   'https://github.com/HenriqueGuilhermeUx/nexa-mobile.git';
 const globalAppCommit =
   process.env.NEXA_GLOBAL_APP_COMMIT ||
-  'ecb640b990dad510396206892f6e53ab0c0ff418';
+  'a930c2438691e3b2026fa0a5a5e9a9b9d8ec1499';
 
 function applySharedDesignSystem() {
   const stylesheet = '<link rel="stylesheet" href="/nexa-2026.css">';
