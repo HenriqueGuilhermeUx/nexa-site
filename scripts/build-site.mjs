@@ -13,12 +13,20 @@ import {resolve} from 'node:path';
 const root = process.cwd();
 const portalSource = resolve(root, '.portal-src');
 const portalOutput = resolve(root, 'portal');
+const globalAppSource = resolve(root, '.global-app-src');
+const globalAppOutput = resolve(root, 'global-app');
 const repository =
   process.env.NEXA_PORTAL_REPOSITORY ||
   'https://github.com/HenriqueGuilhermeUx/nexa-react-app.git';
 const commit =
   process.env.NEXA_PORTAL_COMMIT ||
   '2621945c47805c5f62c910ddefb627078200fa5c';
+const globalAppRepository =
+  process.env.NEXA_GLOBAL_APP_REPOSITORY ||
+  'https://github.com/HenriqueGuilhermeUx/nexa-mobile.git';
+const globalAppCommit =
+  process.env.NEXA_GLOBAL_APP_COMMIT ||
+  'ecb640b990dad510396206892f6e53ab0c0ff418';
 
 function applySharedDesignSystem() {
   const stylesheet = '<link rel="stylesheet" href="/nexa-2026.css">';
@@ -48,6 +56,8 @@ applySharedDesignSystem();
 
 rmSync(portalSource, {recursive: true, force: true});
 rmSync(portalOutput, {recursive: true, force: true});
+rmSync(globalAppSource, {recursive: true, force: true});
+rmSync(globalAppOutput, {recursive: true, force: true});
 
 console.log(`Cloning validated Nexa portal commit ${commit}...`);
 run('git', ['clone', '--no-checkout', '--filter=blob:none', repository, portalSource]);
@@ -87,13 +97,68 @@ mkdirSync(portalOutput, {recursive: true});
 cpSync(dist, portalOutput, {recursive: true});
 rmSync(portalSource, {recursive: true, force: true});
 
+console.log(`Cloning Nexa Global PWA commit ${globalAppCommit}...`);
+run('git', ['clone', '--no-checkout', '--filter=blob:none', globalAppRepository, globalAppSource]);
+run('git', ['checkout', '--detach', globalAppCommit], {cwd: globalAppSource});
+
+const checkedOutGlobalApp = execFileSync('git', ['rev-parse', 'HEAD'], {
+  cwd: globalAppSource,
+  encoding: 'utf8',
+}).trim();
+if (checkedOutGlobalApp !== globalAppCommit) {
+  throw new Error(
+    `Global PWA commit mismatch: expected ${globalAppCommit}, received ${checkedOutGlobalApp}`,
+  );
+}
+
+run('npm', ['install', '--include=dev', '--no-audit', '--no-fund'], {
+  cwd: globalAppSource,
+});
+run('npm', ['run', 'typecheck'], {cwd: globalAppSource});
+run('npx', ['expo', 'export', '--platform', 'web', '--output-dir', 'dist-web'], {
+  cwd: globalAppSource,
+  env: {
+    ...process.env,
+    CI: 'true',
+    EXPO_NO_TELEMETRY: '1',
+    EXPO_PUBLIC_NEXA_RELEASE_CHANNEL: 'nexa-global',
+    EXPO_PUBLIC_NEXA_API_URL:
+      'https://nexa-global-us-pilot.onrender.com/api/v1',
+    EXPO_PUBLIC_NEXA_FINANCIAL_EXECUTION_ENABLED: 'false',
+    EXPO_PUBLIC_NEXA_ASSISTANT_ENABLED: 'false',
+    EXPO_PUBLIC_NEXA_EFI_OPEN_FINANCE_ENABLED: 'false',
+    EXPO_PUBLIC_NEXA_EFI_OPEN_FINANCE_RECURRING_ENABLED: 'false',
+    EXPO_PUBLIC_NEXA_ECOSYSTEM_ENABLED: 'false',
+    EXPO_PUBLIC_NEXA_ECOSYSTEM_ONBOARDING_ENABLED: 'false',
+  },
+});
+
+const globalDist = resolve(globalAppSource, 'dist-web');
+if (!existsSync(resolve(globalDist, 'index.html'))) {
+  throw new Error('Nexa Global PWA export did not produce dist-web/index.html');
+}
+
+const globalIcon = resolve(
+  globalAppSource,
+  'assets/brand/nexa-pilot-icon-exact.png',
+);
+if (!existsSync(globalIcon)) {
+  throw new Error('Nexa Global PWA icon is missing');
+}
+cpSync(globalIcon, resolve(globalDist, 'icon.png'));
+
+mkdirSync(globalAppOutput, {recursive: true});
+cpSync(globalDist, globalAppOutput, {recursive: true});
+rmSync(globalAppSource, {recursive: true, force: true});
+
 console.log(
   JSON.stringify(
     {
       ok: true,
       portalCommit: commit,
-      publicPath: '/portal/',
-      output: 'portal/',
+      portalPublicPath: '/portal/',
+      globalAppCommit,
+      globalAppPublicPath: '/global-app/',
       financialExecutionEnabled: false,
     },
     null,
