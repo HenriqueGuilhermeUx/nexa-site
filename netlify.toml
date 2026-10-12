@@ -6,7 +6,6 @@
   NODE_VERSION = "20.19.4"
   NPM_FLAGS = "--no-audit --no-fund"
   NEXA_PORTAL_COMMIT = "2621945c47805c5f62c910ddefb627078200fa5c"
-  NEXA_GLOBAL_MOBILE_COMMIT = "12bf8287bde94e5e357277f22277df2c6b2883a6"
   NEXA_GLOBAL_APP_COMMIT = "a930c2438691e3b2026fa0a5a5e9a9b9d8ec1499"
   VITE_API_URL = "https://nexa-backend-p2u0.onrender.com/api/v1"
   VITE_PRIVY_APP_ID = "cmpen2gm3007v0cjswjlyefji"
