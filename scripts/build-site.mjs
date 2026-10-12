@@ -13,6 +13,8 @@ import {resolve} from 'node:path';
 const root = process.cwd();
 const portalSource = resolve(root, '.portal-src');
 const portalOutput = resolve(root, 'portal');
+const globalMobileSource = resolve(root, '.global-mobile-src');
+const globalPwaOutput = resolve(root, 'global-app');
 const globalAppSource = resolve(root, '.global-app-src');
 const globalAppOutput = resolve(root, 'global-app');
 const repository =
@@ -21,6 +23,12 @@ const repository =
 const commit =
   process.env.NEXA_PORTAL_COMMIT ||
   '2621945c47805c5f62c910ddefb627078200fa5c';
+const globalMobileRepository =
+  process.env.NEXA_GLOBAL_MOBILE_REPOSITORY ||
+  'https://github.com/HenriqueGuilhermeUx/nexa-mobile.git';
+const globalMobileCommit =
+  process.env.NEXA_GLOBAL_MOBILE_COMMIT ||
+  '12bf8287bde94e5e357277f22277df2c6b2883a6';
 const globalAppRepository =
   process.env.NEXA_GLOBAL_APP_REPOSITORY ||
   'https://github.com/HenriqueGuilhermeUx/nexa-mobile.git';
@@ -56,6 +64,8 @@ applySharedDesignSystem();
 
 rmSync(portalSource, {recursive: true, force: true});
 rmSync(portalOutput, {recursive: true, force: true});
+rmSync(globalMobileSource, {recursive: true, force: true});
+rmSync(globalPwaOutput, {recursive: true, force: true});
 rmSync(globalAppSource, {recursive: true, force: true});
 rmSync(globalAppOutput, {recursive: true, force: true});
 
@@ -159,6 +169,79 @@ console.log(
       portalPublicPath: '/portal/',
       globalAppCommit,
       globalAppPublicPath: '/global-app/',
+      financialExecutionEnabled: false,
+    },
+    null,
+    2,
+  ),
+);
+
+
+console.log(`Building pinned Nexa Global PWA commit ${globalMobileCommit}...`);
+run('git', ['clone', '--no-checkout', '--filter=blob:none', globalMobileRepository, globalMobileSource]);
+run('git', ['checkout', '--detach', globalMobileCommit], {cwd: globalMobileSource});
+
+const checkedOutGlobal = execFileSync('git', ['rev-parse', 'HEAD'], {
+  cwd: globalMobileSource,
+  encoding: 'utf8',
+}).trim();
+if (checkedOutGlobal !== globalMobileCommit) {
+  throw new Error(
+    `Global mobile commit mismatch: expected ${globalMobileCommit}, received ${checkedOutGlobal}`,
+  );
+}
+
+run('npm', ['install', '--include=dev', '--no-audit', '--no-fund'], {
+  cwd: globalMobileSource,
+});
+
+run(
+  'npx',
+  ['expo', 'export', '--platform', 'web', '--output-dir', 'dist-web'],
+  {
+    cwd: globalMobileSource,
+    env: {
+      ...process.env,
+      EXPO_PUBLIC_NEXA_RELEASE_CHANNEL: 'nexa-global',
+      EXPO_PUBLIC_NEXA_API_URL:
+        'https://nexa-global-us-pilot.onrender.com/api/v1',
+      EXPO_PUBLIC_NEXA_FINANCIAL_EXECUTION_ENABLED: 'false',
+      EXPO_PUBLIC_NEXA_ASSISTANT_ENABLED: 'false',
+      EXPO_PUBLIC_NEXA_EFI_OPEN_FINANCE_ENABLED: 'false',
+      EXPO_PUBLIC_NEXA_EFI_OPEN_FINANCE_RECURRING_ENABLED: 'false',
+      EXPO_PUBLIC_NEXA_ECOSYSTEM_ENABLED: 'false',
+      EXPO_PUBLIC_NEXA_ECOSYSTEM_ONBOARDING_ENABLED: 'false',
+    },
+  },
+);
+
+const globalDist = resolve(globalMobileSource, 'dist-web');
+if (!existsSync(resolve(globalDist, 'index.html'))) {
+  throw new Error('Nexa Global web export did not produce dist-web/index.html');
+}
+if (!existsSync(resolve(globalDist, 'manifest.webmanifest'))) {
+  throw new Error('Nexa Global PWA manifest is missing');
+}
+if (!existsSync(resolve(globalDist, 'sw.js'))) {
+  throw new Error('Nexa Global PWA service worker is missing');
+}
+
+mkdirSync(globalPwaOutput, {recursive: true});
+cpSync(globalDist, globalPwaOutput, {recursive: true});
+cpSync(
+  resolve(globalMobileSource, 'assets/brand/nexa-pilot-icon-exact.png'),
+  resolve(globalPwaOutput, 'icon.png'),
+);
+
+rmSync(globalMobileSource, {recursive: true, force: true});
+
+console.log(
+  JSON.stringify(
+    {
+      ok: true,
+      globalMobileCommit,
+      globalPwaPath: '/global-app/',
+      globalApiUrl: 'https://nexa-global-us-pilot.onrender.com/api/v1',
       financialExecutionEnabled: false,
     },
     null,
