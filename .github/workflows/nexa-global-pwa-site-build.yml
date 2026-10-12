@@ -23,7 +23,6 @@ jobs:
     timeout-minutes: 40
     env:
       CI: 'true'
-      NEXA_GLOBAL_MOBILE_COMMIT: '12bf8287bde94e5e357277f22277df2c6b2883a6'
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v6
@@ -38,5 +37,5 @@ jobs:
           test -s global-app/sw.js
           test -s global-app/icon.png
           grep -q '/global-app/' global-app/manifest.webmanifest
-          grep -q 'Install web app' global.html
-          grep -q 'Instalar web app' global-pt.html
+          grep -q '/global-app/?install=1' global.html
+          grep -q '/global-app/?install=1' global-pt.html
