@@ -29,31 +29,6 @@
     Cache-Control = "public, max-age=3600"
     Content-Type = "application/manifest+json"
 
-
-[[redirects]]
-  from = "https://global.trynexa.com.br/app"
-  to = "/global-app/index.html"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "https://global.trynexa.com.br/app/*"
-  to = "/global-app/index.html"
-  status = 200
-  force = false
-
-[[redirects]]
-  from = "/global-app"
-  to = "/global-app/index.html"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/global-app/*"
-  to = "/global-app/index.html"
-  status = 200
-  force = false
-
 # Nexa Global domain alias. These rules become active only after
 # global.trynexa.com.br is assigned to this Netlify site.
 [[redirects]]
@@ -100,14 +75,14 @@
 
 [[redirects]]
   from = "/cadastro"
-  to = "/portal/"
-  status = 301
+  to = "/cadastro.html"
+  status = 200
   force = true
 
 [[redirects]]
-  from = "/cadastro.html"
-  to = "/portal/"
-  status = 301
+  from = "/cadastro/"
+  to = "/cadastro.html"
+  status = 200
   force = true
 
 [[redirects]]

@@ -20,7 +20,7 @@ const repository =
   'https://github.com/HenriqueGuilhermeUx/nexa-react-app.git';
 const commit =
   process.env.NEXA_PORTAL_COMMIT ||
-  '2621945c47805c5f62c910ddefb627078200fa5c';
+  '20c885af5fa65510c2fd60300549173a54ce50c8';
 const globalAppRepository =
   process.env.NEXA_GLOBAL_APP_REPOSITORY ||
   'https://github.com/HenriqueGuilhermeUx/nexa-mobile.git';
@@ -97,6 +97,21 @@ mkdirSync(portalOutput, {recursive: true});
 cpSync(dist, portalOutput, {recursive: true});
 rmSync(portalSource, {recursive: true, force: true});
 
+console.log(
+  JSON.stringify(
+    {
+      ok: true,
+      portalCommit: commit,
+      publicPath: '/portal/',
+      output: 'portal/',
+      financialExecutionEnabled: 'direct-transfer-only-with-user-privy-signature',
+    },
+    null,
+    2,
+  ),
+);
+
+
 console.log(`Cloning Nexa Global PWA commit ${globalAppCommit}...`);
 run('git', ['clone', '--no-checkout', '--filter=blob:none', globalAppRepository, globalAppSource]);
 run('git', ['checkout', '--detach', globalAppCommit], {cwd: globalAppSource});
@@ -171,5 +186,3 @@ console.log(
     2,
   ),
 );
-
-
