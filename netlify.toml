@@ -185,6 +185,18 @@
   force = true
 
 [[redirects]]
+  from = "/agentics"
+  to = "/agentics/index.html"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/agentics/"
+  to = "/agentics/index.html"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/pj"
   to = "/pj.html"
   status = 200
