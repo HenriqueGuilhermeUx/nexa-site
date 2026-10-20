@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#06111f">
+<title>Simulador Nexa Browse — Agentics</title>
+<meta name="description" content="Experimente uma simulação de como os agentes Nexa planejam tarefas, verificam permissões e pedem aprovação. Sem compras, dados reais ou acesso bancário.">
+<link rel="canonical" href="https://trynexa.com.br/agentics/demo">
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/agentics/agentics.css">
+<style>
+.demo-main{min-height:75vh}.demo-intro{padding:70px 0 34px}.demo-intro h1{font-size:clamp(36px,5.2vw,66px);margin-bottom:18px}.demo-intro p{max-width:780px;color:#b5cddd}.demo-layout{display:grid;grid-template-columns:.8fr 1.2fr;gap:20px;padding-bottom:90px}.demo-panel{border:1px solid #315770;border-radius:19px;padding:26px;background:#10283c}.demo-panel h2{font-size:27px;margin-bottom:12px}.demo-panel p{font-size:14px;color:#b3cbdc}.choice{width:100%;border:1px solid #31546b;border-radius:12px;padding:16px 18px;text-align:left;margin:8px 0;background:#0b2032;color:white;display:block}.choice strong{display:block;font-size:15px}.choice span{display:block;color:#9cbaca;font-size:13px;margin-top:6px}.choice[aria-pressed=true]{border-color:#64dffa;background:#143b55}.state-badge{display:inline-flex;font-size:11px;font-weight:900;letter-spacing:.09em;padding:6px 11px;border-radius:28px;background:#26455b;color:#d6edfa}.stage{padding:15px 0;border-bottom:1px solid #284a5f;display:flex;gap:14px}.dot{width:32px;height:32px;flex:0 0 32px;border-radius:50%;display:grid;place-items:center;background:#20475c;color:#a1dbef;font-weight:900}.stage p{margin:2px 0 0;font-size:13px;color:#a6c3d3}.stage strong{font-size:14px}.stage.finished .dot{background:#135a4b;color:#a8ffe2}.stage.blocked .dot{background:#5e3338;color:#ffe0e0}.stage.waiting .dot{background:#594c25;color:#fff0ac}.demo-action{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}.demo-action button{padding:11px 20px;border-radius:12px;border:1px solid #32607d;background:#123b58;color:white;font-weight:800}.demo-action button.primary-demo{background:#2268ac;border-color:#377eb8}.demo-action button:disabled{opacity:.45;cursor:not-allowed}.result{padding:15px;margin-top:18px;background:#0b2e43;border:1px solid #2e6179;border-radius:12px;min-height:54px;font-size:14px;color:#c4e2ee}.legal{border-left:3px solid #4dd8f4;padding:15px 18px;background:#0d293e;font-size:13px;color:#b6d4e3;margin-top:16px}.demo-footer-link{margin:0 0 64px}@media(max-width:810px){.demo-layout{grid-template-columns:1fr}.demo-intro{padding:48px 0 20px}.demo-panel{padding:19px}}
+</style></head>
+<body>
+<a class="skip" href="#conteudo">Pular para a demonstração</a>
+<header class="nav"><div class="wrap nav-inner"><a class="brand" href="/agentics"><img src="/icon.svg" alt="" width="38" height="38"><span>NEX<span class="cyan">A</span><small>AGENTICS</small></span></a><nav class="links" aria-label="Navegação"><a href="/agentics">Visão geral</a><a href="/agentics/ecossistema">Ecossistema</a><a href="/agentics#marcos">Roadmap</a></nav><a class="nav-button" href="/agentics">Voltar à Agentics ↗</a></div></header>
+<main id="conteudo" class="demo-main"><div class="wrap">
+<section class="demo-intro"><div class="eyebrow">EXPERIÊNCIA CONCEITUAL · SEM CONEXÕES REAIS</div><h1>Peça. A Nexa planeja.<br><span class="gradient">Você mantém o controle.</span></h1>
+<p>Experimente como a Nexa Agentics deverá organizar pesquisas, inscrições e pagamentos futuros. Esta demonstração utiliza somente exemplos fictícios no seu navegador. <strong>Não abre outros sites, não acessa sua conta e não envia informações.</strong></p>
+</section>
+<section class="demo-layout" aria-label="Simulação interativa">
+<div class="demo-panel"><h2>Escolha uma missão</h2><p>Estes exemplos representam etapas do nosso roadmap até maio de 2027.</p>
+<button class="choice" type="button" data-scenario="shopping" aria-pressed="true"><strong>🛍️ Pesquisar um notebook</strong><span>Comparar opções; solicitar autorização antes de comprar</span></button>
+<button class="choice" type="button" data-scenario="enrollment" aria-pressed="false"><strong>📝 Inscrição em evento</strong><span>Preparar informações; exigir aprovação antes de enviar</span></button>
+<button class="choice" type="button" data-scenario="payment" aria-pressed="false"><strong>💸 Efetuar um pagamento</strong><span>Demonstrar como uma operação financeira é bloqueada sem mandato válido</span></button>
+<button class="choice" type="button" data-scenario="marketing" aria-pressed="false"><strong>✨ Ofertas personalizadas</strong><span>Exigir permissão específica antes de usar preferências comerciais</span></button>
+<div class="legal"><strong>Importante:</strong> nenhuma missão envolve compras, Pix, operações reais, cadastro, e-mail, CPF ou números de cartão.</div>
+</div>
+<div class="demo-panel"><div class="state-badge" id="status">PRÉVIA · SEM EXECUÇÃO REAL</div><h2 id="mission" style="margin-top:18px">Pesquisar um notebook</h2><p id="mission-desc">Plano demonstrativo de pesquisa e comparação.</p>
+<div id="stages" aria-live="polite"></div>
+<div class="demo-action"><button type="button" class="primary-demo" id="run">Simular missão</button><button type="button" id="reset">Reiniciar</button></div>
+<div class="result" id="result" role="status" aria-live="polite">Pronto para simular. O agente ainda não executou nenhuma ação real.</div>
+</div>
+</section>
+<div class="demo-footer-link"><a href="/agentics#marcos" class="button outline">Acompanhar os sete marcos de desenvolvimento ↗</a></div>
+</div></main>
+<footer class="footer"><div class="wrap"><a href="/agentics">Nexa Agentics</a><a href="/agentics/ecossistema">Ecossistema</a><a href="/">Nexa Wallet</a><span>Simulador fictício — sem dados reais ou operações externas.</span></div></footer>
+<script>
+'use strict';
+const missions={
+shopping:{title:'Pesquisar um notebook',desc:'Plano demonstrativo de pesquisa e comparação.',steps:[
+['Identificar o objetivo','Notebook até R$ 3.000, exemplo fictício','done'],
+['Conferir limites','Sessão supervisionada, sem acesso a pagamentos','done'],
+['Preparar comparação','Nenhuma loja consultada; resultado é ilustrativo','done'],
+['Comprar','Aguarda parceiro habilitado e aprovação real do cliente','waiting']],
+result:'Pesquisa simulada. Nenhuma loja foi visitada e nenhuma compra foi feita.'},
+enrollment:{title:'Inscrição em evento',desc:'Modelo de preparação de formulário; nenhum dado pessoal é solicitado.',steps:[
+['Entender a inscrição','Evento fictício e objetivo definido','done'],
+['Preparar formulário','Campos ilustrativos: nome, e-mail e evento; sem preenchimento','done'],
+['Solicitar autorização','Aprovação necessária antes de qualquer envio','waiting'],
+['Enviar inscrição','Bloqueado nesta versão demonstrativa','blocked']],
+result:'Modelo preparado com campos fictícios. Nenhuma inscrição foi enviada.'},
+payment:{title:'Efetuar um pagamento',desc:'Exemplo de regra que impede movimentar dinheiro sem autorização.',steps:[
+['Identificar a operação','Pagamento fictício; não envolve saldo da Nexa','done'],
+['Verificar consentimento','Nenhum mandato ou autorização financeira foi fornecido','blocked'],
+['Conectar conta bancária','Indisponível neste simulador','blocked'],
+['Enviar pagamento','Bloqueado: nenhuma transação realizada','blocked']],
+result:'Pagamento corretamente bloqueado. A Nexa não acessou nenhuma conta.'},
+marketing:{title:'Ofertas personalizadas',desc:'Exemplo de autorização específica para marketing.',steps:[
+['Receber intenção','Cliente interessado em um produto fictício','done'],
+['Verificar consentimento comercial','Não há consentimento para personalização neste simulador','blocked'],
+['Consultar perfil financeiro','Proibido usar dados financeiros automaticamente em publicidade','blocked'],
+['Exibir ofertas','Somente ofertas fictícias e genéricas','waiting']],
+result:'Sem consentimento comercial, não há perfilamento personalizado.'}
+};
+let selected='shopping',played=false;
+const stages=document.getElementById('stages'),status=document.getElementById('status'),
+result=document.getElementById('result');
+function draw(){
+ const m=missions[selected];document.getElementById('mission').textContent=m.title;
+ document.getElementById('mission-desc').textContent=m.desc;
+ stages.replaceChildren();
+ m.steps.forEach(([title,desc,mode],i)=>{
+  const item=document.createElement('div');item.className='stage'+(played?' '+(mode==='done'?'finished':mode==='blocked'?'blocked':'waiting'):'');
+  const dot=document.createElement('span');dot.className='dot';dot.textContent=played?(mode==='done'?'✓':mode==='blocked'?'×':'!'):String(i+1);
+  const body=document.createElement('div'),label=document.createElement('strong'),explain=document.createElement('p');
+  label.textContent=title;explain.textContent=played?desc:'Aguardando simulação';body.append(label,explain);item.append(dot,body);stages.append(item);
+ });
+ status.textContent=played?'SIMULAÇÃO CONCLUÍDA · SEM EFEITO EXTERNO':'PRÉVIA · SEM EXECUÇÃO REAL';
+ result.textContent=played?m.result:'Pronto para simular. O agente ainda não executou nenhuma ação real.';
+}
+for(const button of document.querySelectorAll('[data-scenario]')){
+ button.addEventListener('click',()=>{
+  selected=button.dataset.scenario;played=false;
+  for(const option of document.querySelectorAll('[data-scenario]'))option.setAttribute('aria-pressed',String(option===button));
+  draw();
+ });
+}
+document.getElementById('run').addEventListener('click',()=>{played=true;draw()});
+document.getElementById('reset').addEventListener('click',()=>{played=false;draw()});
+draw();
+</script>
+</body></html>
