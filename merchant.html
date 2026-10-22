@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
-  <title>Portal Nexa PJ | Checkout Pix com liquidação BRL ou USDC</title>
+  <title>Nexa PJ — Conta empresarial, recebimentos e gestão</title>
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="apple-touch-icon" href="/apple-touch-icon.svg">
   <link rel="icon" href="/favicon.svg">
@@ -26,21 +26,27 @@
     .step{border-left:3px solid #334155;padding-left:1rem}.step.done{border-color:#10b981}.step.active{border-color:#f59e0b}
   </style>
 <link rel="stylesheet" href="/nexa-2026.css">
+<link rel="stylesheet" href="/nexa-pj-bank-erp.css">
 </head>
-<body class="bgx min-h-screen pb-12">
+<body class="bgx min-h-screen pb-12 pj-banking pj-merchant">
   <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-950/90 backdrop-blur-xl border-b border-white/10">
     <div class="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between">
-      <a href="/" class="flex items-center gap-3"><div class="w-10 h-10 rounded-2xl bg-indigo-500 flex items-center justify-center font-black glow">N</div><span class="font-black text-xl">Portal Nexa PJ</span></a>
+      <a href="/" class="flex items-center gap-3"><div class="w-10 h-10 rounded-2xl bg-indigo-500 flex items-center justify-center font-black glow">N</div><span class="font-black text-xl">Nexa PJ <span class="text-sm font-semibold text-cyan-200">· Conta & ERP+</span></span></a>
       <div class="hidden md:flex gap-6 text-sm text-slate-300"><a href="/pj" class="hover:text-white">Nexa PJ</a><a href="/portal" class="hover:text-white">Conta Nexa</a><a href="/suporte" class="hover:text-white">Suporte</a></div>
       <button id="logoutBtn" onclick="logout()" class="hidden bg-white/10 border border-white/10 px-4 py-2 rounded-xl font-bold">Sair</button>
     </div>
   </nav>
 
   <main class="pt-28 px-5 max-w-7xl mx-auto">
-    <section class="glass rounded-[2rem] p-8 md:p-10 mb-8">
-      <span class="inline-block px-4 py-2 rounded-full bg-cyan-500/10 text-cyan-300 font-black text-sm mb-5">CHECKOUT NEXA PJ</span>
-      <h1 class="text-4xl md:text-6xl font-black leading-tight">Receba Pix. Acompanhe tudo. <span class="grad">Liquide com transparência.</span></h1>
-      <p class="text-slate-300 text-lg md:text-xl mt-5 max-w-4xl">A cobrança é feita em reais. A empresa escolhe BRL/Pix ou USDC, e cada etapa fica registrada no portal. Valores em USDC antes da compra são estimativas; o extrato final mostra o resultado realmente liquidado.</p>
+    <section class="glass rounded-[2rem] p-8 md:p-10 mb-8 pj-merchant-home">
+      <span class="pj-overline"><span class="pj-dot"></span> Nexa PJ · Conta empresarial & ERP+</span>
+      <h1 class="text-4xl md:text-6xl font-black leading-tight mt-5">Seu negócio no controle. <span class="grad">Seu dinheiro, com clareza.</span></h1>
+      <p class="text-slate-300 text-lg md:text-xl mt-5 max-w-4xl">Acompanhe os recebimentos, transações e cobranças do portal Nexa. A experiência de gestão empresarial inclui ERP, CRM, documentos, operações e inteligência; a ligação com a Conta Nexa respeita a identidade PJ e as permissões financeiras.</p>
+      <div class="pj-merchant-features" aria-label="Áreas do ecossistema empresarial">
+        <span>◈ Conta Nexa PJ</span><span>▤ Financeiro & ERP+</span><span>◎ Clientes & CRM</span><span>↗ Cobranças</span><span>✦ Inteligência</span>
+      </div>
+      <p class="text-slate-400 text-sm mt-5 max-w-4xl">O checkout legado mantém suas regras. Novas contas PJ exigem Didit PF, documentos empresariais e análise manual; a liberação cadastral não ativa Pix, carteira ou operações automaticamente.</p>
+      <a href="/pj#plataforma" class="inline-flex mt-6 text-cyan-200 font-bold hover:text-white">Conhecer todos os módulos empresariais →</a>
     </section>
 
     <section id="loginArea" class="max-w-xl mx-auto">
@@ -56,6 +62,10 @@
     </section>
 
     <section id="appArea" class="hidden">
+      <div class="pj-merchant-apphead">
+        <div><span class="pj-overline">PAINEL FINANCEIRO EMPRESARIAL</span><h2>Visão da sua operação</h2><p>Dados deste portal · recebimentos não representam necessariamente o saldo disponível da Conta Nexa.</p></div>
+        <a href="/pj#conta" class="pj-ghost px-4 py-3 rounded-xl">Sobre a Conta Nexa PJ ↗</a>
+      </div>
       <div id="notice" class="hidden mb-6 rounded-2xl p-4 border"></div>
       <section id="pjManualOnboarding" class="glass rounded-[2rem] p-6 mb-7" aria-label="Liberação PJ"><p class="text-slate-400">Carregando cadastro da empresa…</p></section>
 
@@ -70,7 +80,7 @@
       <div class="grid lg:grid-cols-2 gap-6">
         <section class="glass rounded-[2rem] p-7">
           <div class="flex justify-between gap-4 items-start mb-5"><div><span class="text-indigo-300 text-xs font-black tracking-widest">EMPRESA</span><h2 class="text-3xl font-black mt-2">Dados e recebimento</h2></div><span id="walletBadge" class="pill wait">Carteira pendente</span></div>
-          <p class="text-slate-400 mb-5">A Nexa reutiliza automaticamente a carteira vinculada à sua conta. Uma wallet externa só é necessária quando você preferir outro destino.</p>
+          <p class="text-slate-400 mb-5">O checkout merchant legado mantém a carteira vinculada à sua conta. Na nova abertura Nexa PJ, a carteira empresarial é independente da carteira PF e só será habilitada após validação e autorização financeira.</p>
           <div class="grid md:grid-cols-2 gap-3">
             <input id="businessName" class="p-4 rounded-2xl" placeholder="Nome da empresa">
             <input id="cnpj" class="p-4 rounded-2xl" placeholder="CNPJ ou CPF">
