@@ -44,7 +44,10 @@
         '<td>'+clean(statusNames[r.status]||r.status)+'<br><small>Didit PF: '+
         clean(r.pf_status==='approved'&&r.pf_verified_at&&r.didit_linked?'aprovada':'não confirmada')+'</small></td>'+
         '<td>'+due(r)+'<br><small>Enviado: '+clean(fmt(r.submitted_at))+'</small></td>'+
-        '<td>'+clean(emailNames[r.email_status]||r.email_status||'—')+'</td>'+
+        '<td>'+clean(emailNames[r.email_status]||r.email_status||'—')+
+        (r.status==='pending_manual'&&r.email_status==='not_configured'
+          ? '<div class="actions"><button class="small-btn ghost" data-pj-notify="'+clean(r.merchant_id)+'">Solicitar aviso</button></div>'
+          : '')+'</td>'+
         '<td><div class="actions">'+actions+'</div></td>'+
         '<td>'+(r.status==='pending_manual'
           ? '<div class="actions"><button class="green small-btn" data-pj-decision="approved" data-merchant="'+clean(r.merchant_id)+'">Aprovar</button>'+
@@ -87,6 +90,25 @@
     document.body.appendChild(a);a.click();a.remove();
     setTimeout(()=>URL.revokeObjectURL(url),5000);
   }
+  async function notifyUnconfigured(merchantId){
+    if(!validId(merchantId))throw Error('Empresa inválida');
+    const row=reviewRows.find(x=>x.merchant_id===merchantId);
+    if(!row||row.status!=='pending_manual'||row.email_status!=='not_configured')
+      throw Error('Aviso indisponível ou com envio já tentado.');
+    const approved=window.confirm(
+      'Solicitar o aviso PJ somente se o e-mail ainda NÃO foi tentado? '+
+      'Em situações de entrega incerta não é permitido repetir o envio.'
+    );
+    if(!approved)return;
+    const result=await call('/merchant-admin/pj-applications/'+merchantId+
+      '/notify-unconfigured',{method:'POST',body:'{}'});
+    if(result.retryEligible===false){
+      toast('Aviso não elegível para reenvio. Confira o status e os logs.',true);
+    }else{
+      toast('Solicitação de aviso processada. Confira o status de envio atualizado.');
+    }
+    await window.renderPjReviews();
+  }
   function confirmReview(id,decision){
     if(!validId(id)||!['approved','rejected'].includes(decision))return;
     const row=reviewRows.find(x=>x.merchant_id===id);
@@ -115,9 +137,15 @@
     };
   }
   document.addEventListener('click',event=>{
-    const el=event.target.closest?.('[data-pj-doc],[data-pj-decision]');
+    const el=event.target.closest?.('[data-pj-doc],[data-pj-decision],[data-pj-notify]');
     if(!el||!token())return;
     if(el.dataset.pjDoc){download(el.dataset.pjDoc,el.dataset.kind).catch(err=>toast(err.message,true));}
+    if(el.dataset.pjNotify){
+      el.disabled=true;
+      notifyUnconfigured(el.dataset.pjNotify)
+        .catch(err=>toast(err.message,true))
+        .finally(()=>{if(el.isConnected)el.disabled=false;});
+    }
     if(el.dataset.pjDecision)confirmReview(el.dataset.merchant,el.dataset.pjDecision);
   });
 })();
