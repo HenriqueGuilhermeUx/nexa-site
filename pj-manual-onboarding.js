@@ -5,6 +5,7 @@
   const label = {contrato_social:'Contrato social',ato_constitutivo:'Ato constitutivo',
     ccmei:'CCMEI',comprovante_cnpj:'Comprovante CNPJ'};
   const root=()=>document.getElementById('pjManualOnboarding');
+  let submissionAttemptedForThisPage=false;
   const escaping=v=>String(v??'').replace(/[&<>"']/g,c=>({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;',
   })[c]);
@@ -80,6 +81,17 @@
           await window.loadPjManualOnboarding();
         }catch(e){document.getElementById('pjManualMessage').textContent=e.message;submit.disabled=false;}
       };
+      // A PF Didit approval completed after documents were uploaded is
+      // picked up when the client returns to the portal. The server
+      // transaction is idempotent; the email is never retried blindly.
+      if(state.canSubmit && !submissionAttemptedForThisPage){
+        submissionAttemptedForThisPage=true;
+        void fetch(API+'/merchant/pj-manual-review/submit',{
+          method:'POST',headers:headers(),body:'{}',
+        }).then(jsonResponse).then(()=>window.loadPjManualOnboarding())
+          .catch(()=>{const m=document.getElementById('pjManualMessage');
+            if(m)m.textContent='O envio automático não foi confirmado. Use o botão para tentar a solicitação.'});
+      }
       const submit=document.getElementById('pjSubmitReview');
       if(submit)submit.onclick=async()=>{
         submit.disabled=true;
@@ -95,6 +107,14 @@
         '<p class="text-xs text-slate-400 mt-2">Conclua primeiro os dados da empresa e confirme sua autenticação Nexa.</p>';
     }
   };
+  // Recheck Didit PF while the onboarding portal is open. No new Didit
+  // session or paid KYB request is created by this polling.
+  setInterval(()=>{
+    const app=document.getElementById('appArea');
+    if(token && app && !app.classList.contains('hidden') && !document.hidden){
+      void window.loadPjManualOnboarding();
+    }
+  },90_000);
   document.addEventListener('visibilitychange',()=>{
     if(!document.hidden && token && !document.getElementById('appArea').classList.contains('hidden')){
       void window.loadPjManualOnboarding();
