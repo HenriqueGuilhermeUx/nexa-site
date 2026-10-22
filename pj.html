@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Nexa PJ une gestão empresarial, CRM, vendas, ERP, documentos, marketing e uma conta digital com checkout Pix, USDC e histórico financeiro.">
+  <meta name="description" content="Nexa PJ reúne Conta Nexa, financeiro e ERP, CRM, vendas, cobranças, documentos, marketing e inteligência empresarial em uma experiência moderna, com serviços financeiros conforme habilitação.">
   <meta name="theme-color" content="#020617">
-  <title>Nexa PJ — Gestão completa e serviços financeiros para sua empresa</title>
+  <title>Nexa PJ — A experiência de conta empresarial com a potência de um ERP</title>
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="apple-touch-icon" href="/apple-touch-icon.svg">
   <link rel="icon" href="/favicon.svg">
@@ -15,24 +15,102 @@
     :root{color-scheme:dark}*{box-sizing:border-box}html{scroll-behavior:smooth}body{font-family:Inter,system-ui,sans-serif;background:#020617;color:white;margin:0}.bgx{background:radial-gradient(circle at 18% 8%,rgba(36,98,235,.27),transparent 30%),radial-gradient(circle at 82% 16%,rgba(14,165,233,.22),transparent 28%),linear-gradient(135deg,#020617,#0f172a 56%,#111827)}.glass{background:rgba(15,23,42,.77);border:1px solid rgba(148,163,184,.18);backdrop-filter:blur(18px)}.card{background:linear-gradient(180deg,rgba(30,41,59,.84),rgba(15,23,42,.8));border:1px solid rgba(148,163,184,.18)}.grad{background:linear-gradient(90deg,#60a5fa,#fff,#38bdf8);-webkit-background-clip:text;background-clip:text;color:transparent}.glow{box-shadow:0 0 45px rgba(36,98,235,.28)}.eyebrow{font-size:.74rem;letter-spacing:.18em;font-weight:900;text-transform:uppercase}
   </style>
 <link rel="stylesheet" href="/nexa-2026.css">
+<link rel="stylesheet" href="/nexa-pj-bank-erp.css">
 </head>
-<body class="bgx min-h-screen">
-  <nav class="fixed inset-x-0 top-0 z-50 bg-slate-950/88 backdrop-blur-xl border-b border-white/10"><div class="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between"><a href="/" class="flex items-center gap-3"><div class="w-10 h-10 rounded-2xl bg-blue-500 flex items-center justify-center font-black glow">N</div><span class="font-black text-xl">Nexa PJ</span></a><div class="hidden lg:flex gap-7 text-sm text-slate-300"><a href="#plataforma">Plataforma completa</a><a href="#conta">Conta Nexa</a><a href="#fluxo">Como funciona</a><a href="#precos">Preços</a><a href="/primeiros-nexa">Primeiros Nexa</a></div><div class="flex gap-3"><a href="#abrir-conta" class="bg-blue-500 hover:bg-blue-600 px-4 py-2.5 rounded-xl font-black glow">Abra sua Conta Nexa</a><a href="/merchant" class="bg-white/10 border border-white/20 px-4 py-2.5 rounded-xl font-bold">Já tenho conta</a></div></div></nav>
+<body class="bgx min-h-screen pj-banking">
+  <nav class="fixed inset-x-0 top-0 z-50 bg-slate-950/88 backdrop-blur-xl border-b border-white/10"><div class="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between"><a href="/" class="flex items-center gap-3"><div class="w-10 h-10 rounded-2xl bg-blue-500 flex items-center justify-center font-black glow">N</div><span class="font-black text-xl">Nexa PJ</span></a><div class="hidden lg:flex gap-7 text-sm text-slate-300"><a href="#plataforma">Plataforma completa</a><a href="#conta">Conta Nexa</a><a href="#abrir-conta">Abertura PJ</a><a href="#precos">Preços</a><a href="/primeiros-nexa">Primeiros Nexa</a></div><div class="flex gap-3"><a href="#abrir-conta" class="pj-cta px-4 py-2.5 rounded-xl">Conhecer a abertura PJ</a><a href="/merchant" class="bg-white/10 border border-white/20 px-4 py-2.5 rounded-xl font-bold">Já tenho conta</a></div></div></nav>
 
   <main>
-    <header class="pt-32 pb-20 px-5"><div class="max-w-7xl mx-auto grid lg:grid-cols-[1.05fr_.95fr] gap-12 items-center"><div><span class="inline-flex glass px-4 py-2 rounded-full text-blue-300 text-sm font-black">Gestão empresarial + serviços financeiros · implantação gradual</span><h1 class="text-5xl md:text-7xl font-black leading-[1.03] mt-7">Sua empresa inteira em um lugar. <span class="grad">Da primeira venda ao financeiro.</span></h1><p class="text-xl text-slate-300 leading-relaxed mt-6 max-w-3xl">A Nexa PJ reúne CRM, vendas, agenda, documentos, ERP, cobranças, marketing, operações e inteligência empresarial com o ecossistema financeiro Nexa. Uma experiência integrada por etapas, preservando os controles e dados da sua empresa.</p><div class="flex flex-col sm:flex-row gap-4 mt-9"><a href="#abrir-conta" class="bg-blue-500 hover:bg-blue-600 px-8 py-4 rounded-2xl font-black text-center glow">Abra sua Conta Nexa</a><a href="#plataforma" class="bg-white/10 border border-white/10 px-8 py-4 rounded-2xl font-black text-center">Conhecer a plataforma</a></div></div>
-      <div class="glass rounded-[2.5rem] p-6"><div class="bg-slate-950/85 rounded-[2rem] p-7 border border-white/10"><p class="eyebrow text-cyan-300">Exemplo ilustrativo</p><div class="mt-6 space-y-4"><div class="card rounded-2xl p-5 flex justify-between gap-4"><span class="text-slate-400">Cliente paga</span><b>R$ 1.000,00</b></div><div class="card rounded-2xl p-5 flex justify-between gap-4"><span class="text-slate-400">Liquidação USDC</span><b class="text-blue-300">taxa 1,49%</b></div><div class="card rounded-2xl p-5 flex justify-between gap-4"><span class="text-slate-400">Liquidação BRL/Pix</span><b class="text-cyan-300">taxa 2,49%</b></div><div class="rounded-2xl p-5 bg-amber-500/10 border border-amber-500/20"><b class="text-amber-200">O valor final depende da liquidação real.</b><p class="text-sm text-slate-400 mt-2">Custos do provedor e Pix são conciliados antes da conclusão.</p></div></div></div></div>
-    </div></header>
+    <header class="pj-hero" aria-label="Apresentação da Nexa PJ">
+      <div class="pj-hero-inner">
+        <div class="pj-hero-copy">
+          <span class="pj-overline"><span class="pj-dot"></span> Nexa PJ · Conta + ERP + Inteligência</span>
+          <h1>Sua empresa merece <span class="grad">mais que um banco. Mais que um ERP.</span></h1>
+          <p class="pj-lead">Uma experiência empresarial unificada para acompanhar o dinheiro, organizar a operação e acelerar o crescimento. Conta Nexa, caixa, cobranças, CRM, vendas e automações em um só ecossistema, com permissões e habilitações seguras.</p>
+          <div class="pj-buttonrow">
+            <a class="pj-cta" href="#abrir-conta">Conhecer a abertura PJ <span aria-hidden="true">&nbsp;↗</span></a>
+            <a class="pj-ghost" href="#plataforma">Explorar a plataforma <span aria-hidden="true">&nbsp;→</span></a>
+          </div>
+          <div class="pj-benefits">
+            <span>Conta Nexa e identidade PJ</span><span>ERP e financeiro integrados</span><span>Automação e inteligência</span>
+          </div>
+          <p class="pj-disclaimer">Acesso empresarial, conta financeira e movimentações são liberados em etapas, após validação e autorização. A tela ao lado é ilustrativa e não exibe saldos reais.</p>
+        </div>
+        <div>
+          <div class="pj-product" role="img" aria-label="Prévia ilustrativa do painel Nexa PJ, com Conta Nexa, saldos indisponíveis até habilitação, ERP, CRM e operações em um mesmo ambiente">
+            <div class="pj-product-top">
+              <span class="pj-product-brand"><b>N</b> Nexa PJ <span class="pj-mini-tag">/ Visão empresarial</span></span>
+              <span class="pj-mini-tag">Prévia da experiência</span>
+            </div>
+            <div class="pj-product-body">
+              <div class="pj-product-side" aria-hidden="true">
+                <small>Workspace</small>
+                <span class="active">◈ &nbsp; Visão geral</span>
+                <span>▣ &nbsp; Conta Nexa</span>
+                <span>▥ &nbsp; Financeiro e ERP</span>
+                <span>↗ &nbsp; Cobranças</span>
+                <span>◎ &nbsp; Clientes e CRM</span>
+                <span>◷ &nbsp; Agenda e tarefas</span>
+                <span>▤ &nbsp; Documentos</span>
+                <span>✦ &nbsp; Inteligência IA</span>
+              </div>
+              <div class="pj-product-main">
+                <div class="pj-workspace-head">
+                  <div><small>Painel do negócio</small><h3>Seu comando empresarial</h3></div>
+                  <span class="pj-workspace-pill">Conta por habilitação</span>
+                </div>
+                <div class="pj-account-banner">
+                  <div><small>Conta Nexa · Saldos da empresa</small>
+                    <strong>— <span style="font-size:.8rem;font-weight:600;letter-spacing:0">BRL / USDC</span></strong>
+                    <em>Exibidos após autenticação e liberação financeira</em>
+                  </div>
+                  <span class="pj-account-lock">◈ Acesso protegido</span>
+                </div>
+                <div class="pj-kpi-row" aria-hidden="true">
+                  <div class="pj-kpi"><small>Contas a receber</small><strong>—</strong><em>Financeiro e ERP</em></div>
+                  <div class="pj-kpi"><small>Contas a pagar</small><strong>—</strong><em>Gestão de caixa</em></div>
+                  <div class="pj-kpi"><small>Oportunidades</small><strong>—</strong><em>CRM e vendas</em></div>
+                </div>
+                <div class="pj-dashboard-low" aria-hidden="true">
+                  <div class="pj-dashboard-panel">
+                    <div class="pj-panel-title"><span>Seu negócio em movimento</span><i>ERP + Conta</i></div>
+                    <div class="pj-task-line"><b>↗</b> Acompanhar cobranças <span class="pj-erp-pill">Recebíveis</span></div>
+                    <div class="pj-task-line"><b>◷</b> Organizar contas e tarefas <span class="pj-erp-pill">Operação</span></div>
+                    <div class="pj-task-line"><b>◎</b> Cuidar de clientes e vendas <span class="pj-erp-pill">CRM</span></div>
+                  </div>
+                  <div class="pj-dashboard-panel">
+                    <div class="pj-panel-title"><span>Inteligência da empresa</span><i>Visão 360°</i></div>
+                    <div class="pj-task-line"><b>◈</b> Fluxo de caixa</div>
+                    <div class="pj-task-line"><b>▤</b> Conciliação</div>
+                    <div class="pj-task-line"><b>✦</b> Próximas ações</div>
+                  </div>
+                </div>
+                <div class="pj-feature-rail" aria-hidden="true"><span>Pix*</span><span>USDC*</span><span>Contratos</span><span>Automações</span><span>Gestão multiárea</span></div>
+              </div>
+            </div>
+          </div>
+          <p class="pj-visual-caption">Prévia conceitual · sem dados de cliente · *Serviços financeiros sujeitos à habilitação</p>
+        </div>
+      </div>
+    </header>
+    <section class="pj-integrated" aria-label="Três dimensões da Nexa PJ">
+      <div class="pj-integrated-inner">
+        <article><span class="pj-tile-index">01 / CONTA</span><b>Seu dinheiro, sob controle</b><p>Conta Nexa, saldos, extrato, recebimentos e operações financeiras disponíveis conforme a habilitação da empresa.</p></article>
+        <article><span class="pj-tile-index">02 / ERP+</span><b>Sua operação, conectada</b><p>Caixa, contas, cobranças, conciliação, clientes, propostas, contratos, tarefas e gestão em uma visão única.</p></article>
+        <article><span class="pj-tile-index">03 / INTELIGÊNCIA</span><b>Seu próximo passo, mais claro</b><p>Indicadores, automações, rotinas e equipe digital para transformar informações do negócio em ação.</p></article>
+      </div>
+      <div class="pj-trustbar"><span>Verificação de identidade e empresa</span><span>Permissões por empresa</span><span>Movimentações sujeitas à autenticação</span><span>Ativação financeira por etapas</span></div>
+    </section>
 
-<section id="plataforma" class="py-24 px-5 bg-slate-950/50"><div class="max-w-7xl mx-auto"><p class="eyebrow text-blue-300">Sistema operacional empresarial</p><h2 class="text-4xl md:text-5xl font-black mt-4 max-w-4xl">Tudo que faz sua empresa funcionar. Conectado.</h2><p class="text-slate-300 text-lg mt-5 max-w-3xl">A experiência Nexa PJ incorpora as capacidades de gestão do NexOffice em um único ambiente empresarial. A disponibilidade depende do plano, permissões e etapa de integração.</p><div class="grid md:grid-cols-3 lg:grid-cols-4 gap-4 mt-12">
+<section id="plataforma" class="py-24 px-5 bg-slate-950/50"><div class="max-w-7xl mx-auto"><p class="eyebrow text-blue-300">Conta + ERP + Inteligência</p><h2 class="text-4xl md:text-5xl font-black mt-4 max-w-4xl">O poder de um ERP completo. Com experiência financeira de primeira.</h2><p class="text-slate-300 text-lg mt-5 max-w-3xl">A experiência Nexa PJ incorpora as capacidades de gestão do NexOffice em um único ambiente empresarial. A disponibilidade depende do plano, permissões e etapa de integração.</p><div class="grid md:grid-cols-3 lg:grid-cols-4 gap-4 mt-12">
 <article class="card rounded-2xl p-6"><div class="text-3xl text-blue-300" aria-hidden="true">◈</div><h3 class="font-extrabold text-lg mt-4">Central de comando</h3><p class="text-slate-400 text-sm mt-2">Indicadores, prioridades, tarefas e decisões.</p></article><article class="card rounded-2xl p-6"><div class="text-3xl text-blue-300" aria-hidden="true">◎</div><h3 class="font-extrabold text-lg mt-4">CRM e vendas</h3><p class="text-slate-400 text-sm mt-2">Contatos, oportunidades, pipeline e propostas.</p></article><article class="card rounded-2xl p-6"><div class="text-3xl text-blue-300" aria-hidden="true">◷</div><h3 class="font-extrabold text-lg mt-4">Agenda e tarefas</h3><p class="text-slate-400 text-sm mt-2">Compromissos, responsáveis e próximas ações.</p></article><article class="card rounded-2xl p-6"><div class="text-3xl text-blue-300" aria-hidden="true">▤</div><h3 class="font-extrabold text-lg mt-4">Financeiro e ERP</h3><p class="text-slate-400 text-sm mt-2">Contas, lançamentos, fluxo financeiro e conciliação.</p></article><article class="card rounded-2xl p-6"><div class="text-3xl text-blue-300" aria-hidden="true">▱</div><h3 class="font-extrabold text-lg mt-4">Documentos e contratos</h3><p class="text-slate-400 text-sm mt-2">Arquivos, materiais, propostas e organização.</p></article><article class="card rounded-2xl p-6"><div class="text-3xl text-blue-300" aria-hidden="true">↗</div><h3 class="font-extrabold text-lg mt-4">Operações</h3><p class="text-slate-400 text-sm mt-2">Rotinas, execução, aprovações e acompanhamento.</p></article><article class="card rounded-2xl p-6"><div class="text-3xl text-blue-300" aria-hidden="true">◉</div><h3 class="font-extrabold text-lg mt-4">Marketing</h3><p class="text-slate-400 text-sm mt-2">Campanhas, relacionamento e materiais comerciais.</p></article><article class="card rounded-2xl p-6"><div class="text-3xl text-blue-300" aria-hidden="true">✦</div><h3 class="font-extrabold text-lg mt-4">Inteligência empresarial</h3><p class="text-slate-400 text-sm mt-2">Análises de rentabilidade, recorrência e oportunidades.</p></article><article class="card rounded-2xl p-6"><div class="text-3xl text-blue-300" aria-hidden="true">✓</div><h3 class="font-extrabold text-lg mt-4">Governança</h3><p class="text-slate-400 text-sm mt-2">Compliance, papéis, permissões e trilhas.</p></article><article class="card rounded-2xl p-6"><div class="text-3xl text-blue-300" aria-hidden="true">⇄</div><h3 class="font-extrabold text-lg mt-4">Integrações</h3><p class="text-slate-400 text-sm mt-2">Conexões e automações conforme habilitação.</p></article><article class="card rounded-2xl p-6"><div class="text-3xl text-blue-300" aria-hidden="true">⚙</div><h3 class="font-extrabold text-lg mt-4">Equipe digital</h3><p class="text-slate-400 text-sm mt-2">Assistentes e playbooks com limites e aprovação humana.</p></article><article class="card rounded-2xl p-6"><div class="text-3xl text-blue-300" aria-hidden="true">▦</div><h3 class="font-extrabold text-lg mt-4">Visão multiempresa</h3><p class="text-slate-400 text-sm mt-2">Separação por empresa e workspace autorizado.</p></article>
 </div></div></section>
 <section id="conta" class="py-24 px-5"><div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center"><div><p class="eyebrow text-cyan-300">Conta Nexa</p><h2 class="text-4xl md:text-5xl font-black mt-4">A gestão do negócio encontra sua operação financeira.</h2><p class="text-slate-300 text-lg mt-5">Identificação da empresa, saldo, histórico e operações financeiras da Nexa ficam no mesmo ecossistema, com vínculos e permissões próprios. O acesso à carteira e às operações exige autenticação financeira independente até a conclusão da integração segura.</p><a href="/merchant" class="inline-flex mt-7 bg-blue-500 hover:bg-blue-600 px-6 py-3 rounded-xl font-bold">Acessar Conta Nexa PJ</a></div><div class="grid sm:grid-cols-2 gap-4"><article class="card rounded-2xl p-6"><h3 class="font-bold text-lg">Identificação PJ</h3><p class="text-slate-400 text-sm mt-2">Empresa, cadastro e status de validação.</p></article><article class="card rounded-2xl p-6"><h3 class="font-bold text-lg">Saldos e carteira</h3><p class="text-slate-400 text-sm mt-2">Valores reais de BRL e USDC, quando habilitados.</p></article><article class="card rounded-2xl p-6"><h3 class="font-bold text-lg">Histórico</h3><p class="text-slate-400 text-sm mt-2">Movimentações e referências auditáveis.</p></article><article class="card rounded-2xl p-6"><h3 class="font-bold text-lg">Compra e conversão</h3><p class="text-slate-400 text-sm mt-2">Fluxos disponíveis na conta, sujeitos a confirmação.</p></article><article class="card rounded-2xl p-6"><h3 class="font-bold text-lg">Transferências</h3><p class="text-slate-400 text-sm mt-2">Operações sujeitas a autenticação e permissões.</p></article><article class="card rounded-2xl p-6"><h3 class="font-bold text-lg">Checkout Pix</h3><p class="text-slate-400 text-sm mt-2">Cobranças, liquidação e conciliação por etapa.</p></article></div></div></section>
-<section id="abrir-conta" class="py-24 px-5 bg-slate-950/60"><div class="max-w-7xl mx-auto"><p class="eyebrow text-blue-300">Onboarding Nexa PJ</p><h2 class="text-4xl md:text-5xl font-black mt-4">Abra sua conta. Identifique sua empresa. Ative com segurança.</h2><p class="text-slate-300 text-lg mt-5 max-w-4xl">O cadastro Nexa e o acesso à plataforma de gestão são etapas distintas da aprovação da conta financeira. Para movimentar recursos, validamos o CNPJ, os responsáveis e o resultado da verificação de identidade.</p><div class="grid md:grid-cols-4 gap-5 mt-10">
-<article class="card rounded-2xl p-6"><b class="text-blue-300">01 · Acesso</b><h3 class="font-bold text-xl mt-3">Crie seu login</h3><p class="text-slate-400 mt-3">Nome, e-mail, senha e nome da empresa para começar a gestão.</p></article>
-<article class="card rounded-2xl p-6"><b class="text-blue-300">02 · Empresa</b><h3 class="font-bold text-xl mt-3">Informe o CNPJ</h3><p class="text-slate-400 mt-3">Conferimos razão social, situação cadastral, endereço, atividade e representação.</p></article>
-<article class="card rounded-2xl p-6"><b class="text-blue-300">03 · Identidade</b><h3 class="font-bold text-xl mt-3">Verifique com Didit</h3><p class="text-slate-400 mt-3">Representante autorizado apresenta documento oficial e realiza validação de identidade e biometria; sócios e beneficiários finais podem exigir validação adicional.</p></article>
-<article class="card rounded-2xl p-6"><b class="text-blue-300">04 · Aprovação</b><h3 class="font-bold text-xl mt-3">Conta habilitada</h3><p class="text-slate-400 mt-3">Após KYB/KYC e revisão de conformidade, habilitamos apenas as funções financeiras aprovadas.</p></article>
+<section id="abrir-conta" class="py-24 px-5 bg-slate-950/60"><div class="max-w-7xl mx-auto"><p class="eyebrow text-blue-300">Onboarding Nexa PJ</p><h2 class="text-4xl md:text-5xl font-black mt-4">Abra sua Nexa PJ. Valide sua identidade. Envie os documentos. A Nexa analisa.</h2><p class="text-slate-300 text-lg mt-5 max-w-4xl">A abertura PJ segue etapas claras: identificação do representante pela Didit PF, envio do CNPJ e contrato social ou documento equivalente e revisão empresarial feita manualmente pela Nexa em até dois dias úteis após o protocolo completo. A liberação financeira é uma etapa separada.</p><div class="grid md:grid-cols-4 gap-5 mt-10">
+<article class="card rounded-2xl p-6"><b class="text-blue-300">01 · Acesso</b><h3 class="font-bold text-xl mt-3">Crie seu login</h3><p class="text-slate-400 mt-3">Crie seu acesso e informe a empresa. A abertura PJ só é iniciada quando você selecionar essa opção.</p></article>
+<article class="card rounded-2xl p-6"><b class="text-blue-300">02 · Empresa</b><h3 class="font-bold text-xl mt-3">Informe o CNPJ</h3><p class="text-slate-400 mt-3">Informe o CNPJ e anexe o contrato social, ato constitutivo ou CCMEI, conforme a empresa.</p></article>
+<article class="card rounded-2xl p-6"><b class="text-blue-300">03 · Identidade</b><h3 class="font-bold text-xl mt-3">Verifique com Didit</h3><p class="text-slate-400 mt-3">A Didit verifica a identidade da pessoa física representante. A análise documental da empresa é realizada pela Nexa, não pela Didit Business.</p></article>
+<article class="card rounded-2xl p-6"><b class="text-blue-300">04 · Análise</b><h3 class="font-bold text-xl mt-3">Revisão manual</h3><p class="text-slate-400 mt-3">A Nexa confere os documentos e decide no /admin em até dois dias úteis. A aprovação do cadastro não libera automaticamente Pix, carteira ou transferências.</p></article>
 </div><div class="glass rounded-3xl p-7 mt-7"><h3 class="font-bold text-2xl">Documentos que podem ser solicitados</h3><p class="text-slate-300 mt-3">CNPJ e dados cadastrais; contrato social e alterações ou CCMEI/requerimento de empresário; documento de identificação do representante (RG ou CNH); CPF; comprovante de endereço da empresa quando necessário; prova dos poderes de representação ou procuração; identificação de sócios e beneficiários finais; declarações adicionais conforme risco e natureza da empresa. Não envie documentos pessoais por e-mail comum: utilize apenas o canal seguro que for disponibilizado no processo.</p><p class="text-blue-200 text-sm mt-3">A lista final varia por tipo de empresa, parceiro financeiro e exigências de compliance. A automação do CNPJ e as sessões Didit integradas ainda dependem da liberação técnica; criar workspace não ativa Pix, carteira ou transferências automaticamente.</p></div><div class="flex flex-wrap gap-4 mt-8"><a href="/cadastro" class="bg-blue-500 hover:bg-blue-600 px-7 py-4 rounded-xl font-bold glow">Abra sua Conta Nexa</a><a href="/merchant" class="bg-white/10 border border-white/20 px-7 py-4 rounded-xl font-bold">Já tenho conta</a></div></div></section>
     <section id="fluxo" class="py-24 px-5 bg-slate-950/38"><div class="max-w-7xl mx-auto"><div class="max-w-3xl mb-12"><p class="eyebrow text-blue-300">Fluxo reconciliado</p><h2 class="text-4xl md:text-5xl font-black mt-4">Da cobrança ao extrato, sem atalhos financeiros.</h2></div><div class="grid md:grid-cols-4 gap-5"><article class="card rounded-3xl p-7"><span class="text-blue-300 font-black">01</span><h3 class="text-2xl font-black mt-5">Cobrança em reais</h3><p class="text-slate-400 mt-3">A empresa informa o valor e gera um Pix individual, com referência própria.</p></article><article class="card rounded-3xl p-7"><span class="text-cyan-300 font-black">02</span><h3 class="text-2xl font-black mt-5">Pix confirmado</h3><p class="text-slate-400 mt-3">O recebimento e a tarifa efetiva do provedor são conciliados.</p></article><article class="card rounded-3xl p-7"><span class="text-indigo-300 font-black">03</span><h3 class="text-2xl font-black mt-5">Liquidação real</h3><p class="text-slate-400 mt-3">Em USDC, registra-se a compra efetiva; em BRL, calcula-se o Pix sustentável.</p></article><article class="card rounded-3xl p-7"><span class="text-amber-300 font-black">04</span><h3 class="text-2xl font-black mt-5">Conclusão auditável</h3><p class="text-slate-400 mt-3">Referência, hash, taxas e valor final ficam no histórico da empresa.</p></article></div></div></section>
 
@@ -43,7 +121,7 @@
     <section class="py-24 px-5"><div class="max-w-5xl mx-auto glass rounded-[2.5rem] p-10 sm:p-14 text-center"><p class="eyebrow text-blue-300">Portal Nexa PJ</p><h2 class="text-4xl md:text-6xl font-black mt-5">Muito mais que uma conta. A plataforma da sua empresa.</h2><p class="text-xl text-slate-300 mt-6">Comece pelo portal Nexa PJ. Gestão empresarial e capacidades financeiras são liberadas conforme identidade, autorização e habilitação.</p><a href="/merchant" class="inline-flex mt-9 bg-blue-500 hover:bg-blue-600 px-8 py-4 rounded-2xl font-black glow">Entrar no Portal PJ</a></div></section>
   </main>
 
-  <footer class="border-t border-white/10 bg-slate-950/70"><div class="max-w-7xl mx-auto px-5 py-10 flex flex-col md:flex-row gap-6 justify-between text-sm text-slate-400"><div><b class="text-white">Nexa PJ</b><p class="mt-2">Checkout Pix com liquidação clara.</p></div><div class="flex flex-wrap gap-5"><a href="/">Nexa</a><a href="/privacidade">Privacidade</a><a href="/termos">Termos</a><a href="/lgpd">LGPD</a><a href="/suporte">Suporte</a></div></div></footer>
+  <footer class="border-t border-white/10 bg-slate-950/70"><div class="max-w-7xl mx-auto px-5 py-10 flex flex-col md:flex-row gap-6 justify-between text-sm text-slate-400"><div><b class="text-white">Nexa PJ</b><p class="mt-2">Conta empresarial, ERP e inteligência em um só ecossistema.</p></div><div class="flex flex-wrap gap-5"><a href="/">Nexa</a><a href="/privacidade">Privacidade</a><a href="/termos">Termos</a><a href="/lgpd">LGPD</a><a href="/suporte">Suporte</a></div></div></footer>
   <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});</script>
 </body>
 </html>

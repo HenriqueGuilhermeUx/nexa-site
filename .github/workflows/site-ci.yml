@@ -28,6 +28,8 @@ jobs:
           node --check scripts/build-site.mjs
       - name: Validate launch strategy and financial safety
         run: node scripts/validate-launch-site.js
+      - name: Validate Nexa PJ bank plus ERP experience and no legacy regression
+        run: node scripts/validate-nexa-pj-bank-erp.cjs
       - name: Validate required pages
         run: |
           test -s index.html

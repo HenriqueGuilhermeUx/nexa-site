@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
-  <title>Portal Nexa PJ | Checkout Pix com liquidação BRL ou USDC</title>
+  <title>Nexa PJ — Conta empresarial, recebimentos e gestão</title>
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="apple-touch-icon" href="/apple-touch-icon.svg">
   <link rel="icon" href="/favicon.svg">
@@ -26,21 +26,27 @@
     .step{border-left:3px solid #334155;padding-left:1rem}.step.done{border-color:#10b981}.step.active{border-color:#f59e0b}
   </style>
 <link rel="stylesheet" href="/nexa-2026.css">
+<link rel="stylesheet" href="/nexa-pj-bank-erp.css">
 </head>
-<body class="bgx min-h-screen pb-12">
+<body class="bgx min-h-screen pb-12 pj-banking pj-merchant">
   <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-950/90 backdrop-blur-xl border-b border-white/10">
     <div class="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between">
-      <a href="/" class="flex items-center gap-3"><div class="w-10 h-10 rounded-2xl bg-indigo-500 flex items-center justify-center font-black glow">N</div><span class="font-black text-xl">Portal Nexa PJ</span></a>
+      <a href="/" class="flex items-center gap-3"><div class="w-10 h-10 rounded-2xl bg-indigo-500 flex items-center justify-center font-black glow">N</div><span class="font-black text-xl">Nexa PJ <span class="text-sm font-semibold text-cyan-200">· Conta & ERP+</span></span></a>
       <div class="hidden md:flex gap-6 text-sm text-slate-300"><a href="/pj" class="hover:text-white">Nexa PJ</a><a href="/portal" class="hover:text-white">Conta Nexa</a><a href="/suporte" class="hover:text-white">Suporte</a></div>
       <button id="logoutBtn" onclick="logout()" class="hidden bg-white/10 border border-white/10 px-4 py-2 rounded-xl font-bold">Sair</button>
     </div>
   </nav>
 
   <main class="pt-28 px-5 max-w-7xl mx-auto">
-    <section class="glass rounded-[2rem] p-8 md:p-10 mb-8">
-      <span class="inline-block px-4 py-2 rounded-full bg-cyan-500/10 text-cyan-300 font-black text-sm mb-5">CHECKOUT NEXA PJ</span>
-      <h1 class="text-4xl md:text-6xl font-black leading-tight">Receba Pix. Acompanhe tudo. <span class="grad">Liquide com transparência.</span></h1>
-      <p class="text-slate-300 text-lg md:text-xl mt-5 max-w-4xl">A cobrança é feita em reais. A empresa escolhe BRL/Pix ou USDC, e cada etapa fica registrada no portal. Valores em USDC antes da compra são estimativas; o extrato final mostra o resultado realmente liquidado.</p>
+    <section class="glass rounded-[2rem] p-8 md:p-10 mb-8 pj-merchant-home">
+      <span class="pj-overline"><span class="pj-dot"></span> Nexa PJ · Conta empresarial & ERP+</span>
+      <h1 class="text-4xl md:text-6xl font-black leading-tight mt-5">Seu negócio no controle. <span class="grad">Seu dinheiro, com clareza.</span></h1>
+      <p class="text-slate-300 text-lg md:text-xl mt-5 max-w-4xl">Acompanhe os recebimentos, transações e cobranças do portal Nexa. A experiência de gestão empresarial inclui ERP, CRM, documentos, operações e inteligência; a ligação com a Conta Nexa respeita a identidade PJ e as permissões financeiras.</p>
+      <div class="pj-merchant-features" aria-label="Áreas do ecossistema empresarial">
+        <span>◈ Conta Nexa PJ</span><span>▤ Financeiro & ERP+</span><span>◎ Clientes & CRM</span><span>↗ Cobranças</span><span>✦ Inteligência</span>
+      </div>
+      <p class="text-slate-400 text-sm mt-5 max-w-4xl">O checkout legado mantém suas regras. Novas contas PJ exigem Didit PF, documentos empresariais e análise manual; a liberação cadastral não ativa Pix, carteira ou operações automaticamente.</p>
+      <a href="/pj#plataforma" class="inline-flex mt-6 text-cyan-200 font-bold hover:text-white">Conhecer todos os módulos empresariais →</a>
     </section>
 
     <section id="loginArea" class="max-w-xl mx-auto">
@@ -56,7 +62,12 @@
     </section>
 
     <section id="appArea" class="hidden">
+      <div class="pj-merchant-apphead">
+        <div><span class="pj-overline">PAINEL FINANCEIRO EMPRESARIAL</span><h2>Visão da sua operação</h2><p>Dados deste portal · recebimentos não representam necessariamente o saldo disponível da Conta Nexa.</p></div>
+        <a href="/pj#conta" class="pj-ghost px-4 py-3 rounded-xl">Sobre a Conta Nexa PJ ↗</a>
+      </div>
       <div id="notice" class="hidden mb-6 rounded-2xl p-4 border"></div>
+      <section id="pjManualOnboarding" class="glass rounded-[2rem] p-6 mb-7" aria-label="Liberação PJ"><p class="text-slate-400">Carregando cadastro da empresa…</p></section>
 
       <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-7">
         <div class="card rounded-3xl p-5"><p class="text-slate-400 text-sm">Empresa</p><h3 id="merchantStatus" class="text-2xl font-black mt-2">—</h3></div>
@@ -69,7 +80,7 @@
       <div class="grid lg:grid-cols-2 gap-6">
         <section class="glass rounded-[2rem] p-7">
           <div class="flex justify-between gap-4 items-start mb-5"><div><span class="text-indigo-300 text-xs font-black tracking-widest">EMPRESA</span><h2 class="text-3xl font-black mt-2">Dados e recebimento</h2></div><span id="walletBadge" class="pill wait">Carteira pendente</span></div>
-          <p class="text-slate-400 mb-5">A Nexa reutiliza automaticamente a carteira vinculada à sua conta. Uma wallet externa só é necessária quando você preferir outro destino.</p>
+          <p class="text-slate-400 mb-5">O checkout merchant legado mantém a carteira vinculada à sua conta. Na nova abertura Nexa PJ, a carteira empresarial é independente da carteira PF e só será habilitada após validação e autorização financeira.</p>
           <div class="grid md:grid-cols-2 gap-3">
             <input id="businessName" class="p-4 rounded-2xl" placeholder="Nome da empresa">
             <input id="cnpj" class="p-4 rounded-2xl" placeholder="CNPJ ou CPF">
@@ -77,6 +88,12 @@
             <input id="merchantPhone" class="p-4 rounded-2xl" placeholder="Telefone">
             <input id="pixKey" class="p-4 rounded-2xl md:col-span-2" placeholder="Chave Pix da empresa">
           </div>
+          <label class="block mt-5 p-4 rounded-2xl border border-cyan-500/30 bg-cyan-950/30">
+            <span class="flex items-start gap-3"><input id="pjManualReview" type="checkbox" class="mt-1 shrink-0" style="width:auto">
+              <span><strong>Solicitar abertura da Conta Nexa PJ</strong><br>
+                <small class="text-slate-300">Exclusivo para CNPJ: verificação Didit da pessoa física, envio de contrato social ou equivalente e sua aprovação em até 2 dias úteis após o protocolo. Não habilita cobranças ou carteira automaticamente.</small>
+              </span></span>
+          </label>
           <button onclick="registerMerchant()" class="w-full mt-5 bg-indigo-500 hover:bg-indigo-600 p-4 rounded-2xl font-black">Salvar empresa</button>
         </section>
 
@@ -153,7 +170,7 @@
 
     function hydrate(data){dashboard=data;const m=data.merchant||{};$('merchantStatus').textContent=m.businessName||m.status||'Ativa';$('merchantUsdc').textContent=usdc(data.totalSalesUsdc||0)+' USDC';$('merchantBrl').textContent=brl(data.totalSalesBrl||0);$('merchantTxs').textContent=String(data.totalTransactions||0);$('businessName').value=m.businessName||$('businessName').value;$('cnpj').value=m.cnpj||$('cnpj').value;$('pixKey').value=m.pixKey||$('pixKey').value;$('settlementMode').value=m.settlementCurrency||'USDC';$('settlementWalletMode').value=m.settlementWalletMode||'NEXA_WALLET';$('externalWallet').value=m.externalWalletAddress||'';toggleExternalWallet();updateFeePreview();const ready=!!m.walletReady||/^0x[a-fA-F0-9]{40}$/.test(String(m.walletAddress||m.externalWalletAddress||''));$('walletBadge').className='pill '+(ready?'ok':'wait');$('walletBadge').textContent=ready?'Carteira pronta':'Carteira pendente';if(m.settlementCurrency==='USDC'&&!ready)notice('Sua conta ainda precisa concluir a carteira Nexa/Privy ou informar uma wallet externa para receber USDC.','info')}
     async function loadDashboard(){try{const data=await api('/merchant/dashboard',{headers:headers(false)});hydrate(data);return data}catch(e){if(e.status===400){$('merchantStatus').textContent='Cadastrar';return null}throw e}}
-    async function registerMerchant(){try{const payload={businessName:$('businessName').value.trim(),cnpj:$('cnpj').value.trim(),email:$('merchantEmail').value.trim()||user?.email||'',phone:$('merchantPhone').value.trim(),pixKey:$('pixKey').value.trim(),settlementCurrency:$('settlementMode').value,settlementWalletMode:$('settlementWalletMode').value,externalWalletAddress:$('externalWallet').value.trim()};if(!payload.businessName||!payload.cnpj||!payload.email)throw new Error('Informe empresa, CNPJ/CPF e e-mail.');const data=await api('/merchant/register',{method:'POST',body:JSON.stringify(payload)});show(data);notice('Dados da empresa salvos.','ok');await loadAll()}catch(e){notice(e.message,'bad');show(e.data||e.message)}}
+    async function registerMerchant(){try{const payload={businessName:$('businessName').value.trim(),cnpj:$('cnpj').value.trim(),email:$('merchantEmail').value.trim()||user?.email||'',phone:$('merchantPhone').value.trim(),pixKey:$('pixKey').value.trim(),settlementCurrency:$('settlementMode').value,settlementWalletMode:$('settlementWalletMode').value,externalWalletAddress:$('externalWallet').value.trim()};if(!payload.businessName||!payload.cnpj||!payload.email)throw new Error('Informe empresa, CNPJ/CPF e e-mail.');const pjSelected=$('pjManualReview')?.checked===true;if(pjSelected&&!/^[A-Za-z0-9.\\/-]{14,20}$/.test(payload.cnpj))throw new Error('Informe um CNPJ válido para a abertura PJ.');const route=pjSelected?'/merchant/pj-register':'/merchant/register';const data=await api(route,{method:'POST',body:JSON.stringify(payload)});show(data);notice(pjSelected?'Abertura PJ registrada. Envie os documentos e conclua a Didit PF para revisão manual.':'Dados da empresa salvos.','ok');await loadAll()}catch(e){notice(e.message,'bad');show(e.data||e.message)}}
     function toggleExternalWallet(){$('externalWallet').classList.toggle('hidden',$('settlementWalletMode').value!=='EXTERNAL_WALLET')}
     function updateFeePreview(){const mode=$('settlementMode').value;$('merchantFee').textContent=mode==='BRL'?'2,49%':'1,49%'}
     async function updateSettings(){try{const payload={settlementCurrency:$('settlementMode').value,settlementWalletMode:$('settlementWalletMode').value,externalWalletAddress:$('externalWallet').value.trim(),pixKey:$('pixKey').value.trim(),settlementAuto:false};const data=await api('/merchant/settings',{method:'PUT',body:JSON.stringify(payload)});show(data);notice('Configurações atualizadas.','ok');lastQuote=null;$('quoteBox').classList.add('hidden');$('generateBtn').classList.add('hidden');await loadDashboard()}catch(e){notice(e.message,'bad');show(e.data||e.message)}}
@@ -170,11 +187,12 @@
     function txCard(tx){return '<article class="card rounded-2xl p-5"><div class="flex flex-col md:flex-row md:items-start justify-between gap-4"><div><div class="flex flex-wrap gap-2 items-center">'+statusPill(tx.status)+'<span class="text-xs text-slate-500">'+fmtDate(tx.createdAt)+'</span></div><h3 class="font-black text-lg mt-3">'+esc(tx.description||'Cobrança Nexa PJ')+'</h3><p class="text-slate-400 text-sm mt-1">Cliente pagou '+brl(tx.amountBrl)+' · Liquidação '+esc(tx.settlementCurrency||'—')+'</p></div><div class="md:text-right"><p class="text-slate-400 text-xs">Empresa recebe</p><b class="text-xl">'+finalValue(tx)+'</b></div></div><div class="grid sm:grid-cols-3 gap-3 mt-4 text-sm"><div><span class="text-slate-500">Taxa Nexa</span><b class="block">'+brl(tx.serviceFeeBrl||0)+'</b></div><div><span class="text-slate-500">Custo Pix In</span><b class="block">'+brl(tx.pixInFeeBrl||0)+'</b></div><div><span class="text-slate-500">Referência</span><b class="block break-all">'+esc(tx.payoutReference||tx.providerReference||tx.pixTransactionId||'aguardando')+'</b></div></div></article>'}
     async function loadTransactions(){try{const data=await api('/merchant/transactions?limit=50&offset=0',{headers:headers(false)});const list=data.transactions||[];$('txList').innerHTML=list.length?list.map(txCard).join(''):'<p class="text-slate-400">Nenhuma cobrança registrada.</p>';show(data)}catch(e){$('txList').innerHTML='<p class="text-rose-300">'+esc(e.message)+'</p>';show(e.data||e.message)}}
     async function loadSettlementStatus(){try{const data=await api('/merchant/settle',{method:'POST',headers:headers(false)});const pending=data.pending||[];$('settlementList').innerHTML=pending.length?pending.map(p=>'<div class="step '+(p.status==='completed'?'done':'active')+'"><b>'+esc(labels[p.status]||p.status)+'</b><p class="text-sm text-slate-400 mt-1">Cobrança '+brl(p.chargeAmountBrl)+' · '+esc(p.settlementCurrency)+'</p></div>').join(''):'<p class="text-emerald-300">Nenhuma liquidação pendente.</p>';show(data)}catch(e){$('settlementList').innerHTML='<p class="text-rose-300">'+esc(e.message)+'</p>';show(e.data||e.message)}}
-    async function loadAll(){const data=await loadDashboard();if(data){await Promise.all([loadTransactions(),loadSettlementStatus()])}}
+    async function loadAll(){const data=await loadDashboard();if(data){await Promise.all([loadTransactions(),loadSettlementStatus()])} await window.loadPjManualOnboarding?.();}
 
     if('serviceWorker' in navigator)serviceWorker.register('/sw.js').catch(()=>{});
     (async()=>{authUi();if(token){try{await loadMe();authUi();await loadAll()}catch(e){logout(false);notice(e.message,'bad')}}})();
   </script>
+  <script src="/pj-manual-onboarding.js?v=1"></script>
 
   <div class="mt-8 flex flex-wrap justify-center gap-6 text-sm text-slate-400"><a href="/privacidade">Privacidade</a><a href="/termos">Termos</a><a href="/lgpd">LGPD</a><a href="/suporte">Suporte</a></div>
 </body>
