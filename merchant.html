@@ -57,6 +57,7 @@
 
     <section id="appArea" class="hidden">
       <div id="notice" class="hidden mb-6 rounded-2xl p-4 border"></div>
+      <section id="pjManualOnboarding" class="glass rounded-[2rem] p-6 mb-7" aria-label="Liberação PJ"><p class="text-slate-400">Carregando cadastro da empresa…</p></section>
 
       <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-7">
         <div class="card rounded-3xl p-5"><p class="text-slate-400 text-sm">Empresa</p><h3 id="merchantStatus" class="text-2xl font-black mt-2">—</h3></div>
@@ -170,11 +171,12 @@
     function txCard(tx){return '<article class="card rounded-2xl p-5"><div class="flex flex-col md:flex-row md:items-start justify-between gap-4"><div><div class="flex flex-wrap gap-2 items-center">'+statusPill(tx.status)+'<span class="text-xs text-slate-500">'+fmtDate(tx.createdAt)+'</span></div><h3 class="font-black text-lg mt-3">'+esc(tx.description||'Cobrança Nexa PJ')+'</h3><p class="text-slate-400 text-sm mt-1">Cliente pagou '+brl(tx.amountBrl)+' · Liquidação '+esc(tx.settlementCurrency||'—')+'</p></div><div class="md:text-right"><p class="text-slate-400 text-xs">Empresa recebe</p><b class="text-xl">'+finalValue(tx)+'</b></div></div><div class="grid sm:grid-cols-3 gap-3 mt-4 text-sm"><div><span class="text-slate-500">Taxa Nexa</span><b class="block">'+brl(tx.serviceFeeBrl||0)+'</b></div><div><span class="text-slate-500">Custo Pix In</span><b class="block">'+brl(tx.pixInFeeBrl||0)+'</b></div><div><span class="text-slate-500">Referência</span><b class="block break-all">'+esc(tx.payoutReference||tx.providerReference||tx.pixTransactionId||'aguardando')+'</b></div></div></article>'}
     async function loadTransactions(){try{const data=await api('/merchant/transactions?limit=50&offset=0',{headers:headers(false)});const list=data.transactions||[];$('txList').innerHTML=list.length?list.map(txCard).join(''):'<p class="text-slate-400">Nenhuma cobrança registrada.</p>';show(data)}catch(e){$('txList').innerHTML='<p class="text-rose-300">'+esc(e.message)+'</p>';show(e.data||e.message)}}
     async function loadSettlementStatus(){try{const data=await api('/merchant/settle',{method:'POST',headers:headers(false)});const pending=data.pending||[];$('settlementList').innerHTML=pending.length?pending.map(p=>'<div class="step '+(p.status==='completed'?'done':'active')+'"><b>'+esc(labels[p.status]||p.status)+'</b><p class="text-sm text-slate-400 mt-1">Cobrança '+brl(p.chargeAmountBrl)+' · '+esc(p.settlementCurrency)+'</p></div>').join(''):'<p class="text-emerald-300">Nenhuma liquidação pendente.</p>';show(data)}catch(e){$('settlementList').innerHTML='<p class="text-rose-300">'+esc(e.message)+'</p>';show(e.data||e.message)}}
-    async function loadAll(){const data=await loadDashboard();if(data){await Promise.all([loadTransactions(),loadSettlementStatus()])}}
+    async function loadAll(){const data=await loadDashboard();if(data){await Promise.all([loadTransactions(),loadSettlementStatus()])} await window.loadPjManualOnboarding?.();}
 
     if('serviceWorker' in navigator)serviceWorker.register('/sw.js').catch(()=>{});
     (async()=>{authUi();if(token){try{await loadMe();authUi();await loadAll()}catch(e){logout(false);notice(e.message,'bad')}}})();
   </script>
+  <script src="/pj-manual-onboarding.js?v=1"></script>
 
   <div class="mt-8 flex flex-wrap justify-center gap-6 text-sm text-slate-400"><a href="/privacidade">Privacidade</a><a href="/termos">Termos</a><a href="/lgpd">LGPD</a><a href="/suporte">Suporte</a></div>
 </body>
