@@ -19,6 +19,29 @@
     not_requested:'Ainda não notificado',
   };
   let reviewRows = [];
+  const readinessNames={
+    PJ_DATABASE_MIGRATIONS_MISSING:'Migrações PJ não confirmadas no banco',
+    PJ_REVIEW_SCHEMA_FIELDS_MISSING:'Campos de revisão e criptografia indisponíveis',
+    PJ_DOCUMENT_ENCRYPTION_KEY_MISSING:'Chave de criptografia dos documentos pendente',
+    PJ_MANUAL_INTAKE_OFF:'Abertura PJ ainda desativada',
+    DIDIT_PF_WEBHOOK_SIGNATURE_NOT_CONFIGURED:'Assinatura do webhook Didit PF pendente',
+    PJ_ADMIN_ALERT_EMAIL_NOT_MATCHED:'E-mail de aviso não coincide com ADMIN_EMAIL',
+    PJ_EMAIL_PROVIDER_NOT_CONFIGURED:'Remetente ou Resend não configurado',
+  };
+  function readinessPanel(value){
+    const issues=Array.isArray(value?.issues)?value.issues:[];
+    const ok=value?.infrastructureChecksComplete===true;
+    const body=issues.length
+      ? '<ul>'+issues.map(code=>'<li>'+clean(readinessNames[code]||'Verificação pendente')+'</li>').join('')+'</ul>'
+      :'<p class="muted">Configurações estruturais conferidas. Ainda faltam DNS verificado, provedores e teste ponta a ponta.</p>';
+    return '<div class="card"><h3>Prontidão operacional PJ</h3>'+
+      '<p class="'+(ok?'muted':'warn')+'">'+
+      (ok?'Verificações internas concluídas; produção permanece bloqueada.'
+         :'Homologação incompleta — nenhuma liberação automática permitida.')+'</p>'+
+      body+
+      '<p class="muted">DNS do remetente: verificação externa não realizada aqui. Didit Business não é exigida nesta fase. Seu aceite documental não libera Pix nem USDC.</p>'+
+      '</div>';
+  }
   const clean = x => esc(x ?? '');
   const fmt = x => x ? new Date(x).toLocaleString('pt-BR') : '—';
   const due = row => {
@@ -64,10 +87,17 @@
     if(!token()){root.innerHTML='<div class="card">Acesso restrito</div>';return;}
     root.innerHTML='<div class="card">Carregando pendências PJ…</div>';
     try{
-      const result=await call('/merchant-admin/pj-manual-reviews');
+      const [queueResult,preflightResult]=await Promise.allSettled([
+        call('/merchant-admin/pj-manual-reviews'),
+        call('/merchant-admin/pj-operational-preflight'),
+      ]);
       if(document.getElementById('title')?.textContent!=='Liberação manual PJ')return;
-      reviewRows=Array.isArray(result.items)?result.items:[];
-      root.innerHTML=table(reviewRows);
+      if(queueResult.status!=='fulfilled')throw queueResult.reason;
+      reviewRows=Array.isArray(queueResult.value.items)?queueResult.value.items:[];
+      const readiness=preflightResult.status==='fulfilled'
+        ? readinessPanel(preflightResult.value)
+        :'<div class="card"><h3>Prontidão operacional PJ</h3><p class="warn">Não foi possível conferir a configuração de homologação. Nenhuma liberação foi efetuada.</p></div>';
+      root.innerHTML=readiness+table(reviewRows);
     }catch(error){
       root.innerHTML='<div class="card"><h3>Não foi possível carregar a fila PJ</h3><p class="bad">'+clean(error.message)+'</p>'+
         '<p class="muted">Confira o token admin e a migração do banco; nenhuma solicitação foi aprovada.</p></div>';
