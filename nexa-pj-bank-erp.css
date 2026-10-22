@@ -86,3 +86,17 @@ body.pj-banking{background:#061220;color:#f4f8fc}
   .pj-banking nav a[href="/merchant"]{display:none}
   .pj-banking nav a[href="#abrir-conta"]{font-size:.75rem;padding:9px 10px}
 }
+
+/* Logged-in PJ checkout portal receives the same banking visual identity;
+   its financial values stay entirely owned by existing backend responses. */
+.pj-banking.pj-merchant .pj-merchant-home{background:linear-gradient(120deg,rgba(20,65,76,.86),rgba(10,32,52,.86));border-color:rgba(129,223,210,.23)}
+.pj-banking.pj-merchant .pj-merchant-home h1{max-width:990px;letter-spacing:-.055em}
+.pj-banking.pj-merchant .pj-merchant-features{display:flex;flex-wrap:wrap;gap:9px;margin-top:25px}
+.pj-banking.pj-merchant .pj-merchant-features span{display:inline-flex;align-items:center;padding:9px 12px;background:rgba(9,33,48,.67);border:1px solid rgba(161,222,229,.17);border-radius:10px;font-size:.78rem;color:#c8e4e6}
+.pj-banking.pj-merchant .pj-merchant-apphead{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin:0 0 23px;padding:22px 25px;background:linear-gradient(120deg,#123847,#122a40);border:1px solid rgba(149,224,211,.19);border-radius:21px}
+.pj-banking.pj-merchant .pj-merchant-apphead h2{font-size:1.6rem;letter-spacing:-.04em;font-weight:850;margin:7px 0}
+.pj-banking.pj-merchant .pj-merchant-apphead p{font-size:.77rem;color:#a8c5d0}
+.pj-banking.pj-merchant #appArea>.grid:first-of-type .card{background:#102c3b}
+.pj-banking.pj-merchant #loginArea .glass{border-color:rgba(128,229,203,.21)}
+.pj-banking.pj-merchant input:focus,.pj-banking.pj-merchant select:focus,.pj-banking.pj-merchant textarea:focus{outline:2px solid #70e7c2;outline-offset:2px}
+@media(max-width:650px){.pj-banking.pj-merchant .pj-merchant-home{padding:24px}.pj-banking.pj-merchant .pj-merchant-home h1{font-size:2.35rem}.pj-banking.pj-merchant .pj-merchant-apphead{padding:18px}}
