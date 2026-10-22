@@ -374,6 +374,7 @@ function render() {
     ops: 'Visão Geral',
     primeiros: 'Primeiros Nexa',
     clientes: 'Clientes',
+    'pj-pendencias': 'Liberação manual PJ',
     checkout: 'Checkout PJ',
     financeiro: 'Resgates Pix',
     tesouraria: 'Controle Financeiro',
@@ -390,6 +391,7 @@ function render() {
   if (tab === 'ops') return renderOps();
   if (tab === 'primeiros') return renderPrimeiros();
   if (tab === 'clientes') return renderClientes();
+  if (tab === 'pj-pendencias' && window.renderPjReviews) return window.renderPjReviews();
   if (tab === 'checkout') return renderCheckout();
   if (tab === 'financeiro') return renderFinanceiro();
   if (tab === 'tesouraria') return renderTesouraria();
