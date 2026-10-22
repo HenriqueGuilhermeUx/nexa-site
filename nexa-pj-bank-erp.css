@@ -72,3 +72,17 @@ body.pj-banking{background:#061220;color:#f4f8fc}
 @media(max-width:1100px){.pj-banking .pj-hero-inner{grid-template-columns:1fr;gap:2.3rem;max-width:800px}.pj-banking .pj-hero{padding-top:8rem}.pj-banking .pj-hero h1{max-width:800px}}
 @media(max-width:650px){.pj-banking .pj-hero{padding-top:7.5rem;padding-bottom:2.8rem}.pj-banking .pj-hero h1{font-size:2.65rem}.pj-banking .pj-product-body{grid-template-columns:1fr}.pj-banking .pj-product-side{display:none}.pj-banking .pj-product-main{padding:13px}.pj-banking .pj-workspace-pill{display:none}.pj-banking .pj-kpi-row{grid-template-columns:repeat(3,minmax(0,1fr))}.pj-banking .pj-kpi{padding:11px 8px}.pj-banking .pj-kpi strong{font-size:1rem}.pj-banking .pj-dashboard-low{grid-template-columns:1fr}.pj-banking .pj-integrated-inner{grid-template-columns:1fr}.pj-banking .pj-buttonrow a{width:100%}.pj-banking .pj-benefits{font-size:.75rem}.pj-banking .pj-account-banner strong{font-size:1.35rem}}
 @media(prefers-reduced-motion:reduce){.pj-banking *{scroll-behavior:auto!important;transition:none!important}}
+
+/* Consistent mint account actions and readable mobile navigation. */
+.pj-banking nav .bg-blue-500{background:#84f1ce;color:#072b32;box-shadow:none}
+.pj-banking nav a[href="/"]>div{background:#84f1ce!important;color:#073139!important}
+.pj-banking a.bg-blue-500{background:#84f1ce!important;color:#072a34!important;box-shadow:0 12px 34px rgba(100,225,186,.1)}
+.pj-banking a.bg-blue-500:hover{background:#a8f6d8!important}
+@media(max-width:650px){
+  .pj-banking nav .max-w-7xl{padding-left:12px;padding-right:12px;gap:9px}
+  .pj-banking nav .max-w-7xl>a{gap:7px}
+  .pj-banking nav .max-w-7xl>a span{font-size:1rem}
+  .pj-banking nav .max-w-7xl>a>div{height:32px;width:32px;border-radius:10px}
+  .pj-banking nav a[href="/merchant"]{display:none}
+  .pj-banking nav a[href="#abrir-conta"]{font-size:.75rem;padding:9px 10px}
+}
