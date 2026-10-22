@@ -10,6 +10,7 @@ const index = read('index.html');
 const early = read('primeiros-nexa.html');
 const pj = read('pj.html');
 const merchant = read('merchant.html');
+const pjTheme = read('nexa-pj-bank-erp.css');
 const admin = read('admin.html');
 const adminJs = read('admin.js');
 const netlify = read('netlify.toml');
@@ -27,6 +28,23 @@ assert.match(early, /marketingConsent/);
 assert.match(early, /referralCode/);
 assert.match(early, /lista não abre conta/i);
 assert.doesNotMatch(early, /cashback|ganhe USDC|rendimento garantido/i);
+
+// Nexa PJ premium account + ERP presentation must stay isolated from PF.
+assert.match(pj, /nexa-pj-bank-erp\.css/);
+assert.match(merchant, /nexa-pj-bank-erp\.css/);
+assert.match(pj, /Conta \+ ERP \+ Inteligência/);
+assert.match(pj, /Prévia conceitual/);
+assert.match(pj, /sem dados de cliente/i);
+assert.match(pj, /até dois dias úteis/i);
+assert.match(pj, /Didit verifica a identidade da pessoa física/i);
+assert.match(merchant, /Conta Nexa PJ/);
+assert.match(merchant, /Financeiro & ERP\+/);
+assert.match(merchant, /recebimentos não representam necessariamente o saldo disponível/i);
+assert.match(pjTheme, /\.pj-banking \.pj-product/);
+assert.match(pjTheme, /\.pj-banking\.pj-merchant/);
+assert.match(pjTheme, /@media\(max-width:650px\)/);
+assert.doesNotMatch(pj, /Saldo disponível.*R\$\s*[1-9]/i);
+assert.doesNotMatch(pjTheme, /PRIVY_APP_SECRET|DIDIT_WEBHOOK_SECRET|RESEND_API_KEY/);
 
 assert.match(pj, /1,49%/);
 assert.match(pj, /2,49%/);
