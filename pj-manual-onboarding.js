@@ -25,6 +25,7 @@
       const response=await fetch(API+'/merchant/pj-manual-review',{headers:headers(false),cache:'no-store'});
       const state=await jsonResponse(response);
       if(!token)return;
+      el.classList.remove('hidden');
       const docs=Array.isArray(state.documents)?state.documents:[];
       const applied=['pending_manual','approved'].includes(state.reviewStatus);
       const businessName=escaping(state.businessName||'Sua empresa');
@@ -103,8 +104,21 @@
         }catch(e){document.getElementById('pjManualMessage').textContent=e.message;submit.disabled=false;}
       };
     }catch(e) {
-      el.innerHTML='<p class="text-amber-200">A abertura PJ não está pronta para análise nesta conta. '+escaping(e.message)+'</p>'+
-        '<p class="text-xs text-slate-400 mt-2">Conclua primeiro os dados da empresa e confirme sua autenticação Nexa.</p>';
+      const message=String(e.message||'');
+      if(/não faz parte da abertura PJ|nao faz parte da abertura PJ/i.test(message)){
+        // Legacy checkout merchants must keep their interface unchanged.
+        el.classList.add('hidden');
+        return;
+      }
+      el.classList.remove('hidden');
+      if(/Necessário um único cadastro PJ|Necessario um unico cadastro PJ/i.test(message)){
+        el.innerHTML='<h2 class="font-black text-xl">Abra sua Conta Nexa PJ</h2>'+
+          '<p class="text-sm text-slate-300 mt-3">Cadastre sua empresa abaixo, marque <b>Solicitar abertura da Conta Nexa PJ</b> e salve. Depois anexe o contrato social ou equivalente e conclua a verificação Didit PF.</p>'+
+          '<p class="text-xs text-slate-400 mt-3">Sua solicitação vai para análise manual em até dois dias úteis após o protocolo completo; Pix e carteira PJ só serão habilitados separadamente.</p>';
+        return;
+      }
+      el.innerHTML='<p class="text-amber-200">Não foi possível carregar a abertura PJ. '+escaping(message)+'</p>'+
+        '<p class="text-xs text-slate-400 mt-2">Verifique sua sessão e os dados da empresa. Nenhuma solicitação foi aprovada automaticamente.</p>';
     }
   };
   // Recheck Didit PF while the onboarding portal is open. No new Didit
