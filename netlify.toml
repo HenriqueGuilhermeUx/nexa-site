@@ -185,6 +185,26 @@
   force = true
 
 [[redirects]]
+  from = "/agentics/empresas"
+  to = "/agentics/empresas.html"
+  status = 200
+
+[[redirects]]
+  from = "/agentics/empresas/"
+  to = "/agentics/empresas.html"
+  status = 200
+
+[[redirects]]
+  from = "/agentics/trust"
+  to = "/agentics/trust.html"
+  status = 200
+
+[[redirects]]
+  from = "/agentics/trust/"
+  to = "/agentics/trust.html"
+  status = 200
+
+[[redirects]]
   from = "/agentics/beta"
   to = "/agentics/beta.html"
   status = 200
