@@ -28,6 +28,8 @@ jobs:
           node --check scripts/build-site.mjs
       - name: Validate launch strategy and financial safety
         run: node scripts/validate-launch-site.js
+      - name: Verify Agentics beta page is static, honest and does not collect data
+        run: node scripts/validate-agentics-beta.mjs
       - name: Validate required pages
         run: |
           test -s index.html
