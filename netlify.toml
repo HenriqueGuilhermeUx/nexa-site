@@ -185,6 +185,16 @@
   force = true
 
 [[redirects]]
+  from = "/agentics/beta"
+  to = "/agentics/beta.html"
+  status = 200
+
+[[redirects]]
+  from = "/agentics/beta/"
+  to = "/agentics/beta.html"
+  status = 200
+
+[[redirects]]
   from = "/agentics/demo"
   to = "/agentics/demo.html"
   status = 200
