@@ -30,6 +30,8 @@ jobs:
         run: node scripts/validate-launch-site.js
       - name: Verify Agentics beta page is static, honest and does not collect data
         run: node scripts/validate-agentics-beta.mjs
+      - name: Verify commercial Agentics and Trust pages are static and accurately scoped
+        run: node scripts/validate-agentics-commercial.mjs
       - name: Validate required pages
         run: |
           test -s index.html
