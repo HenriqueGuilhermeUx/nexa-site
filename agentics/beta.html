@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#06111f">
+<meta name="description" content="Nexa Agentics Premium: veja o que a demonstração pública já oferece e o que falta para o beta fechado de leitura financeira. Sem transações por agentes.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Nexa Agentics — Demonstração e beta Premium">
+<meta property="og:description" content="Experimente um simulador público sem dados pessoais e conheça as etapas necessárias ao beta Premium somente de leitura.">
+<link rel="canonical" href="https://trynexa.com.br/agentics/beta">
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/agentics/agentics.css">
+<title>Nexa Agentics — Status do beta Premium</title>
+<style>
+*{box-sizing:border-box}
+.beta-page{min-height:90vh}
+.beta-hero{padding:clamp(62px,8vw,114px) 0 70px;background:radial-gradient(ellipse at 75% 10%,rgba(38,123,213,.18),transparent 52%)}
+.beta-hero h1{font-size:clamp(38px,6vw,72px);max-width:900px;line-height:1.09;margin:18px 0 25px}
+.beta-hero .lead{max-width:760px}
+.beta-flag{display:inline-flex;gap:9px;align-items:center;flex-wrap:wrap;padding:8px 13px;border:1px solid #285a74;border-radius:999px;color:#b9e7fb;background:#103047;font-weight:800;font-size:12px;letter-spacing:.04em}
+.beta-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:29px}
+.beta-note{color:#aac5d6;font-size:13px;margin-top:24px;max-width:700px}
+.beta-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-top:42px}
+.beta-metric{background:#0c2537;border:1px solid #26516a;padding:22px;border-radius:18px;min-height:136px}
+.beta-metric b{display:block;font-size:18px;color:#eefcff;margin-bottom:9px}
+.beta-metric span{color:#b1cdde;font-size:14px;line-height:1.5}
+.beta-section{padding:75px 0}
+.beta-section.alt{background:#091e2e}
+.beta-section h2{font-size:clamp(28px,4.2vw,48px);line-height:1.1;margin:14px 0 14px}
+.beta-section .intro{max-width:750px;color:#b3cddd;margin-bottom:32px}
+.beta-stack{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.beta-tile{border:1px solid #28516a;border-radius:19px;padding:26px;background:#0d283b}
+.beta-tile h3{font-size:20px;margin:10px 0}
+.beta-tile p{color:#b3cddd;font-size:15px;line-height:1.58}
+.beta-tag{font-size:11px;letter-spacing:.07em;font-weight:900;padding:6px 11px;border-radius:50px;background:#173e51;color:#b7ecff;display:inline-flex}
+.beta-tag.wait{background:#413718;color:#ffdb90}
+.beta-tag.no{background:#462d36;color:#f5bcc4}
+.beta-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;counter-reset:readiness}
+.beta-step{border:1px solid #284e68;border-radius:16px;padding:22px;background:#0e283c}
+.beta-step:before{counter-increment:readiness;content:"0" counter(readiness);display:block;font-weight:900;font-size:25px;color:#77ddf3;margin-bottom:16px}
+.beta-step h3{font-size:17px;margin-bottom:10px}
+.beta-step p{font-size:14px;color:#b2cedb;line-height:1.55}
+.beta-rule{padding:25px;border:1px solid #3e667a;background:#0c283d;border-radius:16px;color:#d1ecf6;margin-top:26px}
+.beta-faq{max-width:860px}
+.beta-faq details{border-bottom:1px solid #284b60;padding:20px 8px}
+.beta-faq summary{cursor:pointer;font-size:17px;font-weight:750;color:#ecf9ff}
+.beta-faq details p{color:#b2cad7;line-height:1.65;margin:13px 0 0}
+.beta-bottom{padding:48px 0 85px;text-align:center}
+.beta-bottom h2{font-size:clamp(30px,4vw,48px)}
+.beta-bottom p{max-width:730px;margin:16px auto 30px;color:#bdd1dc}
+.beta-footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:25px 0;color:#b2c8d6;font-size:13px;border-top:1px solid #24435a}
+.beta-footer a{color:#afeaff;margin-right:18px}
+@media(max-width:900px){.beta-summary,.beta-steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:630px){.beta-summary,.beta-stack,.beta-steps{grid-template-columns:1fr}.beta-metric{min-height:0}.beta-section{padding:48px 0}.beta-hero{padding-top:48px}.beta-tile{padding:21px}}
+</style>
+</head>
+<body>
+<a class="skip" href="#principal">Ir ao conteúdo</a>
+<header class="nav"><div class="wrap nav-inner">
+<a href="/agentics" class="brand"><img src="/icon.svg" width="38" height="38" alt=""><span>NEX<span class="cyan">A</span><small>AGENTICS</small></span></a>
+<nav class="links" aria-label="Navegação"><a href="/agentics">Visão geral</a><a href="/agentics/demo">Demo</a><a href="/agentics/ecossistema">Ecossistema</a></nav>
+<a class="nav-button" href="/portal/">Ir para a Wallet ↗</a>
+</div></header>
+<main class="beta-page" id="principal">
+<section class="beta-hero"><div class="wrap">
+<span class="beta-flag">✦ NEXA AGENTICS · PREVIEW PÚBLICA · BETA PREMIUM AINDA FECHADO</span>
+<h1>Primeiro, entender.<br><span class="gradient">Depois, autorizar.</span></h1>
+<p class="lead">Estamos construindo agentes que ajudam a compreender informações, organizar tarefas e preparar decisões. A <strong>demonstração pública</strong> já mostra como essas jornadas poderão funcionar. O beta de leitura autenticada ainda depende de verificações de segurança e dados.</p>
+<div class="beta-actions">
+<a href="/agentics/demo" class="button primary">Experimentar a demonstração ↗</a>
+<a href="#etapas" class="button outline">Ver o que falta para o beta ↓</a>
+<a href="/agentics#marcos" class="button outline">Acompanhar o roadmap ↗</a>
+</div>
+<p class="beta-note">Sem conexão com sua conta nesta página. Nenhum saldo, CPF, e-mail ou dado financeiro é solicitado; não há inscrição no beta por formulário nem pagamento por agente.</p>
+<div class="beta-summary" aria-label="Situação atual">
+<div class="beta-metric"><b>Demonstração pública</b><span>Disponível, com cenários e respostas inteiramente fictícios.</span></div>
+<div class="beta-metric"><b>Beta Premium de leitura</b><span>Em preparação. Acesso a dados reais ainda não habilitado.</span></div>
+<div class="beta-metric"><b>Execução financeira</b><span>Não disponível por agentes. Nenhum Pix, swap ou compra é iniciado aqui.</span></div>
+</div>
+</div></section>
+<section class="beta-section alt" id="experiencia"><div class="wrap">
+<div class="eyebrow">ENTREGAS E LIMITES</div>
+<h2>O que você já pode ver.</h2>
+<p class="intro">Uma demonstração não é um app financeiro em produção. Indicamos exatamente o que está disponível e o que ainda depende de homologação.</p>
+<div class="beta-stack">
+<article class="beta-tile"><span class="beta-tag">DISPONÍVEL · DEMO</span><h3>Planejamento de tarefas</h3><p>Experimente jornadas simuladas de pesquisa, comparação e autorização. Não há navegação real em sites, inscrição nem envio de dados.</p><a href="/agentics/demo">Abrir o simulador ↗</a></article>
+<article class="beta-tile"><span class="beta-tag">DISPONÍVEL · CONTEÚDO</span><h3>Roadmap e transparência</h3><p>Conheça as capacidades previstas para pessoas, empresas e instituições, com marcos de desenvolvimento e limites explícitos.</p><a href="/agentics/ecossistema">Conhecer o ecossistema ↗</a></article>
+<article class="beta-tile"><span class="beta-tag wait">PREPARANDO BETA FECHADO</span><h3>Leitura Premium autenticada</h3><p>Consultar contas, histórico e fontes de saldo segregadas, com controle de identidade e assinatura. Ainda não liberado para usuários reais.</p></article>
+<article class="beta-tile"><span class="beta-tag no">NÃO DISPONÍVEL</span><h3>Agentes movimentando dinheiro</h3><p>Pix, swaps, investimentos, assinaturas, transferências e compras automáticas não são executados nesta experiência. Essas etapas exigem aprovação, provedores e reconciliação financeira.</p></article>
+</div>
+</div></section>
+<section class="beta-section" id="etapas"><div class="wrap">
+<div class="eyebrow">CRITÉRIOS PARA O BETA PREMIUM</div>
+<h2>O que precisa estar comprovado.</h2>
+<p class="intro">Essas verificações são condições de abertura, não promessas de datas. Elas protegem os dados e as funcionalidades existentes na Nexa Wallet.</p>
+<div class="beta-steps">
+<div class="beta-step"><h3>Identidade e Premium</h3><p>Confirmar sessão, assinatura ativa e revogação imediata sem prejudicar usuários da Wallet.</p></div>
+<div class="beta-step"><h3>Isolamento de dados</h3><p>Comprovar controles por pessoa e empresa, RLS e restauração do banco em ambiente privado.</p></div>
+<div class="beta-step"><h3>Saldos consistentes</h3><p>Separar USDC operacional, on-chain e histórico contábil; não somar origens possivelmente sobrepostas.</p></div>
+<div class="beta-step"><h3>Liberação segura</h3><p>Executar testes de regressão e homologação autenticada da versão exata, com execução financeira desativada.</p></div>
+</div>
+<div class="beta-rule"><strong>Regra do primeiro beta:</strong> somente visualização e preparação de tarefas. Nenhum agente recebe permissão para enviar Pix, movimentar USDC, assinar transações, comprar ou vender ativos. Qualquer funcionalidade futura exigirá controles e autorização específicos.</div>
+</div></section>
+<section class="beta-section alt"><div class="wrap beta-faq">
+<div class="eyebrow">PERGUNTAS FREQUENTES</div>
+<h2>Sem surpresas.</h2>
+<details><summary>Já posso usar o Agentics dentro da minha Wallet?</summary><p>O simulador público pode ser utilizado sem login. O Agentics Premium com acesso autenticado a informações financeiras ainda não está habilitado para clientes.</p></details>
+<details><summary>Preciso pagar Premium para experimentar a demonstração?</summary><p>Não. A demonstração pública é ilustrativa e pode ser acessada sem informar dados pessoais. A elegibilidade, os preços e os limites do beta Premium serão comunicados antes de sua abertura.</p></details>
+<details><summary>A Nexa pode transferir ou investir por mim agora?</summary><p>Não por meio do Agentics. O simulador não envia Pix, não conecta contas, não acessa a carteira e não movimenta ativos.</p></details>
+<details><summary>Por que as contas e os saldos ainda não aparecem na demo?</summary><p>Porque a demo não usa dados reais. No beta, cada fonte financeira deverá ser autenticada e reconciliada antes de aparecer como informação confiável.</p></details>
+</div></section>
+<section class="beta-bottom"><div class="wrap">
+<div class="eyebrow">EXPERIMENTE O CONCEITO</div>
+<h2>Agentes úteis. Você no controle.</h2>
+<p>Veja o que o agente poderá planejar, quando precisará pedir autorização e quais operações permanecem bloqueadas.</p>
+<a class="button primary" href="/agentics/demo">Testar a demonstração ↗</a>
+</div></section>
+</main>
+<footer><div class="wrap beta-footer"><div><a href="/">Nexa Wallet</a><a href="/agentics">Agentics</a><a href="/agentics/ecossistema">Roadmap</a></div><span>Preview conceitual · nenhum dado financeiro é acessado ou transmitido nesta página.</span></div></footer>
+</body>
+</html>
