@@ -23,6 +23,12 @@ assert.match(wallet,/<title>Nexa Wallet — Sua carteira\. Seus ativos\.<\/title
 assert.match(wallet,/href="\/portal"/);
 assert.match(wallet,/Pix → USDC/);
 assert.match(wallet,/Exemplo visual da experiência/);
+assert.match(wallet,/<link rel="manifest" href="\/manifest\.webmanifest">/);
+assert.match(wallet,/serviceWorker\.register\('\/sw\.js'\)/);
+assert.ok(!index.includes('<link rel="manifest" href="/manifest.webmanifest">'),
+ 'Unified Nexa homepage must not advertise the old Wallet PWA identity');
+assert.ok(!index.includes("navigator.serviceWorker.register('/sw.js')"),
+ 'Unified Nexa homepage must not register the old Wallet root service worker');
 assert.match(redirects,/from = "https:\/\/wallet\.trynexa\.com\.br\/"/);
 assert.match(redirects,/to = "\/wallet\.html"/);
 assert.match(redirects,/from = "\/wallet"/);
