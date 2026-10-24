@@ -8,6 +8,7 @@
 - **`https://trynexa.com.br/`**: página principal institucional da marca, visual azul-marinho/ciano atual.
 - **`https://trynexa.com.br/meu-espaco/`**: caminho reservado para a futura aplicação da experiência pessoal, após CI/E2E. **Não criar esse redirecionamento enquanto não existir app operacional e autorizado**; a atual preview permanece isolada.
 - **`https://wallet.trynexa.com.br/`** (proposto): landing Wallet original e Portal Privy no mesmo host em `/portal/`, somente depois de DNS, SSL, CORS e identidades verificados.
+- **PWA:** o manifesto atual `manifest.webmanifest` pertence à Nexa Wallet (ID `/wallet-v148.html`, start URL `/wallet-v148.html`, escopo `/`). Ele e a instalação atual devem permanecer intactos. A nova homepage Nexa não inclui esse manifesto nem registra `sw.js`; a futura experiência Life OS terá manifesto e scope próprios sem conflitar com a Wallet. A instalação existente continua abrindo o endereço antigo da Wallet.
 - **`https://trynexa.com.br/portal/`, `/cadastro`, `/login`, `/app`, `/depositos`, `/painel`, `/historico`**: rotas antigas preservadas durante transição; NÃO mudar redirects 301 nem retirá-los antes de provar compatibilidade.
 - **`https://trynexa.com.br/pj`**, **`/agentics`**, **`/global`**, **`/identity`**, **`/admin`**, **`/api/v1/*`**: preservar sem alterações.
 
