@@ -11,7 +11,7 @@
  <title>Nexa — Sua vida, um só lugar</title>
  <link rel="icon" href="/favicon.svg">
  <link rel="apple-touch-icon" href="/apple-touch-icon.svg">
- <link rel="manifest" href="/manifest.webmanifest">
+ <!-- Wallet PWA stays on its own install manifest; the Nexa Life app gets a separate scope after validation. -->
  <link rel="preconnect" href="https://fonts.googleapis.com">
  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -163,6 +163,6 @@
    <div><a href="/privacidade">Privacidade</a><a href="/termos">Termos</a><a href="/lgpd">LGPD</a><a href="/suporte">Suporte</a><a href="/primeiros-nexa">Primeiros Nexa</a></div>
   </div>
  </footer>
- <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});</script>
+ <!-- Do not register the Wallet root service worker from the Nexa flagship landing. -->
 </body>
 </html>
