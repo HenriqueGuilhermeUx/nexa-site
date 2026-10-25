@@ -81,6 +81,10 @@ await expectTemporaryHandoff('/portal','/portal');
 await expectTemporaryHandoff('/portal/index.html','/portal/index.html');
 await expectTemporaryHandoff('/cadastro','/cadastro');
 await expectTemporaryHandoff('/wallet-v148.html','/wallet-v148.html');
+for(const alias of ["/login","/login/","/login.html","/cadastro.html","/recuperar-senha","/recuperar-senha/","/recuperar-senha.html"]){
+  await expectTemporaryHandoff(alias,alias);
+}
+
 
 // Root /portal/ is optionally canonicalized by Netlify Pretty URLs before
 // the auth redirect. If so, that single internal hop must have a fixed target.
