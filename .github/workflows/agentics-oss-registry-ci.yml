@@ -1,0 +1,28 @@
+name: Agentics OSS policy registry
+
+on:
+  pull_request:
+    paths:
+      - 'docs/agentics/oss-capabilities-20261025.json'
+      - 'scripts/validate-agentics-oss-capabilities.mjs'
+      - '.github/workflows/agentics-oss-registry-ci.yml'
+  push:
+    branches: ['feat/agentics-oss-tool-registry-20261025']
+    paths:
+      - 'docs/agentics/oss-capabilities-20261025.json'
+      - 'scripts/validate-agentics-oss-capabilities.mjs'
+      - '.github/workflows/agentics-oss-registry-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node scripts/validate-agentics-oss-capabilities.mjs
