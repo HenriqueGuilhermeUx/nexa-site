@@ -11,6 +11,14 @@
   VITE_PRIVY_APP_ID = "cmpen2gm3007v0cjswjlyefji"
   VITE_PRIVY_CLIENT_ID = "client-WY6ZY2Ptr39FTjXumMRAfqM2Bx8m9DUWxcSgXg6CWaMyT"
 
+# Public onboarding gateway, not the app auth itself.
+# Restricted Nexa Life OS preview remains isolated and invitation-only.
+[[redirects]]
+  from = "/meu-espaco"
+  to = "/meu-espaco.html"
+  status = 200
+  force = true
+
 # Existing wallet landing preserved at /wallet without redirecting clients.
 # This is a READ-ONLY landing-page routing rule; the existing /portal/ SPA,
 # API proxy, customer sessions, backend and existing deep links are untouched.
