@@ -40,8 +40,16 @@ assert.ok(!wallet.includes('window.location')&&!wallet.includes('localStorage.')
  'Marketing landing cannot transfer session or auto-redirect between origins');
 assert.match(wallet,/Pix → USDC/);
 assert.match(wallet,/Exemplo visual da experiência/);
-assert.match(wallet,/<link rel="manifest" href="\/manifest\.webmanifest">/);
-assert.match(wallet,/serviceWorker\.register\('\/sw\.js'\)/);
+assert.doesNotMatch(wallet,/<link rel="manifest" href="\/manifest\.webmanifest">/,
+ 'Wallet should not statically advertise a broken PWA install on an unapproved origin');
+assert.equal((wallet.match(/location\.hostname === 'trynexa\.com\.br'/g)||[]).length,2,
+ 'PWA manifest and service worker must each restrict registration to original origin');
+assert.equal((wallet.match(/location\.hostname === 'www\.trynexa\.com\.br'/g)||[]).length,2,
+ 'Existing www origin must remain supported');
+assert.match(wallet,/walletManifest\.rel = 'manifest'/);
+assert.match(wallet,/walletManifest\.href = '\/manifest\.webmanifest'/);
+assert.match(wallet,/A instalação do PWA continua disponível no endereço original/);
+assert.match(wallet,/navigator\.serviceWorker\.register\('\/sw\.js'\)/);
 assert.ok(!index.includes('<link rel="manifest" href="/manifest.webmanifest">'),
  'Unified Nexa homepage must not advertise the old Wallet PWA identity');
 assert.ok(!index.includes("navigator.serviceWorker.register('/sw.js')"),

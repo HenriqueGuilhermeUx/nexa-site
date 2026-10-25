@@ -9,7 +9,17 @@
   <meta property="og:description" content="Sua carteira. Seus ativos. A complexidade fica por trás.">
   <meta property="og:type" content="website">
   <title>Nexa Wallet — Sua carteira. Seus ativos.</title>
-  <link rel="manifest" href="/manifest.webmanifest">
+  <!-- The existing Wallet PWA is supported only on the established origin.
+       The new wallet subdomain is landing-only while Privy CSP remains blocked.
+       No browser storage, auth credentials or existing PWA identity is changed. -->
+  <script>
+    if (location.hostname === 'trynexa.com.br' || location.hostname === 'www.trynexa.com.br') {
+      const walletManifest = document.createElement('link');
+      walletManifest.rel = 'manifest';
+      walletManifest.href = '/manifest.webmanifest';
+      document.head.appendChild(walletManifest);
+    }
+  </script>
   <link rel="apple-touch-icon" href="/apple-touch-icon.svg">
   <link rel="icon" href="/favicon.svg">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -45,7 +55,7 @@
           <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full nexa-surface text-sm font-bold mb-7" style="color:var(--nexa-cyan)">A Nexa evoluiu.</div>
           <h1 class="text-5xl md:text-7xl font-extrabold leading-[.98] tracking-[-.045em] max-w-4xl">Sua wallet.<br><span class="grad">Seus ativos.</span></h1>
           <p class="text-xl md:text-2xl leading-relaxed max-w-3xl mt-7" style="color:var(--nexa-muted)">Uma carteira digital feita para simplificar o acesso e o uso de ativos digitais. A tecnologia trabalha por trás. O controle permanece com você.</p>
-          <p class="text-sm mt-5 max-w-xl" style="color:var(--nexa-muted)">Durante a homologação do novo domínio Wallet, o acesso e o cadastro continuam em <strong>trynexa.com.br</strong>. Sua carteira, saldo e histórico permanecem no sistema atual.</p>
+          <p class="text-sm mt-5 max-w-xl" style="color:var(--nexa-muted)">Durante a homologação do novo domínio Wallet, o acesso e o cadastro continuam em <strong>trynexa.com.br</strong>. Sua carteira, saldo e histórico permanecem no sistema atual. A instalação do PWA continua disponível no endereço original; no novo domínio ainda está em homologação.</p>
           <div class="flex flex-col sm:flex-row gap-4 mt-9">
             <a href="https://trynexa.com.br/cadastro" class="nexa-primary px-8 py-4 rounded-2xl font-extrabold text-center">Começar na Nexa</a>
             <a href="#wallet" class="nexa-secondary px-8 py-4 rounded-2xl font-extrabold text-center">Conhecer a Wallet</a>
@@ -123,6 +133,13 @@
   </main>
 
   <footer class="border-t border-white/10"><div class="max-w-7xl mx-auto px-5 py-10 flex flex-col md:flex-row gap-6 justify-between text-sm" style="color:var(--nexa-muted-2)"><div><div class="nexa-wordmark">NEX<span class="accent">A</span></div><p class="mt-2">WALLET · Cripto sem complicação.</p></div><div class="flex flex-wrap gap-5"><a href="/privacidade">Privacidade</a><a href="/termos">Termos</a><a href="/lgpd">LGPD</a><a href="/suporte">Suporte</a><a href="https://trynexa.com.br/portal">Entrar</a></div></div></footer>
-  <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});</script>
+  <script>
+    // Never claim PWA installation support from the unaudited wallet origin.
+    // Leave service workers and installed applications on the original origin intact.
+    if ((location.hostname === 'trynexa.com.br' || location.hostname === 'www.trynexa.com.br') &&
+        'serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+  </script>
 </body>
 </html>
