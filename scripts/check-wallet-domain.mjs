@@ -25,12 +25,24 @@ if(!activated){
 }
 
 async function checkedGet(path){
- const res=await fetch(ORIGIN+path,{
+ let res=await fetch(ORIGIN+path,{
   method:'GET',redirect:'manual',
   headers:{accept:path.endsWith('.webmanifest')?'application/manifest+json':'text/html'},
   signal:AbortSignal.timeout(12000)
  });
- assert.equal(res.status,200,ORIGIN+path+' must respond HTTP 200 without redirect');
+ // Netlify Pretty URLs canonicalizes /portal/ -> /portal with HTTP 301.
+ // Explicitly permit only that one same-origin hop, never an arbitrary redirect.
+ if(path==='/portal/'&&res.status===301){
+   const location=res.headers.get('location');
+   assert.ok(location,'Portal canonical redirect must provide Location');
+   const target=new URL(location,ORIGIN+path);
+   assert.equal(target.origin,ORIGIN,'Wallet portal must not redirect to another origin');
+   assert.equal(target.pathname,'/portal','Wallet portal may only normalize its trailing slash');
+   assert.equal(target.search,'','Wallet portal must not inject redirect query parameters');
+   assert.equal(target.hash,'','Wallet portal must not inject redirect fragments');
+   res=await fetch(target.href,{method:'GET',redirect:'manual',signal:AbortSignal.timeout(12000)});
+ }
+ assert.equal(res.status,200,ORIGIN+path+' must respond HTTP 200 (except safe /portal/ canonicalization)');
  assert.ok(String(res.headers.get('content-type')||'').includes(path.endsWith('.webmanifest')?'json':'html'),
   ORIGIN+path+' must expose correct MIME');
  assert.equal(new URL(res.url).host,new URL(ORIGIN).host,'Wallet must stay on wallet origin');
