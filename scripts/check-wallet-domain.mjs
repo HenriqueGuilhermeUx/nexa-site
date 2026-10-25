@@ -57,37 +57,62 @@ assert.ok(landing.includes('<title>Nexa Wallet — Sua carteira. Seus ativos.</t
 assert.ok(landing.includes('href="/portal"'),
  'The old Wallet entry must remain visible');
 
-const portal=await checkedGet('/portal/');
-// Netlify's Pretty URLs currently serves the legacy portal at /portal,
-// while the separately compiled React frontend is at /portal/index.html.
-// Preserve both: forcing /portal to the compiled React build would be a
-// customer-facing application migration and needs a separate E2E release.
-assert.ok(portal.includes('<title>Nexa | Portal Web</title>'),
- 'The existing /portal customer login must remain available');
-assert.ok(portal.includes('Entrar no Portal Nexa'),
- 'The original login screen must still render');
-assert.ok(!portal.includes('Nexa — Sua vida, um só lugar'),
- 'Do not serve Nexa marketing in the existing Wallet login');
+// Temporary, reversible authentication safety gate. A user who deep-links to
+// the new Wallet domain must be sent ONLY to an identical path at the original
+// trusted origin (never copy tokens/cookies, never create or link a wallet).
+const TRUSTED='https://trynexa.com.br';
+async function expectTemporaryHandoff(path,expectedPath){
+ const res=await fetch(ORIGIN+path,{
+  method:'GET',redirect:'manual',signal:AbortSignal.timeout(12000)
+ });
+ assert.equal(res.status,302,'Wallet auth route must use temporary HTTP 302: '+path);
+ const destination=new URL(res.headers.get('location')||'',ORIGIN+path);
+ assert.equal(destination.origin,TRUSTED,'Auth handoff must go only to original site');
+ assert.equal(destination.pathname,expectedPath,'Auth handoff must preserve explicit path');
+ assert.equal(destination.search,'','Auth handoff must not include query params');
+ assert.equal(destination.hash,'','Auth handoff must not include fragments');
+ return destination;
+}
+await expectTemporaryHandoff('/portal','/portal');
+await expectTemporaryHandoff('/portal/index.html','/portal/index.html');
+await expectTemporaryHandoff('/cadastro','/cadastro');
+await expectTemporaryHandoff('/wallet-v148.html','/wallet-v148.html');
 
-const mainPortal=await fetch('https://trynexa.com.br/portal',{
+// Root /portal/ is optionally canonicalized by Netlify Pretty URLs before
+// the auth redirect. If so, that single internal hop must have a fixed target.
+const portalWithSlash=await fetch(ORIGIN+'/portal/',{
  method:'GET',redirect:'manual',signal:AbortSignal.timeout(12000)
 });
-assert.equal(mainPortal.status,200,'Original production portal must still be available');
-assert.equal(new URL(mainPortal.url).host,'trynexa.com.br','Original portal origin must not change');
-assert.equal(await mainPortal.text(),portal,
- 'Wallet custom domain must preserve the same existing login HTML until authentication cutover is approved');
+assert.ok([301,302].includes(portalWithSlash.status),'Unsafe slash normalization');
+if(portalWithSlash.status===301){
+ const location=new URL(portalWithSlash.headers.get('location')||'',ORIGIN+'/portal/');
+ assert.equal(location.origin,ORIGIN);
+ assert.equal(location.pathname,'/portal');
+ await expectTemporaryHandoff('/portal','/portal');
+}else{
+ const loc=new URL(portalWithSlash.headers.get('location')||'',ORIGIN+'/portal/');
+ assert.equal(loc.origin,TRUSTED);
+ assert.equal(loc.pathname,'/portal');
+}
 
-const compiledPortal=await checkedGet('/portal/index.html');
-assert.ok(compiledPortal.includes('/portal/assets/'),
- 'The compiled React portal must remain accessible at its existing explicit asset path');
-
+// Old origin remains directly usable and keeps both original React and
+// legacy login surfaces, with no redirect back to the untrusted origin.
+for(const [path,marker] of [
+ ['/portal','<title>Nexa | Portal Web</title>'],
+ ['/portal/index.html','/portal/assets/'],
+ ['/cadastro','<title>Cadastro | Nexa</title>']
+]){
+ const res=await fetch(TRUSTED+path,{redirect:'manual',signal:AbortSignal.timeout(12000)});
+ assert.equal(res.status,200,'Original trusted route must remain available: '+path);
+ assert.ok((await res.text()).includes(marker),'Trusted content changed: '+path);
+}
 const manifest=JSON.parse(await checkedGet('/manifest.webmanifest'));
 assert.equal(manifest.name,'Nexa Wallet','The installed Wallet PWA identity must remain stable');
 assert.equal(manifest.start_url,'/wallet-v148.html');
 assert.equal(manifest.id,'/wallet-v148.html');
-await checkedGet('/wallet-v148.html');
+
 
 // This check cannot establish Privy OTP eligibility, wallet identity/address,
 // user session continuity, blockchain correctness or financial execution safety.
 // Those remain separately mandatory end-to-end acceptance tests.
-console.log('Nexa Wallet read-only HTTPS/domain, legacy portal equivalence, React assets and PWA preflight PASS.');
+console.log('Nexa Wallet domain, trusted-origin temporary auth fallback and PWA preflight PASS.');
