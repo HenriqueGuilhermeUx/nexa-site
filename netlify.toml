@@ -35,6 +35,13 @@
   to = "/global-app/index.html"
   status = 200
 
+# Existing Nexa Wallet PWA: keep manifest id, start_url and scope unchanged.
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Content-Type = "application/manifest+json"
+    Cache-Control = "public, max-age=3600"
+
 [[headers]]
   for = "/global-app/sw.js"
   [headers.values]

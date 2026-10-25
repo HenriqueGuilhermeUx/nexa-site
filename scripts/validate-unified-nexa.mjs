@@ -13,6 +13,7 @@ assert.match(index,/Cripto · Nexa Wallet/);
 assert.match(index,/Nexa PJ/);
 assert.match(index,/Nexa Global/);
 assert.match(index,/Nexa ID/);
+assert.match(index,/href="\/wallet">Conhecer a Nexa Wallet<\/a>/);
 assert.match(index,/Privy, USDC, Pix e conexões/);
 assert.match(index,/Uma marca\. Experiências especializadas/);
 assert.match(index,/wallet\.trynexa\.com\.br está em preparação/);
@@ -32,6 +33,8 @@ assert.ok(!index.includes("navigator.serviceWorker.register('/sw.js')"),
 assert.match(redirects,/from = "https:\/\/wallet\.trynexa\.com\.br\/"/);
 assert.match(redirects,/to = "\/wallet\.html"/);
 assert.match(redirects,/from = "\/wallet"/);
+assert.match(redirects,/for = "\/manifest\.webmanifest"/);
+assert.match(redirects,/Content-Type = "application\/manifest\+json"/);
 assert.match(redirects,/from = "\/portal\/\*"/);
 assert.match(redirects,/to = "\/portal\/index\.html"/);
 assert.match(redirects,/from = "\/api\/v1\/\*"/);
