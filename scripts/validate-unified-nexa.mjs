@@ -46,6 +46,30 @@ assert.ok(!index.includes('<link rel="manifest" href="/manifest.webmanifest">'),
  'Unified Nexa homepage must not advertise the old Wallet PWA identity');
 assert.ok(!index.includes("navigator.serviceWorker.register('/sw.js')"),
  'Unified Nexa homepage must not register the old Wallet root service worker');
+// Host-specific temporary redirects must shadow generic /portal and /cadastro
+// routes ONLY for wallet.trynexa.com.br. Do not affect trynexa.com.br, PJ,
+// Global, API proxies, old Wallet PWA files or existing customer sessions.
+for(const [path,destination] of [
+ ['/portal','/portal'],
+ ['/portal/*','/portal/:splat'],
+ ['/cadastro','/cadastro'],
+ ['/wallet-v148.html','/wallet-v148.html']
+]){
+ const route=[
+  '[[redirects]]',
+  '  from = "https://wallet.trynexa.com.br'+path+'"',
+  '  to = "https://trynexa.com.br'+destination+'"',
+  '  status = 302',
+  '  force = true'
+ ].join('\n');
+ assert.ok(redirects.includes(route),'Missing host-scoped safe fallback: '+path);
+}
+assert.ok(redirects.indexOf('from = "https://wallet.trynexa.com.br/portal"') <
+ redirects.indexOf('from = "/portal"'),'Host-specific fallback must precede common portal rewrite');
+assert.ok(redirects.indexOf('from = "https://wallet.trynexa.com.br/cadastro"') <
+ redirects.indexOf('from = "/cadastro"'),'Host-specific fallback must precede common signup rewrite');
+assert.ok(!redirects.includes('from = "https://trynexa.com.br/portal"\n  to = "https://wallet.trynexa.com.br'),
+ 'Never send existing sessions back to the unaudited Privy origin');
 assert.match(redirects,/from = "https:\/\/wallet\.trynexa\.com\.br\/"/);
 assert.match(redirects,/to = "\/wallet\.html"/);
 assert.match(redirects,/from = "\/wallet"/);
