@@ -54,8 +54,12 @@ async function checkedGet(path){
 const landing=await checkedGet('/');
 assert.ok(landing.includes('<title>Nexa Wallet — Sua carteira. Seus ativos.</title>'),
  'Wallet subdomain cannot show the unified Nexa Life homepage');
-assert.ok(landing.includes('href="/portal"'),
- 'The old Wallet entry must remain visible');
+assert.ok(landing.includes('href="https://trynexa.com.br/portal"'),
+ 'Wallet login must remain on its original Privy-authorized origin');
+assert.ok(landing.includes('href="https://trynexa.com.br/cadastro"'),
+ 'Wallet sign-up must remain on its original trusted origin');
+assert.ok(!landing.includes('href="/portal"')&&!landing.includes('href="/cadastro"'),
+ 'Unaudited origin must not be the direct login or sign-up destination');
 
 // Temporary, reversible authentication safety gate. A user who deep-links to
 // the new Wallet domain must be sent ONLY to an identical path at the original
