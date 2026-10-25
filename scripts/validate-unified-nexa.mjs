@@ -30,7 +30,14 @@ for(const url of ['/portal/','/cadastro','/pj','/agentics','/global','/identity'
  assert.ok(index.includes('href="'+url+'"'),'Missing legacy or public destination: '+url);
 }
 assert.match(wallet,/<title>Nexa Wallet — Sua carteira\. Seus ativos\.<\/title>/);
-assert.match(wallet,/href="\/portal"/);
+assert.match(wallet,/href="https:\/\/trynexa\.com\.br\/portal"/);
+assert.match(wallet,/href="https:\/\/trynexa\.com\.br\/cadastro"/);
+assert.equal((wallet.match(/href="https:\/\/trynexa\.com\.br\/portal"/g)||[]).length,2);
+assert.equal((wallet.match(/href="https:\/\/trynexa\.com\.br\/cadastro"/g)||[]).length,3);
+assert.doesNotMatch(wallet,/href="\/(portal|cadastro)"/);
+assert.match(wallet,/Durante a homologação do novo domínio Wallet/);
+assert.ok(!wallet.includes('window.location')&&!wallet.includes('localStorage.')&&!wallet.includes('sessionStorage.'),
+ 'Marketing landing cannot transfer session or auto-redirect between origins');
 assert.match(wallet,/Pix → USDC/);
 assert.match(wallet,/Exemplo visual da experiência/);
 assert.match(wallet,/<link rel="manifest" href="\/manifest\.webmanifest">/);
