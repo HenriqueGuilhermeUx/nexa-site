@@ -35,6 +35,12 @@
 - Brasil e Global têm operações distintas; entrada USDC de carteiras externas: tarifa Nexa aprovada de 0% (taxas de rede/provedores não incluídas). Não duplicar a implementação de conexão já em andamento.
 - Nenhuma operação financeira ou criação de carteira foi iniciada por esta mudança de site.
 
+## Preflight automatizado do domínio Wallet (sem transações)
+- Script disponível: `scripts/check-wallet-domain.mjs`. A execução padrão `node scripts/check-wallet-domain.mjs` **não acessa a internet**, apenas verifica a configuração. O CI valida que essa modalidade não realiza operações.
+- Depois que DNS, TLS e alias Netlify estiverem validados, rode manualmente no ambiente de testes: `NEXA_WALLET_DOMAIN_PREFLIGHT=true node scripts/check-wallet-domain.mjs`. O host é fixo `wallet.trynexa.com.br`; o script faz apenas GET HTTPS para a landing Wallet, `/portal/`, manifesto PWA e página Wallet v148. Falha se redirecionar ou se a home for da Nexa geral no host da Wallet.
+- O resultado **não comprova** acesso Privy, OTP, vínculos de carteiras, endereço on-chain, saldos, Pix ou transações. Homologar essas operações em cenário controlado, sem valor real.
+- A verificação fica inativa por padrão, pois `wallet.trynexa.com.br` ainda não está confirmado no Netlify/DNS.
+
 ## Rollback / invariantes
 - Pré-condição: snapshot do DNS, domínios Netlify, config de deploy e origens Privy/Backend, e checks `old address -> old wallet -> same wallet address`.
 - Rollback da homepage: publicar commit anterior do site original, preservando domínio e `/portal/`; a landing original foi preservada em `wallet.html`.
