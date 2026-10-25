@@ -67,3 +67,14 @@
 4. Somente após resultados documentados, planejar alterações graduais de links, sem excluir `trynexa.com.br/portal`, retirar PWA legado, impor novo cookie cross-origin ou migrar saldos.
 
 Se a aplicação Privy não oferecer alteração de allowed origins via conector, esta é uma ação de console que precisa de usuário autorizado. Nunca publicar segredos Privy em PRs.
+
+## Fallback de autenticação temporário no novo domínio — 25/10/2026
+
+Até que a mesma aplicação Privy libere `https://wallet.trynexa.com.br`, a política de publicação da Wallet será:
+
+- `https://wallet.trynexa.com.br/` e `/wallet`: landing e apresentação Wallet, sem transações nem login local.
+- Acessos diretos `/portal`, `/portal/*`, `/cadastro` e `/wallet-v148.html` no novo host: **302 temporário somente para caminhos correspondentes em `https://trynexa.com.br`**. Não são 301 permanentes, não utilizam cookies compartilhados, não copiam tokens e não movimentam saldos. O 301 pré-existente do Netlify que normaliza `/portal/` é tolerado apenas se permanecer no mesmo host e for seguido pelo 302 correto.
+- `https://trynexa.com.br/portal`, `/cadastro`, `/wallet-v148.html`: devem continuar acessíveis e funcionar exatamente como antes.
+- `/manifest.webmanifest`, `/sw.js` e a API não são redirecionados por esta mitigação. A instalação PWA na nova origem **não deve ser divulgada** até a experiência completa de login/retomada de sessão estar homologada.
+- O arquivo `scripts/check-wallet-domain.mjs` em modo `NEXA_WALLET_DOMAIN_PREFLIGHT=true` testa GET/302, origens, paths e PWA sem autenticar ou assinar transações.
+- **Desativação dessa mitigação:** exigir primeiro prova de `auth.privy.io` sem 403/CSP no novo host e conta existente retornando mesmo Privy DID/wallet ID/endereço/saldo reconciliado. Executar revisão separada e teste e2e dos dois domínios antes de retirar as regras; manter rollback simples.
