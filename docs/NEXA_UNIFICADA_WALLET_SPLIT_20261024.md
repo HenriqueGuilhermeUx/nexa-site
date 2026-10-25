@@ -78,3 +78,9 @@ Até que a mesma aplicação Privy libere `https://wallet.trynexa.com.br`, a pol
 - `/manifest.webmanifest`, `/sw.js` e a API não são redirecionados por esta mitigação. A instalação PWA na nova origem **não deve ser divulgada** até a experiência completa de login/retomada de sessão estar homologada.
 - O arquivo `scripts/check-wallet-domain.mjs` em modo `NEXA_WALLET_DOMAIN_PREFLIGHT=true` testa GET/302, origens, paths e PWA sem autenticar ou assinar transações.
 - **Desativação dessa mitigação:** exigir primeiro prova de `auth.privy.io` sem 403/CSP no novo host e conta existente retornando mesmo Privy DID/wallet ID/endereço/saldo reconciliado. Executar revisão separada e teste e2e dos dois domínios antes de retirar as regras; manter rollback simples.
+
+## Restrição temporária de instalação do PWA no subdomínio
+
+Enquanto `wallet.trynexa.com.br` encaminhar `/wallet-v148.html` ao domínio antigo e o iframe Privy ainda for recusado, a landing Wallet **não anuncia** o manifesto PWA nem registra um Service Worker quando acessada pelo novo subdomínio. O código de `wallet.html` permite essas ações somente em `trynexa.com.br` e `www.trynexa.com.br`.
+
+Essa mitigação **não altera** `manifest.webmanifest`, o id/start_url/scope, a lógica em `sw.js`, o aplicativo instalado nem o fluxo de clientes existentes. Não remove Service Workers que eventualmente já tenham sido instalados manualmente no subdomínio. O navegador pode permitir adicionar qualquer página à tela inicial manualmente; não prometemos impedir essa função do navegador. Após autorização Privy e E2E de login/carteira, revisar a política de instalação do novo host separadamente.
