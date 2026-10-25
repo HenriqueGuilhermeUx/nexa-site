@@ -28,9 +28,37 @@
   status = 200
   force = true
 
-# The Wallet custom domain must first be added as an alias in Netlify and
-# whitelisted in Privy / backend CORS. This domain-scoped rule does not become
-# effective until DNS+TLS+identity validation are complete.
+# TEMPORARY AUTH SAFETY GATE — Privy iframe rejects wallet.trynexa.com.br
+# with 403/CSP until that origin is approved on the EXISTING Privy app.
+# Wallet home / and marketing /wallet remain on wallet.trynexa.com.br,
+# but legacy login, compiled React portal and signup go to trusted old origin.
+# No permanent 301, cookies or sessions are transferred. Reassess only after
+# same-user/same-wallet Privy E2E; preserve old entry points on rollback.
+[[redirects]]
+  from = "https://wallet.trynexa.com.br/portal"
+  to = "https://trynexa.com.br/portal"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "https://wallet.trynexa.com.br/portal/*"
+  to = "https://trynexa.com.br/portal/:splat"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "https://wallet.trynexa.com.br/cadastro"
+  to = "https://trynexa.com.br/cadastro"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "https://wallet.trynexa.com.br/wallet-v148.html"
+  to = "https://trynexa.com.br/wallet-v148.html"
+  status = 302
+  force = true
+
+# Wallet-only marketing landing (Netlify domain alias already configured).
 [[redirects]]
   from = "https://wallet.trynexa.com.br/"
   to = "/wallet.html"
