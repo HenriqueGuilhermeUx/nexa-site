@@ -11,6 +11,24 @@
   VITE_PRIVY_APP_ID = "cmpen2gm3007v0cjswjlyefji"
   VITE_PRIVY_CLIENT_ID = "client-WY6ZY2Ptr39FTjXumMRAfqM2Bx8m9DUWxcSgXg6CWaMyT"
 
+# Existing wallet landing preserved at /wallet without redirecting clients.
+# This is a READ-ONLY landing-page routing rule; the existing /portal/ SPA,
+# API proxy, customer sessions, backend and existing deep links are untouched.
+[[redirects]]
+  from = "/wallet"
+  to = "/wallet.html"
+  status = 200
+  force = true
+
+# The Wallet custom domain must first be added as an alias in Netlify and
+# whitelisted in Privy / backend CORS. This domain-scoped rule does not become
+# effective until DNS+TLS+identity validation are complete.
+[[redirects]]
+  from = "https://wallet.trynexa.com.br/"
+  to = "/wallet.html"
+  status = 200
+  force = true
+
 # Nexa Global PWA. Static assets shadow this SPA fallback.
 [[redirects]]
   from = "/global-app/*"

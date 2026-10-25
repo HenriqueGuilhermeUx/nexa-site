@@ -28,6 +28,10 @@ jobs:
           node --check scripts/build-site.mjs
       - name: Validate launch strategy and financial safety
         run: node scripts/validate-launch-site.js
+      - name: Validate Nexa unified brand and preserved Wallet routes
+        run: node scripts/validate-unified-nexa.mjs
+      - name: Validate custom Wallet domain preflight script (no network)
+        run: node scripts/check-wallet-domain.mjs
       - name: Verify Agentics beta page is static, honest and does not collect data
         run: node scripts/validate-agentics-beta.mjs
       - name: Verify commercial Agentics and Trust pages are static and accurately scoped

@@ -7,6 +7,7 @@ function read(path) {
 }
 
 const index = read('index.html');
+const wallet = read('wallet.html');
 const early = read('primeiros-nexa.html');
 const pj = read('pj.html');
 const merchant = read('merchant.html');
@@ -14,12 +15,21 @@ const admin = read('admin.html');
 const adminJs = read('admin.js');
 const netlify = read('netlify.toml');
 
+// The flagship is now the broad Nexa experience, while all previously
+// validated Wallet marketing copy is retained unaltered on wallet.html.
+assert.match(index, /Nexa — Sua vida, um só lugar/i);
+assert.match(index, /Maya e especialistas/i);
+assert.match(index, /Investimentos e F-Insight/i);
+assert.match(index, /Nexa Wallet/i);
 assert.match(index, /Cripto sem complicação/i);
 assert.match(index, /Primeiros Nexa/i);
-assert.match(index, /Pix → USDC/i);
-assert.match(index, /sem promessa de rendimento/i);
-assert.match(index, /porta de entrada|acesso.*ativos digitais/i);
+assert.match(index, /href="\/portal\/"/);
 assert.doesNotMatch(index, /Aave V3 real|20%.*performance fee|Ecossistema em operação/i);
+assert.match(wallet, /Cripto sem complicação/i);
+assert.match(wallet, /Pix → USDC/i);
+assert.match(wallet, /sem promessa de rendimento/i);
+assert.match(wallet, /porta de entrada|acesso.*ativos digitais/i);
+assert.doesNotMatch(wallet, /Aave V3 real|20%.*performance fee|Ecossistema em operação/i);
 
 assert.match(early, /\/early-access\/join/);
 assert.match(early, /lgpdConsent/);
@@ -69,7 +79,7 @@ assert.match(netlify, /from = "\/primeiros-nexa"/);
 assert.match(netlify, /to = "\/primeiros-nexa\.html"/);
 assert.match(netlify, /from = "\/api\/v1\/\*"/);
 
-for (const content of [index, early, pj, merchant, admin, adminJs]) {
+for (const content of [index, wallet, early, pj, merchant, admin, adminJs]) {
   assert.doesNotMatch(
     content,
     /PRIVY_APP_SECRET|PRIVY_SECRET_KEY|MASTER_WALLET_PRIVATE_KEY/,
@@ -77,5 +87,5 @@ for (const content of [index, early, pj, merchant, admin, adminJs]) {
 }
 
 console.log(
-  'Nexa launch site validated: Primeiros Nexa, PJ pricing, client controls, CRM and two-stage redemption passed.',
+  'Nexa unified homepage + preserved Wallet validated: Primeiros Nexa, PJ pricing, client controls, CRM and two-stage redemption passed.',
 );
