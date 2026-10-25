@@ -49,3 +49,21 @@
 - Dependência externa: CI GitHub do Nex Personal PR #86 está bloqueado sem runner (issue #89), portanto nenhuma publicação do novo app PF.
 
 **Situação comercial:** F-Insight, vitrine de corretoras e Wallet estão preparados/conectados nas suas próprias fases; não prometer conectividade Open Finance, recomendação de investimentos, oferta real ou transação disponível sem prova no ambiente.
+
+## Auditoria real de domínio e Privy — 25/10/2026
+
+**Status comprovado (somente leitura):**
+- `wallet.trynexa.com.br` já resolve e apresenta certificado HTTPS válido; `/`, `/wallet`, `/portal`, `/cadastro`, `/manifest.webmanifest`, `/wallet-v148.html`, `/portal/index.html`, `/sw.js` e `/api/v1/health` respondem 200.
+- O PWA ainda utiliza a identidade legada `id: /wallet-v148.html`, `start_url: /wallet-v148.html`, `scope: /`; não alterar isto enquanto usuários instalados dependem dela.
+- **Detalhe de roteamento:** o Netlify responde 301 ao pedir `/portal/` (canonicaliza para `/portal`); esta rota carrega o **portal legado** (`Nexa | Portal Web`), com HTML igual nos dois domínios. A build React Privy, embora compilada e acessível via `/portal/index.html`, **não é** a página servida pelo link habitual `/portal`. Não trocar a rota sem QA e plano de reversão.
+- Em Playwright sem autenticação, `https://wallet.trynexa.com.br/portal/index.html` registrou **HTTP 403** na requisição Privy embedded-wallet e bloqueio CSP `frame-ancestors` de `https://auth.privy.io/`. A lista de origens na política retornada inclui `https://trynexa.com.br` e `https://www.trynexa.com.br`, mas **não** `https://wallet.trynexa.com.br`.
+- O `/wallet-v148.html` e a landing antiga renderizam sem JS exceptions anônimas, o que **não comprova** autenticação Privy ou vínculo de carteira.
+- `scripts/check-wallet-domain.mjs` rodado como preflight de leitura contra a origem real; aceita somente o redirect interno conhecido `/portal/ → /portal` e compara a página legada entre hosts. Não faz login nem movimentações.
+
+**Bloqueio para ativação comercial:**
+1. No painel Privy do **aplicativo já existente da Nexa Wallet**, em **Configuration → App settings → Domains** (ou App Settings → Basics → Domains conforme versão), acrescentar exatamente `https://wallet.trynexa.com.br`. **Manter** `https://trynexa.com.br` e `https://www.trynexa.com.br` que já estão autorizados. Não criar outro Privy App, não substituir App ID/client ID, não trocar segredos nem carteiras.
+2. Repetir teste anônimo no `/portal/index.html`, confirmar ausência de 403 e bloqueio CSP no componente Privy. Se persistir, revisar configuração do Client ID já usado e política de allowed domains do aplicativo.
+3. **Com testador autorizado**, entrar no host original e no novo domínio com a mesma identidade existente; confirmar mesmo ID Privy e mesmo endereço `0x...` consultado por API, mesma relação wallet/usuário, extrato e saldos consistentes. Um login novo no outro host é esperado; **criação de outra wallet não é**. Não usar dinheiro real ou assinar transações para concluir estes testes.
+4. Somente após resultados documentados, planejar alterações graduais de links, sem excluir `trynexa.com.br/portal`, retirar PWA legado, impor novo cookie cross-origin ou migrar saldos.
+
+Se a aplicação Privy não oferecer alteração de allowed origins via conector, esta é uma ação de console que precisa de usuário autorizado. Nunca publicar segredos Privy em PRs.
