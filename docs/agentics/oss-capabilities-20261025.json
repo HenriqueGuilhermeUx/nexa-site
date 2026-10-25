@@ -1,0 +1,106 @@
+{
+  "schemaVersion": "2026-10-25/v1",
+  "purpose": "Documentation-only proposed capability registry; NOT wired to any runtime",
+  "defaultEnabled": false,
+  "productionApproved": false,
+  "preserveExistingAgenticsPR": 172,
+  "tools": [
+    {
+      "id": "legal.norm_source_lookup",
+      "product": "NexJud",
+      "source": "https://github.com/ctresb/leis",
+      "implementation": "HenriqueGuilhermeUx/nexjud:src/enterprise/legislationSourcePilot.ts",
+      "maturity": "parser-prototype",
+      "permission": "nexjud.legislation.read",
+      "enabled": false,
+      "safety": [
+        "official-source-confirmation-required",
+        "no-private-client-files",
+        "no-auto-citation"
+      ]
+    },
+    {
+      "id": "creative.storyboard_export",
+      "product": "MODO",
+      "source": "https://github.com/heygen-com/hyperframes",
+      "implementation": "HenriqueGuilhermeUx/modo:apps/api/src/services/hyperframes-pilot.ts",
+      "maturity": "html-export-prototype",
+      "permission": "modo.video.preview",
+      "enabled": false,
+      "safety": [
+        "no-publish",
+        "no-account-credentials",
+        "review-before-render"
+      ]
+    },
+    {
+      "id": "browser.page_inspect",
+      "product": "MODO/SmartBots",
+      "source": "https://github.com/jo-inc/camofox-browser",
+      "implementation": null,
+      "maturity": "research-only",
+      "permission": "browser.inspect.approved_sites",
+      "enabled": false,
+      "safety": [
+        "site-terms-respected",
+        "no-captcha-evasion",
+        "isolated-sessions",
+        "credential-vault"
+      ]
+    },
+    {
+      "id": "research.alpha_list",
+      "product": "F-Insight",
+      "source": "https://github.com/HKUDS/Vibe-Trading",
+      "implementation": "HenriqueGuilhermeUx/f-insight-api:src/services/vibeResearchAdapter.js",
+      "maturity": "read-only-adapter-prototype",
+      "permission": "finsight.research.read",
+      "enabled": false,
+      "safety": [
+        "no-broker-trades",
+        "staging-only-until-reviewed",
+        "internal-key-required"
+      ]
+    },
+    {
+      "id": "risk.portfolio_scenarios",
+      "product": "F-Insight/Nexa",
+      "source": "https://github.com/The-Swarm-Corporation/AutoHedge",
+      "implementation": null,
+      "maturity": "reference-only",
+      "permission": "finsight.risk.simulate",
+      "enabled": false,
+      "safety": [
+        "no-wallet-private-keys",
+        "no-orders",
+        "no-funds-movement",
+        "human-review"
+      ]
+    },
+    {
+      "id": "terminal.financial_research",
+      "product": "F-Insight",
+      "source": "https://github.com/Fincept-Corporation/FinceptTerminal",
+      "implementation": null,
+      "maturity": "blocked-licensing-review",
+      "permission": "finsight.research.read",
+      "enabled": false,
+      "safety": [
+        "AGPL-or-commercial-license-review",
+        "no-code-copy",
+        "licensed-market-data"
+      ]
+    }
+  ],
+  "governance": {
+    "tenantIsolation": true,
+    "defaultDeny": true,
+    "leastPrivilege": true,
+    "humanApprovalForExternalActions": true,
+    "auditRequired": true,
+    "secretsInVaultOnly": true,
+    "financialExecutionDisabled": true,
+    "marketingPublishingDisabled": true,
+    "personalHealthDataExcluded": true
+  }
+}
