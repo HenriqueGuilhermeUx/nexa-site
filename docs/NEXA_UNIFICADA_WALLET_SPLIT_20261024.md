@@ -84,3 +84,9 @@ Até que a mesma aplicação Privy libere `https://wallet.trynexa.com.br`, a pol
 Enquanto `wallet.trynexa.com.br` encaminhar `/wallet-v148.html` ao domínio antigo e o iframe Privy ainda for recusado, a landing Wallet **não anuncia** o manifesto PWA nem registra um Service Worker quando acessada pelo novo subdomínio. O código de `wallet.html` permite essas ações somente em `trynexa.com.br` e `www.trynexa.com.br`.
 
 Essa mitigação **não altera** `manifest.webmanifest`, o id/start_url/scope, a lógica em `sw.js`, o aplicativo instalado nem o fluxo de clientes existentes. Não remove Service Workers que eventualmente já tenham sido instalados manualmente no subdomínio. O navegador pode permitir adicionar qualquer página à tela inicial manualmente; não prometemos impedir essa função do navegador. Após autorização Privy e E2E de login/carteira, revisar a política de instalação do novo host separadamente.
+
+## Alias de login e recuperação de senha protegidos no domínio Wallet
+
+O arquivo `_redirects` prevalece sobre `netlify.toml` no Netlify, portanto os aliases `/login`, `/login/`, `/login.html`, `/cadastro.html`, `/recuperar-senha`, `/recuperar-senha/` e `/recuperar-senha.html` foram acrescentados no topo como redirects **302 temporários e específicos do host `wallet.trynexa.com.br`**.
+
+Essas rotas devem enviar ao mesmo caminho na origem original `https://trynexa.com.br`. Não modificam o processo de recuperação de senha nem divulgam dados de usuário. Rotas legadas no domínio principal permanecem como estão. O preflight só faz GET sem cookies/token, não solicita redefinição real e não aciona e-mails. Queries de links de recuperação podem conter informações sensíveis; validar apenas com parâmetros fictícios e não registrá-las em logs.
