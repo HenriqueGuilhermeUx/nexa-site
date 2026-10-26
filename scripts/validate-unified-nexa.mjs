@@ -5,6 +5,17 @@ const read=(p)=>readFileSync(p,'utf8');
 const index=read('index.html'),wallet=read('wallet.html'),lifeGateway=read('meu-espaco.html');
 const redirects=read('netlify.toml'),builder=read('scripts/build-site.mjs');
 const worker=read('sw.js');
+const plainRedirects=read('_redirects');
+const walletProtectedAliases=["/login","/login/","/login.html","/cadastro.html","/recuperar-senha","/recuperar-senha/","/recuperar-senha.html"];
+for(const alias of walletProtectedAliases){
+  const marker='https://wallet.trynexa.com.br'+alias+' https://trynexa.com.br'+alias+' 302!';
+  assert.ok(plainRedirects.includes(marker),'Missing wallet-only 302 alias '+alias);
+  assert.ok(plainRedirects.indexOf(marker) < plainRedirects.indexOf('/login  /login.html'),
+    'Domain alias guard must precede legacy global redirects');
+}
+assert.ok(!plainRedirects.includes('https://trynexa.com.br/login https://wallet.trynexa.com.br'),
+  'Original login must not be redirected to unapproved Wallet domain');
+
 assert.match(index,/<title>Nexa — Sua vida, um só lugar<\/title>/);
 assert.match(index,/NEXA · SEU ESPAÇO/);
 assert.match(index,/Maya · Coordenadora/);

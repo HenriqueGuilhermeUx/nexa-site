@@ -1,3 +1,14 @@
+# TEMPORARY wallet.trynexa.com.br auth alias fallback.
+# These host-scoped rules must precede global /login and /recuperar-senha rewrites.
+# Do not change original Nexa customers, cookies, Privy IDs, or PWA. Keep 302.
+https://wallet.trynexa.com.br/login https://trynexa.com.br/login 302!
+https://wallet.trynexa.com.br/login/ https://trynexa.com.br/login/ 302!
+https://wallet.trynexa.com.br/login.html https://trynexa.com.br/login.html 302!
+https://wallet.trynexa.com.br/cadastro.html https://trynexa.com.br/cadastro.html 302!
+https://wallet.trynexa.com.br/recuperar-senha https://trynexa.com.br/recuperar-senha 302!
+https://wallet.trynexa.com.br/recuperar-senha/ https://trynexa.com.br/recuperar-senha/ 302!
+https://wallet.trynexa.com.br/recuperar-senha.html https://trynexa.com.br/recuperar-senha.html 302!
+
 /global/pt /global-pt.html 200
 /global/pt/ /global-pt.html 200
 /global/es /global-es.html 200

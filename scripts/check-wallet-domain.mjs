@@ -81,6 +81,27 @@ await expectTemporaryHandoff('/portal','/portal');
 await expectTemporaryHandoff('/portal/index.html','/portal/index.html');
 await expectTemporaryHandoff('/cadastro','/cadastro');
 await expectTemporaryHandoff('/wallet-v148.html','/wallet-v148.html');
+for(const alias of ["/login","/login/","/login.html","/cadastro.html","/recuperar-senha","/recuperar-senha/","/recuperar-senha.html"]){
+  if(!alias.endsWith('/')){
+    await expectTemporaryHandoff(alias,alias);
+    continue;
+  }
+  const normalized=alias.slice(0,-1);
+  const res=await fetch(ORIGIN+alias,{redirect:'manual',signal:AbortSignal.timeout(12000)});
+  assert.ok([301,302].includes(res.status),'Unsafe alias slash response: '+alias);
+  const dest=new URL(res.headers.get('location')||'',ORIGIN+alias);
+  assert.equal(dest.search,'','Alias redirect must not contain query parameters');
+  assert.equal(dest.hash,'','Alias redirect must not contain fragments');
+  if(res.status===301){
+    assert.equal(dest.origin,ORIGIN,'Netlify slash normalization must stay same-origin');
+    assert.equal(dest.pathname,normalized,'Only trailing slash normalization is permitted');
+    await expectTemporaryHandoff(normalized,normalized);
+  }else{
+    assert.equal(dest.origin,TRUSTED,'Authentication alias must redirect only to original origin');
+    assert.ok([alias,normalized].includes(dest.pathname),'Unsafe canonical alias destination');
+  }
+}
+
 
 // Root /portal/ is optionally canonicalized by Netlify Pretty URLs before
 // the auth redirect. If so, that single internal hop must have a fixed target.
