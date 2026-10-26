@@ -32,6 +32,8 @@ jobs:
         run: node scripts/validate-unified-nexa.mjs
       - name: Validate custom Wallet domain preflight script (no network)
         run: node scripts/check-wallet-domain.mjs
+      - name: Verify original Wallet SW never caches future Nexa Life OS path
+        run: node scripts/smoke-wallet-sw-lifeos-namespace.mjs
       - name: Validate Privy domain readiness probe (local only, no network)
         run: |
           node --test scripts/smoke-privy-origin.mjs

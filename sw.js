@@ -36,6 +36,18 @@ self.addEventListener('fetch', event => {
   const sameOrigin = url.origin === self.location.origin;
   const authenticated = req.headers.has('authorization');
 
+  // Reserve an isolated URL namespace for the future Nexa Life OS application.
+  // This is NOT the Wallet app. Never cache its HTML, JS, CSS or session
+  // responses in the root-scoped Wallet PWA cache, including offline fallback.
+  // Existing Wallet paths /portal, /wallet-v148.html and /api are unchanged.
+  if (sameOrigin && (
+    url.pathname === '/meu-espaco/app' ||
+    url.pathname.startsWith('/meu-espaco/app/')
+  )) {
+    event.respondWith(fetch(req));
+    return;
+  }
+
   // Financial/auth APIs are always network-only. Never persist authenticated responses.
   if (
     authenticated ||
