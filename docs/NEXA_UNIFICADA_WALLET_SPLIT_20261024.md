@@ -90,3 +90,17 @@ Essa mitigação **não altera** `manifest.webmanifest`, o id/start_url/scope, a
 O arquivo `_redirects` prevalece sobre `netlify.toml` no Netlify, portanto os aliases `/login`, `/login/`, `/login.html`, `/cadastro.html`, `/recuperar-senha`, `/recuperar-senha/` e `/recuperar-senha.html` foram acrescentados no topo como redirects **302 temporários e específicos do host `wallet.trynexa.com.br`**.
 
 Essas rotas devem enviar ao mesmo caminho na origem original `https://trynexa.com.br`. Não modificam o processo de recuperação de senha nem divulgam dados de usuário. Rotas legadas no domínio principal permanecem como estão. O preflight só faz GET sem cookies/token, não solicita redefinição real e não aciona e-mails. Queries de links de recuperação podem conter informações sensíveis; validar apenas com parâmetros fictícios e não registrá-las em logs.
+
+## Gate público, reproduzível e não financeiro da Privy (25/10/2026)
+
+**Fato consultado:** `GET https://auth.privy.io/api/v1/apps/cmpen2gm3007v0cjswjlyefji`, enviando somente `privy-app-id: cmpen2gm3007v0cjswjlyefji`, retornou `200` com `allowed_domains`. A origem **`https://wallet.trynexa.com.br` ainda NÃO estava presente** na lista em 25/10/2026. No navegador, o iframe Privy também havia respondido `403`/CSP `frame-ancestors` no host novo. O GET não contém credenciais privadas, cookies ou identidades de clientes.
+
+**Como revisar sem credenciais de cliente:**
+- GitHub Actions → `Nexa Privy Origin Readiness` → `Run workflow`, no repositório `nexa-site`. O teste não altera recursos e **falha propositalmente** até a origem entrar na allowlist.
+- Local: `NEXA_PRIVY_ORIGIN_CHECK=true node scripts/check-privy-origin.mjs`. Sem a variável, o script **não faz requisições de rede**. `node --test scripts/smoke-privy-origin.mjs` testa dados fictícios e a checagem exata.
+- Só aceita o origin **HTTPS exato** no MESMO app Privy com ID `cmpen2gm3007v0cjswjlyefji`. Origem pai, wildcard, path ou `http` não substituem.
+- Caso positivo: `PRIVY_DOMAIN_CONFIG_ALLOWED`. **Isso não autoriza retirar os redirecionamentos**. Repetir Playwright contra a React Wallet no host novo, comprovar ausência de Privy 403/CSP, testar mesma conta existente (Privy DID, wallet ID, endereço, extrato e saldo), sem ações financeiras. Só então propor release separado, com rollback.
+- Caso negativo: `PRIVY_DOMAIN_CONFIG_BLOCKED` e exit code 2. Erro de API inesperado: `PRIVY_DOMAIN_CONFIG_UNKNOWN`, exit code 1. Nenhum desses casos autoriza mudança de domínio, sessão ou carteira.
+- **Ação administrativa necessária:** abrir `https://dashboard.privy.io/`, selecionar a aplicação Nexa existente, ir a **Configuration → App settings → Domains → Allowed origins (Web & mobile web)** e **adicionar** `https://wallet.trynexa.com.br`, mantendo todas as outras origens. Não criar outro App ID, não revogar o atual nem compartilhar segredos.
+
+O workflow on-demand é separado do CI do site para **não causar falha nas publicações do site quando a Privy ainda não autorizou a origem**. O CI normal executa apenas os testes locais e o script com rede desligada.
