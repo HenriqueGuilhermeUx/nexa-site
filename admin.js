@@ -1,4 +1,4 @@
-const API = 'https://nexa-backend-p2u0.onrender.com/api/v1';
+const API = '/api/v1';
 
 let tab = 'ops';
 let data = {};
