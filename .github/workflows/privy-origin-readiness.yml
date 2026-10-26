@@ -1,0 +1,23 @@
+name: Nexa Privy Origin Readiness
+# On-demand only. A missing domain MUST fail, not mutate production.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  public-config-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.19.4'
+      - name: Validate pinned app and origin checks without network
+        run: node --test scripts/smoke-privy-origin.mjs
+      - name: Inspect only public Privy app allowed origins
+        env:
+          NEXA_PRIVY_ORIGIN_CHECK: 'true'
+        run: node scripts/check-privy-origin.mjs
