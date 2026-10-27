@@ -45,6 +45,19 @@
   .nexa-personal-card h3{font-size:17px;margin:0 0 12px}
   .nexa-personal-card p{font-size:13px;line-height:1.7;color:#a9bcd0;margin:0}
   .nexa-personal-card small{color:#31d7ff;font-weight:700;display:block;margin-top:16px}
+  .nexa-beta-access{padding:44px 0 72px;border-top:1px solid #213e56}
+  .nexa-beta-layout{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
+  .nexa-beta-access h2{font-size:clamp(28px,4vw,43px);line-height:1.12;letter-spacing:-.045em;margin:10px 0 18px}
+  .nexa-beta-access p{color:#b4c9dc;line-height:1.75}
+  .nexa-beta-form{background:#0e2138;border:1px solid #315574;border-radius:19px;padding:23px}
+  .nexa-beta-form label{font-weight:650;color:#e8f5ff;font-size:13px;display:block;margin-bottom:9px}
+  .nexa-beta-form input[type="text"],.nexa-beta-form input[type="email"]{width:100%;background:#071626;color:#f0f9ff;border:1px solid #40617f;border-radius:10px;padding:13px;font:inherit;margin-bottom:19px}
+  .nexa-beta-form input:focus-visible,.nexa-beta-form button:focus-visible,.nexa-personal-action:focus-visible{outline:3px solid #31d7ff;outline-offset:3px}
+  .nexa-beta-check{display:flex!important;gap:12px;align-items:flex-start;line-height:1.6;font-weight:450!important;margin:0 0 18px}
+  .nexa-beta-check input{margin-top:4px;min-width:17px;min-height:17px;accent-color:#218bff}
+  .nexa-beta-form button{border:0;cursor:pointer;width:100%;font:inherit}
+  .nexa-beta-muted{font-size:12px;color:#91aec4!important}
+  @media(max-width:830px){.nexa-beta-layout{grid-template-columns:1fr}}
   .nexa-personal-footer{padding:27px 0;border-top:1px solid #24425e;color:#94aec2;font-size:12px;line-height:1.7}
   .nexa-personal-footer a{margin-right:16px}
   @media(max-width:830px){.nexa-personal-hero{grid-template-columns:1fr;padding:55px 0}.nexa-personal-cards{grid-template-columns:1fr}.nexa-personal-action{width:100%}}
@@ -64,8 +77,8 @@
     <h1>Seu espaço.<br>Sua vida.<br><span class="nexa-personal-blue">Suas escolhas.</span></h1>
     <p class="nexa-personal-lead">Maya e seus especialistas ajudam você a organizar dinheiro, metas, investimentos, documentos e tarefas. A Nexa Wallet continua disponível separadamente para usar seus ativos digitais.</p>
     <div class="nexa-personal-actions">
-     <a class="nexa-personal-action nexa-personal-primary" href="https://nex-personal-preview-api.onrender.com/" target="_blank" rel="noopener noreferrer">Acessar homologação Nexa ↗</a>
-     <a class="nexa-personal-action nexa-personal-secondary" href="/primeiros-nexa">Quero acesso quando abrir</a>
+     <a class="nexa-personal-action nexa-personal-primary" href="https://nex-personal-preview-api.onrender.com/" target="_blank" rel="noopener noreferrer">Entrar na Nexa — convidados ↗</a>
+     <a class="nexa-personal-action nexa-personal-secondary" href="#pedir-acesso">Pedir convite para a beta</a>
     </div>
     <p class="nexa-personal-disclaimer"><strong>Acesso controlado:</strong> somente testadores com e-mail autorizado e código de convite podem criar uma conta na homologação. O login de testes é separado da conta Nexa Wallet. O uso deste espaço não cria carteira, conta bancária ou autorização de movimentação.</p>
    </div>
@@ -76,6 +89,30 @@
     <div class="nexa-personal-item"><span aria-hidden="true">📈</span><div><b>F-Insight · Investimentos</b><p>Pesquisa informativa e comparações, quando a fonte estiver habilitada.</p></div></div>
     <div class="nexa-personal-item"><span aria-hidden="true">◈</span><div><b>Nico · Cripto & Wallet</b><p>Acesso à Wallet original, sem duplicar carteira Privy.</p></div></div>
    </aside>
+  </section>
+  <section class="nexa-beta-access" id="pedir-acesso" aria-labelledby="nexa-beta-heading">
+   <div class="nexa-personal-wrap nexa-beta-layout">
+    <div>
+     <p class="nexa-personal-kicker">Nexa PF · Beta por convite</p>
+     <h2 id="nexa-beta-heading">A Nexa já pode ser experimentada.</h2>
+     <p>O aplicativo com Maya, organização financeira e os espaços pessoais está disponível para participantes convidados. Se já possui convite, entre pelo botão acima. Se ainda não possui, solicite acesso à próxima turma.</p>
+     <p class="nexa-beta-muted">O envio deste formulário registra interesse: não cria automaticamente uma conta, não aprova acesso e não solicita senha, CPF, saldo, chave de carteira ou dados bancários. A Nexa Wallet continua independente.</p>
+    </div>
+    <form class="nexa-beta-form" name="nexa-pf-beta-interest" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/meu-espaco-obrigado.html">
+     <input type="hidden" name="form-name" value="nexa-pf-beta-interest">
+     <p style="display:none" aria-hidden="true"><label>Não preencher <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+     <label for="beta-nome">Seu nome</label>
+     <input id="beta-nome" type="text" name="nome" autocomplete="name" maxlength="100" placeholder="Como podemos chamar você?" required>
+     <label for="beta-email">Seu e-mail</label>
+     <input id="beta-email" type="email" name="email" autocomplete="email" maxlength="180" placeholder="voce@email.com" required>
+     <label class="nexa-beta-check" for="beta-consentimento">
+      <input id="beta-consentimento" type="checkbox" name="consentimento" value="solicitar_convite_pf" required>
+      <span>Autorizo o uso do meu nome e e-mail exclusivamente para analisar esta solicitação e entrar em contato sobre o acesso à beta da Nexa PF, conforme a <a href="/privacidade">Política de Privacidade</a>.</span>
+     </label>
+     <button type="submit" class="nexa-personal-action nexa-personal-primary">Solicitar convite</button>
+     <p class="nexa-beta-muted">Sem inscrição automática em publicidade, sem conta financeira e sem transmissão de dados à Wallet.</p>
+    </form>
+   </div>
   </section>
   <section class="nexa-personal-section" style="background:#081827">
    <div class="nexa-personal-wrap">
