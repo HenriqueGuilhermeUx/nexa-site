@@ -4,6 +4,7 @@ import {readFileSync} from 'node:fs';
 const source=readFileSync('maya-public.js','utf8');
 const html=readFileSync('maya.html','utf8');
 const gateway=readFileSync('meu-espaco.html','utf8');
+const home=readFileSync('index.html','utf8');
 // The static site has no package.json; import the pure ESM code in memory.
 const mod=await import('data:text/javascript;charset=utf-8,'+encodeURIComponent(source));
 const {MAYA_PUBLIC_TOPICS,publicMayaFindTopic,publicMayaTopicById}=mod;
@@ -14,6 +15,8 @@ test('Maya public UI is real static guidance, not a second authenticated wallet'
  assert.match(html,/src="\/maya-public.js"/);
  assert.match(html,/Nexa PF/);
  assert.match(gateway,/href="\/maya\.html"/);
+ assert.match(home,/<a href="\/maya\.html">Maya<\/a>/,"Maya must be visible in main navigation");
+ assert.match(home,/Experimentar Maya gratuitamente/,"Maya must be reachable from the main CTA");
  assert.match(html,/A versão com seus dados e especialistas fica no aplicativo Nexa PF/);
  assert.doesNotMatch(html,/https:\/\/.*(?:privy|alchemy|render|supabase)/i);
 });
