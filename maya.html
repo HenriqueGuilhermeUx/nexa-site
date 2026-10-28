@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width,initial-scale=1">
+ <meta name="theme-color" content="#06111F">
+ <meta name="description" content="Conheça Maya, sua coordenadora pessoal na Nexa. Descubra especialistas para organizar gastos, metas, investimentos, documentos e acessar a Nexa Wallet.">
+ <title>Maya — Sua coordenadora na Nexa</title>
+ <link rel="icon" href="/favicon.svg">
+ <link rel="stylesheet" href="/nexa-2026.css">
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;min-height:100vh;background:#06111f;color:#f2f9ff;font-family:Inter,system-ui,Arial,sans-serif}
+  a{color:inherit}
+  button,input{font:inherit}
+  .maya-wrap{width:min(1100px,calc(100% - 36px));margin:0 auto}
+  .maya-nav{background:#071829d9;border-bottom:1px solid #28425c}
+  .maya-nav-inner{min-height:82px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:12px 0}
+  .maya-logo{display:flex;align-items:center;gap:12px;text-decoration:none;font-size:24px;font-weight:850;letter-spacing:1.6px}
+  .maya-logo img{width:43px;height:43px;border-radius:12px}
+  .maya-nav-links{display:flex;gap:22px;font-size:13px;color:#b4cbde;flex-wrap:wrap}
+  .maya-nav-links a{text-decoration:none}
+  .maya-hero{padding:80px 0 42px;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:48px}
+  .maya-eyebrow{display:block;color:#31d7ff;text-transform:uppercase;letter-spacing:2px;font-size:11px;font-weight:800}
+  .maya-hero h1{font-size:clamp(43px,6.1vw,74px);letter-spacing:-.065em;line-height:1.04;margin:17px 0}
+  .maya-gradient{background:linear-gradient(100deg,#fff,#31d7ff);background-clip:text;-webkit-background-clip:text;color:transparent}
+  .maya-lead{font-size:18px;line-height:1.75;color:#bad0e0;max-width:650px}
+  .maya-caption{color:#90b1c5;font-size:12px;line-height:1.75}
+  .maya-hero-art{min-height:305px;border:1px solid #335b77;border-radius:30px;padding:34px;background:radial-gradient(circle at 54% 25%,#275ef955,transparent 46%),linear-gradient(145deg,#0c2e4c,#061321);display:flex;align-items:center;justify-content:center;flex-direction:column;box-shadow:0 22px 80px #0003}
+  .maya-mark{height:108px;width:108px;display:grid;place-items:center;border-radius:28px;font-size:72px;font-weight:850;background:linear-gradient(135deg,#2352fb,#21d1eb);box-shadow:0 0 55px #21aefe6b}
+  .maya-hero-art strong{margin-top:23px;font-size:19px}
+  .maya-hero-art small{color:#accce2;margin-top:7px;text-align:center}
+  .maya-interactive{border:1px solid #31526b;background:linear-gradient(155deg,#0e253d,#09172a);padding:36px;border-radius:27px;margin:17px 0 44px}
+  .maya-interactive h2{font-size:clamp(26px,3vw,38px);letter-spacing:-.035em;margin:12px 0}
+  .maya-interactive p{color:#b3cbda;line-height:1.7}
+  .maya-interactive label{display:block;font-weight:650;font-size:13px;margin:22px 0 10px}
+  .maya-inputrow{display:flex;gap:12px;align-items:stretch}
+  .maya-inputrow input{flex:1;min-width:0;padding:15px 16px;color:#eaf7ff;background:#061626;border:1px solid #426888;border-radius:12px}
+  .maya-button{border:0;text-decoration:none;border-radius:12px;padding:15px 19px;font-size:13px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+  .maya-button-primary{background:linear-gradient(115deg,#244eff,#198fee,#22cbd9);color:#fff}
+  .maya-button-secondary{border:1px solid #3b6382;background:#0c2539;color:#e8f6ff}
+  .maya-chips{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0 0}
+  .maya-chip{border:1px solid #35617b;background:#0c304b;color:#cde9fc;border-radius:999px;padding:9px 13px;cursor:pointer;font-size:12px}
+  .maya-chip:hover,.maya-chip:focus-visible{background:#164e6a}
+  :is(a,button,input):focus-visible{outline:3px solid #31d7ff;outline-offset:3px}
+  .maya-result{margin-top:26px;border:1px solid #416b85;border-radius:18px;padding:24px;background:#071a2d;outline:none}
+  .maya-result[hidden]{display:none}
+  .maya-result h2{margin:8px 0}
+  .maya-result-kicker{font-size:11px;color:#31d7ff;font-weight:800;letter-spacing:1.5px}
+  .maya-result-summary{font-size:15px}
+  .maya-result-steps{padding-left:24px;line-height:1.9;color:#d9edfa}
+  .maya-result-note{border-top:1px solid #284862;padding-top:12px;font-size:12px}
+  .maya-result-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:19px}
+  .maya-bottom{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:70px}
+  .maya-bottom article{border:1px solid #294660;border-radius:22px;padding:27px;background:#0a1d30}
+  .maya-bottom h3{font-size:20px}
+  .maya-bottom p{line-height:1.75;color:#b5cad8;font-size:13px}
+  .maya-footer{border-top:1px solid #2e4660;color:#92b1c5;padding:28px 0;font-size:12px}
+  @media(max-width:830px){.maya-hero,.maya-bottom{grid-template-columns:1fr}.maya-hero{padding-top:50px;gap:23px}.maya-hero-art{min-height:250px}.maya-inputrow{flex-direction:column}.maya-interactive{padding:24px 18px}.maya-result-actions .maya-button{width:100%}}
+ </style>
+ <script type="module" src="/maya-public.js"></script>
+</head>
+<body>
+<header class="maya-nav">
+ <nav class="maya-wrap maya-nav-inner" aria-label="Navegação Nexa">
+  <a class="maya-logo" href="/"><img src="/icon.svg" alt="">NEXA</a>
+  <div class="maya-nav-links">
+   <a href="/">Início</a>
+   <a href="/meu-espaco">Meu Espaço</a>
+   <a href="/wallet">Nexa Wallet</a>
+   <a href="/suporte">Ajuda</a>
+  </div>
+ </nav>
+</header>
+<main class="maya-wrap">
+ <section class="maya-hero">
+  <div>
+   <span class="maya-eyebrow">Maya · Nexa para pessoas físicas</span>
+   <h1>Uma vida inteira.<br><span class="maya-gradient">Alguém para ajudar.</span></h1>
+   <p class="maya-lead">Conheça a Maya, sua coordenadora pessoal na Nexa. Descubra quem pode ajudar com gastos, metas, investimentos, compras, documentos e muito mais.</p>
+   <p class="maya-caption">Experiência pública de orientação por assunto. Nesta página, a Maya identifica temas e apresenta roteiros gerais. A versão com seus dados e especialistas fica no aplicativo Nexa PF, atualmente por convite.</p>
+  </div>
+  <div class="maya-hero-art" aria-label="Representação gráfica da Maya">
+   <div class="maya-mark" aria-hidden="true">M</div>
+   <strong>Maya</strong>
+   <small>Sua coordenadora · Você no controle</small>
+  </div>
+ </section>
+ <section class="maya-interactive" aria-labelledby="maya-title">
+  <span class="maya-eyebrow">Experimente sem cadastro</span>
+  <h2 id="maya-title">O que você gostaria de resolver?</h2>
+  <p>Digite apenas um assunto ou escolha uma opção. O texto é analisado no próprio navegador, sem envio para nossos servidores. Esta demonstração não acessa saldos, bancos nem a Nexa Wallet.</p>
+  <form id="maya-public-form">
+   <label for="maya-public-topic">Descreva o assunto sem CPF, senhas, dados bancários ou documentos pessoais</label>
+   <div class="maya-inputrow">
+    <input id="maya-public-topic" name="tema" type="text" maxlength="200" autocomplete="off" placeholder="Ex.: quero me organizar para economizar dinheiro" required>
+    <button class="maya-button maya-button-primary" type="submit">Encontrar especialista</button>
+   </div>
+  </form>
+  <div id="maya-public-shortcuts" class="maya-chips" aria-label="Assuntos que a Maya ajuda a organizar"></div>
+  <section id="maya-public-result" class="maya-result" tabindex="-1" aria-live="polite" aria-label="Orientação da Maya" hidden></section>
+ </section>
+ <div class="maya-bottom">
+  <article>
+   <span class="maya-eyebrow">Nexa PF</span>
+   <h3>Seus especialistas no seu espaço</h3>
+   <p>Na beta por convite, os especialistas trabalham com as informações que você cadastrar no seu ambiente pessoal. Sem acesso automático à sua carteira cripto ou conta bancária.</p>
+   <a class="maya-button maya-button-primary" href="/meu-espaco#pedir-acesso">Solicitar convite</a>
+  </article>
+  <article>
+   <span class="maya-eyebrow">Nexa Wallet</span>
+   <h3>Um Assistente próprio para cripto</h3>
+   <p>Maya coordena a Nexa PF. Na Wallet, o Assistente Nexa terá contexto e permissões próprios. Os recursos Agentics Premium continuam sujeitos a homologação e ativação segura.</p>
+   <a class="maya-button maya-button-secondary" href="/wallet">Conhecer a Nexa Wallet</a>
+  </article>
+ </div>
+</main>
+<footer class="maya-footer"><div class="maya-wrap">Nexa · Cripto sem complicação. Vida mais simples. &nbsp; <a href="/privacidade">Privacidade</a> &nbsp; <a href="/suporte">Ajuda</a></div></footer>
+</body>
+</html>
