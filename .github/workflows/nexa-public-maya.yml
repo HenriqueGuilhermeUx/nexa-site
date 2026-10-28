@@ -1,0 +1,29 @@
+name: Nexa Public Maya — privacy and routes
+on:
+  pull_request:
+    paths:
+      - 'maya.html'
+      - 'maya-public.js'
+      - 'meu-espaco.html'
+      - 'scripts/smoke-maya-public.mjs'
+      - '.github/workflows/nexa-public-maya.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'maya.html'
+      - 'maya-public.js'
+      - 'meu-espaco.html'
+      - 'scripts/smoke-maya-public.mjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify Maya public routes and no data egress
+        run: node --test scripts/smoke-maya-public.mjs
