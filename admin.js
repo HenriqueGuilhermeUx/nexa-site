@@ -1450,6 +1450,24 @@ const crmStageLabels = {
   archived: 'Arquivado',
 };
 
+async function previewCrmCampaigns() {
+  try {
+    const preview = await call('/admin/crm-campaign-preview');
+    if (preview.mode !== 'preview_only' || preview.dispatchEnabled !== false) {
+      throw new Error('Prévia indisponível: modo seguro não confirmado.');
+    }
+    const rows = (preview.segments || []).map((segment) =>
+      '<div class="note"><strong>' + esc(segment.code) + '</strong> · ' +
+      n(segment.potentialRecipients) + ' contatos potenciais' +
+      '<p>' + esc(segment.message) + '</p><small>' +
+      esc(segment.reason || 'Revisão obrigatória') + '</small></div>'
+    ).join('');
+    openModal('<h2>Campanhas · somente prévia</h2><p>Nenhuma mensagem será enviada. Consentimento e templates ainda precisam ser validados.</p>' + rows);
+  } catch (error) {
+    toast(error.message, true);
+  }
+}
+
 function renderCrm() {
   const contacts = data.crm?.contacts || [];
   const opportunityLabels = {
@@ -1481,6 +1499,7 @@ function renderCrm() {
       data.crm?.summary?.onboarding || 0,
     )}</div>` +
     (opportunityCards ? `<h3>Oportunidades e acompanhamentos</h3><div class="grid">${opportunityCards}</div>` : '') +
+    `<div class="actions"><button onclick="previewCrmCampaigns()">Prévia de campanhas (sem envio)</button></div>` +
     `<div class="pipeline">${Object.keys(crmStageLabels)
       .map(
         (stage) =>
