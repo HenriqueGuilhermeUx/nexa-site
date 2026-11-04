@@ -83,6 +83,29 @@
           <p class="text-xs text-slate-400 mt-2">Disponível para carteiras externas EOA compatíveis com assinatura de mensagem (ex.: MetaMask). Carteiras de contrato inteligente exigem homologação separada.</p>
         </div>
         <div class="flex gap-3 mt-4 flex-wrap"><button onclick="loadPjCryptoWallet()" type="button" class="bg-white/10 px-5 py-3 rounded-xl font-bold">Atualizar saldo USDC</button></div>
+        <div id="pjCryptoDetails" class="hidden mt-5 space-y-5">
+          <div class="border border-white/10 rounded-2xl p-4">
+            <h3 class="font-black text-lg">Receber USDC empresarial</h3>
+            <p class="text-slate-300 text-sm mt-2">Receba USDC nativo na rede Polygon (137). Confira a rede antes de enviar. Não utilize o endereço da sua carteira PF.</p>
+            <div class="flex gap-2 mt-3 flex-wrap items-center"><code id="pjReceiveAddress" class="break-all text-cyan-300 text-xs"></code><button type="button" onclick="copyPjReceiveAddress()" class="bg-white/10 p-3 rounded-xl font-bold">Copiar endereço</button><a id="pjReceiveExplorer" target="_blank" rel="noopener noreferrer" class="text-cyan-300 underline" href="#">Ver na PolygonScan</a></div>
+          </div>
+          <div class="border border-white/10 rounded-2xl p-4">
+            <h3 class="font-black text-lg">Movimentações USDC recentes</h3>
+            <p class="text-slate-400 text-xs mt-1">Janela recente da blockchain, não é um extrato completo ou contábil.</p>
+            <button type="button" onclick="loadPjCryptoActivity()" class="bg-white/10 px-4 py-2 rounded-xl font-bold mt-3">Consultar movimentações</button>
+            <div id="pjCryptoActivity" class="mt-3 text-sm text-slate-300" role="status">Consulte as movimentações recentes da carteira empresarial.</div>
+          </div>
+          <div class="border border-white/10 rounded-2xl p-4">
+            <h3 class="font-black text-lg">Simular envio de USDC</h3>
+            <p class="text-amber-200 text-sm mt-2">Somente verificação prévia. Não cria, assina ou envia transações.</p>
+            <div class="grid sm:grid-cols-2 gap-3 mt-3">
+              <input id="pjSendTo" placeholder="Endereço 0x de destino" class="bg-slate-900/70 border border-white/20 rounded-xl p-3">
+              <input id="pjSendAmount" placeholder="Quantidade USDC (ex.: 2.5)" inputmode="decimal" class="bg-slate-900/70 border border-white/20 rounded-xl p-3">
+            </div>
+            <button type="button" onclick="previewPjCryptoSend()" class="bg-indigo-600 px-5 py-3 rounded-xl font-bold mt-3">Conferir envio</button>
+            <div id="pjSendPreview" class="mt-3 text-slate-300 text-sm" role="status"></div>
+          </div>
+        </div>
         <p class="text-xs text-amber-200 mt-4">Somente consulta: envio, swap, Pix e liquidação corporativa ainda não estão autorizados. Saldo PF nunca é apresentado como saldo PJ.</p>
       </section>
       <div id="notice" class="hidden mb-6 rounded-2xl p-4 border"></div>
@@ -226,6 +249,37 @@
         !/^#handoff=[A-Za-z0-9_-]{32,200}$/.test(url.hash))throw new Error('Acesso ERP inválido.');
       location.assign(url.href);
     }catch(e){notice(e.message||'ERP indisponível. Consulte o administrativo Nexa.','bad')}}
+    let pjVerifiedWalletAddress=null;
+    async function copyPjReceiveAddress(){
+      if(!pjVerifiedWalletAddress)return notice('Carteira empresarial não comprovada.','bad');
+      try{await navigator.clipboard.writeText(pjVerifiedWalletAddress);notice('Endereço PJ copiado. Confirme a rede Polygon antes de receber.','ok')}
+      catch(e){notice('Não foi possível copiar. Selecione o endereço exibido.','bad')}
+    }
+    async function loadPjCryptoActivity(){
+      const area=$('pjCryptoActivity');
+      if(!pjVerifiedWalletAddress)return;
+      area.textContent='Consultando a blockchain Polygon...';
+      try{
+        const data=await api('/merchant/pj/crypto-wallet/activity',{headers:headers(false)});
+        if(data.walletAddress?.toLowerCase()!==pjVerifiedWalletAddress.toLowerCase())throw new Error('Endereço da consulta diferente da carteira verificada.');
+        const tx=Array.isArray(data.transactions)?data.transactions:[];
+        area.innerHTML=tx.length?tx.map(item=>{
+          const label=item.direction==='in'?'Recebido':item.direction==='out'?'Enviado':'Movimentação própria';
+          const hash=String(item.txHash||'');
+          const link=/^0x[0-9a-fA-F]{64}$/.test(hash)?'<a class="text-cyan-300 underline" href="https://polygonscan.com/tx/'+encodeURIComponent(hash)+'" target="_blank" rel="noopener noreferrer">Ver na PolygonScan</a>':'';
+          return '<div class="border-b border-white/10 py-3"><strong>'+esc(label)+'</strong> · '+esc(item.amountUsdc)+' USDC · bloco '+esc(item.blockNumber)+' '+link+'</div>';
+        }).join(''):'Nenhuma transferência USDC encontrada nos últimos '+(Number(data.window?.toBlock)-Number(data.window?.fromBlock))+' blocos consultados.';
+      }catch(e){area.textContent='Consulta de movimentações indisponível: '+e.message}
+    }
+    async function previewPjCryptoSend(){
+      const area=$('pjSendPreview');area.textContent='Validando valores e saldo...';
+      try{
+        if(!pjVerifiedWalletAddress)throw new Error('Carteira empresarial não comprovada.');
+        const to=$('pjSendTo').value.trim(),amountUsdc=$('pjSendAmount').value.trim();
+        const data=await api('/merchant/pj/crypto-wallet/transfer-preflight',{method:'POST',body:JSON.stringify({to,amountUsdc})});
+        area.textContent='Destino: '+data.to+' · Quantidade: '+data.amountUsdc+' USDC · Saldo: '+data.availableUsdc+' USDC · Gas (POL): '+data.gasBalance+' · Saldo suficiente: '+(data.sufficientUsdc?'sim':'não')+' · Envio indisponível nesta etapa. Nenhuma transação criada.';
+      }catch(e){area.textContent='Prévia indisponível: '+e.message}
+    }
     async function loadPjCryptoWallet(){
       const panel=$('pjCryptoPanel');
       if(pjRequest?.status!=='approved'){panel.classList.add('hidden');return}
@@ -236,11 +290,17 @@
           const amount=wallet.balanceStatus==='confirmed'?usdc(wallet.balanceUsdc)+' USDC':'Saldo temporariamente indisponível';
           $('pjCryptoState').textContent='Carteira PJ verificada: '+wallet.address+' · '+amount+' · Polygon · Somente consulta';
           $('pjCryptoConnect').classList.add('hidden');
+          pjVerifiedWalletAddress=wallet.address;
+          $('pjReceiveAddress').textContent=wallet.address;
+          $('pjReceiveExplorer').href='https://polygonscan.com/address/'+encodeURIComponent(wallet.address);
+          $('pjCryptoDetails').classList.remove('hidden');
         }else{
           $('pjCryptoState').textContent='Empresa aprovada. Conecte uma carteira empresarial separada para consultar USDC na Polygon.';
           $('pjCryptoConnect').classList.remove('hidden');
+          pjVerifiedWalletAddress=null;
+          $('pjCryptoDetails').classList.add('hidden');
         }
-      }catch(e){$('pjCryptoState').textContent='Não foi possível consultar a carteira PJ: '+e.message;$('pjCryptoConnect').classList.add('hidden')}
+      }catch(e){$('pjCryptoState').textContent='Não foi possível consultar a carteira PJ: '+e.message;$('pjCryptoConnect').classList.add('hidden');$('pjCryptoDetails').classList.add('hidden');pjVerifiedWalletAddress=null}
     }
     async function connectPjCryptoWallet(){
       try{
