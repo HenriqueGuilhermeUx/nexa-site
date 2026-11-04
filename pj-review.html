@@ -28,6 +28,11 @@ article strong{font-size:19px}article p{color:#b1bdd0;overflow-wrap:anywhere}.no
 <section id="reviewPanel" class="panel hidden">
 <div class="row" style="justify-content:space-between"><h2>Documentos aguardando conferência</h2><div class="row"><button id="refreshBtn" class="secondary">Atualizar</button><button id="logoutBtn" class="secondary">Sair</button></div></div>
 <div id="pendingList" aria-live="polite">Consultando solicitações...</div>
+<section class="panel" style="margin-top:22px">
+ <h3>Provisionamento do ERP após aprovação</h3>
+ <p class="muted">Se a empresa foi aprovada, mas a criação do workspace falhou, informe o ID da solicitação e tente novamente. A operação é restrita ao administrador e não cria cobranças.</p>
+ <div class="row"><input id="retryId" placeholder="ID da solicitação aprovada" style="min-width:310px"><button id="retryBtn" class="secondary" type="button">Tentar liberar ERP</button></div>
+</section>
 </section>
 <p id="notice" class="notice" role="status"></p>
 </main>
@@ -85,15 +90,26 @@ async function action(event){
   if(op!=='approve'&&op!=='reject')return;
   if(!confirm(op==='approve'?'Você conferiu o documento, a identidade e os poderes de representação e deseja APROVAR esta empresa?':'Confirmar REJEIÇÃO da solicitação PJ?'))return;
   const data=await request('/merchant-admin/pj/requests/'+encodeURIComponent(id)+'/review',{method:'POST',body:JSON.stringify({approve:op==='approve'})});
-  message(op==='approve'?(data.nexofficeConnected?'Empresa aprovada e ERP provisionado.':'Empresa aprovada. Provisionamento ERP ainda não confirmado: '+String(data.nexofficeStatus||'verifique integração.')):'Solicitação rejeitada.');
+  if(op==='approve')$('retryId').value=id;
   await loadPending();
+  message(op==='approve'?(data.nexofficeConnected?'Empresa aprovada e ERP provisionado.':'Empresa aprovada. Provisionamento ERP ainda não confirmado: '+String(data.nexofficeStatus||'verifique integração.')+'. Use a opção de tentar novamente abaixo.'):'Solicitação rejeitada.');
  }catch(e){message(e.message)}
  finally{el.disabled=false}
+}
+async function retryProvision(){
+ const id=$('retryId').value.trim();
+ if(!/^[0-9a-f-]{36}$/i.test(id)){message('Informe um ID de solicitação válido.');return}
+ const button=$('retryBtn');button.disabled=true;
+ try{
+   const data=await request('/merchant-admin/pj/requests/'+encodeURIComponent(id)+'/retry-provision',{method:'POST'});
+   message(data.nexofficeConnected?'ERP provisionado com sucesso. O responsável pode abrir o painel pelo portal Nexa PJ.':'Empresa aprovada, mas o provisionamento ainda não foi confirmado. Motivo: '+String(data.nexofficeStatus||'integração indisponível'));
+ }catch(e){message(e.message)}finally{button.disabled=false}
 }
 function logout(){token='';$('reviewPanel').classList.add('hidden');$('loginPanel').classList.remove('hidden');$('pendingList').textContent='';message('Sessão encerrada.')}
 $('loginBtn').addEventListener('click',login);
 $('refreshBtn').addEventListener('click',()=>loadPending().catch(()=>{}));
 $('logoutBtn').addEventListener('click',logout);
+$('retryBtn').addEventListener('click',retryProvision);
 $('pendingList').addEventListener('click',action);
 })();
 </script>
