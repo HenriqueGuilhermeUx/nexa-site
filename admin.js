@@ -1477,13 +1477,14 @@ function renderCrm() {
               const overdue =
                 item.crm?.nextFollowUpAt &&
                 new Date(item.crm.nextFollowUpAt) < new Date();
+              const suggestion = item.suggestedAction?.label || '';
               return `<div class="crm-card ${
                 overdue ? 'overdue' : ''
               }"><h4>${esc(
                 item.user?.fullName || item.user?.email,
               )}</h4><p>${esc(item.user?.email || '')}<br>Próximo contato: ${fmtDate(
                 item.crm?.nextFollowUpAt,
-              )}</p><div class="tag-list">${(item.crm?.tags || [])
+              )}</p>${suggestion ? `<p><strong>Próxima ação:</strong> ${esc(suggestion)}</p>` : ''}<div class="tag-list">${(item.crm?.tags || [])
                 .map((tag) => `<span class="tag">${esc(tag)}</span>`)
                 .join('')}</div><button class="small-btn" onclick="openCrm('${item.user.id}')">Abrir</button></div>`;
             })
