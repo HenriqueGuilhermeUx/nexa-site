@@ -64,7 +64,7 @@
         <div class="flex flex-wrap gap-3 mt-4">
           <button type="button" onclick="requestPjApproval()" class="bg-blue-500 hover:bg-blue-600 px-5 py-3 rounded-xl font-bold">Solicitar análise da empresa</button>
           <button type="button" onclick="loadPjApproval()" class="bg-white/10 px-5 py-3 rounded-xl font-bold">Atualizar situação</button>
-          <a id="pjErpLink" href="https://nexa-pj-erp-only.onrender.com/" target="_blank" rel="noopener noreferrer" class="hidden bg-emerald-600 px-5 py-3 rounded-xl font-bold">Entrar no ERP empresarial</a>
+          <button id="pjErpLink" type="button" onclick="openApprovedPjErp()" class="hidden bg-emerald-600 px-5 py-3 rounded-xl font-bold">Abrir ERP empresarial</button>
         </div>
         <div id="pjDocumentArea" class="hidden mt-5 border border-white/10 rounded-2xl p-4">
           <label for="pjContractFile" class="font-bold block">Contrato social ou documento equivalente (PDF, JPG ou PNG; até 10 MB)</label>
@@ -204,6 +204,15 @@
       const req=await api('/merchant/pj/apply',{method:'POST',body:JSON.stringify({merchantId})});
       show(req);notice('Solicitação PJ registrada. Envie o contrato social para avaliação.','ok');await loadPjApproval();
     }catch(e){notice(e.message,'bad');show(e.data||e.message)}}
+    async function openApprovedPjErp(){try{
+      if(pjRequest?.status!=='approved')throw new Error('Sua empresa ainda não foi aprovada.');
+      notice('Conferindo o acesso ao ERP empresarial...');
+      const data=await api('/merchant/pj/erp-launch',{method:'POST'});
+      const url=new URL(String(data.url||''));
+      if(url.protocol!=='https:'||url.origin!=='https://nexa-pj-erp-only.onrender.com'||
+        !/^#handoff=[A-Za-z0-9_-]{32,200}$/.test(url.hash))throw new Error('Acesso ERP inválido.');
+      location.assign(url.href);
+    }catch(e){notice(e.message||'ERP indisponível. Consulte o administrativo Nexa.','bad')}}
     async function uploadPjContract(){try{
       if(!pjRequest?.id||pjRequest.status!=='awaiting_document')throw new Error('Nenhuma solicitação aguardando documento.');
       const file=$('pjContractFile').files?.[0];
