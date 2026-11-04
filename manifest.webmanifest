@@ -77,6 +77,18 @@
           "type": "image/svg+xml"
         }
       ]
+    },
+    {
+      "name": "Nexa Empresa",
+      "short_name": "Empresa",
+      "url": "/merchant",
+      "icons": [
+        {
+          "src": "/nexa-v148-icon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
     }
   ]
 }
