@@ -73,6 +73,18 @@
         </div>
         <p class="text-xs text-slate-400 mt-4">Sua solicitação só é aprovada após conferência manual. O acesso administrativo ao ERP e o acesso financeiro são autorizações distintas; nenhuma transferência é iniciada neste processo.</p>
       </section>
+      <section id="pjCryptoPanel" class="glass rounded-[2rem] p-7 mb-7 hidden" aria-label="Carteira cripto empresarial">
+        <p class="text-cyan-300 text-xs font-black tracking-widest">NEXA PJ · CARTEIRA CRIPTO</p>
+        <h2 class="text-2xl font-black mt-2">USDC empresarial na Polygon</h2>
+        <p class="text-slate-300 mt-2">A carteira empresarial é independente da sua carteira PF. Para conectá-la, você comprova o controle do endereço assinando uma mensagem, sem transferir fundos ou compartilhar chaves.</p>
+        <div id="pjCryptoState" class="mt-4 border border-white/20 rounded-2xl p-4 text-slate-300" role="status">Consultando carteira PJ...</div>
+        <div id="pjCryptoConnect" class="mt-4">
+          <button onclick="connectPjCryptoWallet()" type="button" class="bg-indigo-600 px-5 py-3 rounded-xl font-bold">Conectar carteira empresarial</button>
+          <p class="text-xs text-slate-400 mt-2">Disponível para carteiras externas EOA compatíveis com assinatura de mensagem (ex.: MetaMask). Carteiras de contrato inteligente exigem homologação separada.</p>
+        </div>
+        <div class="flex gap-3 mt-4 flex-wrap"><button onclick="loadPjCryptoWallet()" type="button" class="bg-white/10 px-5 py-3 rounded-xl font-bold">Atualizar saldo USDC</button></div>
+        <p class="text-xs text-amber-200 mt-4">Somente consulta: envio, swap, Pix e liquidação corporativa ainda não estão autorizados. Saldo PF nunca é apresentado como saldo PJ.</p>
+      </section>
       <div id="notice" class="hidden mb-6 rounded-2xl p-4 border"></div>
 
       <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-7">
@@ -192,6 +204,7 @@
         :'Nenhuma solicitação PJ. Salve os dados da sua empresa abaixo e solicite a análise.';
       $('pjDocumentArea').classList.toggle('hidden',!(pjRequest&&status==='awaiting_document'));
       $('pjErpLink').classList.toggle('hidden',status!=='approved');
+      await loadPjCryptoWallet();
       if(status==='approved') $('pjApprovalStatus').textContent+=' · ERP disponível após provisionamento e ativação do acesso empresarial autorizado.';
       return pjRequest;
     }catch(e){
@@ -213,6 +226,39 @@
         !/^#handoff=[A-Za-z0-9_-]{32,200}$/.test(url.hash))throw new Error('Acesso ERP inválido.');
       location.assign(url.href);
     }catch(e){notice(e.message||'ERP indisponível. Consulte o administrativo Nexa.','bad')}}
+    async function loadPjCryptoWallet(){
+      const panel=$('pjCryptoPanel');
+      if(pjRequest?.status!=='approved'){panel.classList.add('hidden');return}
+      panel.classList.remove('hidden');
+      try{
+        const wallet=await api('/merchant/pj/crypto-wallet',{headers:headers(false)});
+        if(wallet.status==='verified_read_only'){
+          const amount=wallet.balanceStatus==='confirmed'?usdc(wallet.balanceUsdc)+' USDC':'Saldo temporariamente indisponível';
+          $('pjCryptoState').textContent='Carteira PJ verificada: '+wallet.address+' · '+amount+' · Polygon · Somente consulta';
+          $('pjCryptoConnect').classList.add('hidden');
+        }else{
+          $('pjCryptoState').textContent='Empresa aprovada. Conecte uma carteira empresarial separada para consultar USDC na Polygon.';
+          $('pjCryptoConnect').classList.remove('hidden');
+        }
+      }catch(e){$('pjCryptoState').textContent='Não foi possível consultar a carteira PJ: '+e.message;$('pjCryptoConnect').classList.add('hidden')}
+    }
+    async function connectPjCryptoWallet(){
+      try{
+        if(pjRequest?.status!=='approved')throw new Error('Aprovação PJ obrigatória.');
+        const provider=window.ethereum;
+        if(!provider||typeof provider.request!=='function')throw new Error('Abra este portal em um navegador com carteira compatível, como MetaMask. Não envie chaves privadas.');
+        const addresses=await provider.request({method:'eth_requestAccounts'});
+        const address=String(addresses?.[0]||'');
+        if(!/^0x[0-9a-fA-F]{40}$/.test(address))throw new Error('Carteira externa não conectada.');
+        const challenge=await api('/merchant/pj/crypto-wallet/challenge',{method:'POST',body:JSON.stringify({address})});
+        if(!challenge?.message||String(challenge.address).toLowerCase()!==address.toLowerCase())throw new Error('Desafio da carteira inválido.');
+        const signature=await provider.request({method:'personal_sign',params:[challenge.message,address]});
+        if(typeof signature!=='string')throw new Error('Assinatura não confirmada.');
+        await api('/merchant/pj/crypto-wallet/verify',{method:'POST',body:JSON.stringify({signature})});
+        notice('Carteira PJ vinculada. Saldo em consulta; transferências permanecem indisponíveis.','ok');
+        await loadPjCryptoWallet();
+      }catch(e){notice(e.message||'Não foi possível vincular a carteira empresarial.','bad')}
+    }
     async function uploadPjContract(){try{
       if(!pjRequest?.id||pjRequest.status!=='awaiting_document')throw new Error('Nenhuma solicitação aguardando documento.');
       const file=$('pjContractFile').files?.[0];
