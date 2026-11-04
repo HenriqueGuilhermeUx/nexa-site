@@ -5,6 +5,7 @@ let data = {};
 let leadFilter = '';
 let leadStatus = 'all';
 let clientFilter = '';
+let crmOpportunityFilter = 'all';
 
 const $ = (id) => document.getElementById(id);
 const token = () => sessionStorage.getItem('nexa_admin_token') || '';
@@ -1468,8 +1469,14 @@ async function previewCrmCampaigns() {
   }
 }
 
+function filterCrmOpportunity(code) {
+  crmOpportunityFilter = code;
+  renderCrm();
+}
+
 function renderCrm() {
-  const contacts = data.crm?.contacts || [];
+  const allContacts = data.crm?.contacts || [];
+  const contacts = crmOpportunityFilter === 'all' ? allContacts : allContacts.filter((item) => item.suggestedAction?.code === crmOpportunityFilter);
   const opportunityLabels = {
     follow_up_due: 'Follow-ups vencidos',
     kyc_review: 'KYC para revisão',
@@ -1482,7 +1489,7 @@ function renderCrm() {
   const opportunities = data.crm?.summary?.opportunities || {};
   const opportunityCards = Object.entries(opportunityLabels)
     .filter(([key]) => Number(opportunities[key] || 0) > 0)
-    .map(([key, label]) => card(label, Number(opportunities[key] || 0), key === 'do_not_contact' ? 'warn' : ''))
+    .map(([key, label]) => '<button class="small-btn" onclick="filterCrmOpportunity(\'' + key + '\')">' + esc(label) + ' · ' + n(opportunities[key]) + '</button>')
     .join('');
   const grouped = {};
   contacts.forEach((item) => {
@@ -1490,7 +1497,7 @@ function renderCrm() {
     (grouped[stage] ||= []).push(item);
   });
   $('content').innerHTML =
-    `<div class="grid">${card('Contatos CRM', contacts.length)}${card(
+    `<div class="grid">${card('Contatos CRM', allContacts.length)}${card(
       'Follow-ups vencidos',
       data.crm?.summary?.overdue || 0,
       'warn',
@@ -1499,6 +1506,7 @@ function renderCrm() {
       data.crm?.summary?.onboarding || 0,
     )}</div>` +
     (opportunityCards ? `<h3>Oportunidades e acompanhamentos</h3><div class="grid">${opportunityCards}</div>` : '') +
+    `<div class="actions"><button class="small-btn" onclick="filterCrmOpportunity('all')">Todos os clientes</button><span>${crmOpportunityFilter === 'all' ? 'Visão completa' : 'Filtro: ' + esc(opportunityLabels[crmOpportunityFilter] || crmOpportunityFilter)} · ${n(contacts.length)} clientes</span></div>` +
     `<div class="actions"><button onclick="previewCrmCampaigns()">Prévia de campanhas (sem envio)</button></div>` +
     `<div class="pipeline">${Object.keys(crmStageLabels)
       .map(
