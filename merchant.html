@@ -192,6 +192,7 @@
         :'Nenhuma solicitação PJ. Salve os dados da sua empresa abaixo e solicite a análise.';
       $('pjDocumentArea').classList.toggle('hidden',!(pjRequest&&status==='awaiting_document'));
       $('pjErpLink').classList.toggle('hidden',status!=='approved');
+      if(status==='approved') $('pjApprovalStatus').textContent+=' · ERP disponível após provisionamento e ativação do acesso empresarial autorizado.';
       return pjRequest;
     }catch(e){
       $('pjApprovalStatus').textContent='Não foi possível consultar a análise PJ: '+e.message;
