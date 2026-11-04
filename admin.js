@@ -1452,6 +1452,20 @@ const crmStageLabels = {
 
 function renderCrm() {
   const contacts = data.crm?.contacts || [];
+  const opportunityLabels = {
+    follow_up_due: 'Follow-ups vencidos',
+    kyc_review: 'KYC para revisão',
+    kyc_wait: 'KYC em análise',
+    kyc_assistance: 'Ajuda com KYC',
+    retention_review: 'Retenção',
+    relationship_review: 'Relacionamento',
+    do_not_contact: 'Contato bloqueado',
+  };
+  const opportunities = data.crm?.summary?.opportunities || {};
+  const opportunityCards = Object.entries(opportunityLabels)
+    .filter(([key]) => Number(opportunities[key] || 0) > 0)
+    .map(([key, label]) => card(label, Number(opportunities[key] || 0), key === 'do_not_contact' ? 'warn' : ''))
+    .join('');
   const grouped = {};
   contacts.forEach((item) => {
     const stage = item.crm?.stage || 'new';
@@ -1466,6 +1480,7 @@ function renderCrm() {
       'Em onboarding',
       data.crm?.summary?.onboarding || 0,
     )}</div>` +
+    (opportunityCards ? `<h3>Oportunidades e acompanhamentos</h3><div class="grid">${opportunityCards}</div>` : '') +
     `<div class="pipeline">${Object.keys(crmStageLabels)
       .map(
         (stage) =>
