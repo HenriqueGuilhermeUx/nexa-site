@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer">
+<title>Nexa PJ · Aprovações empresariais</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#050e21;color:#f8fafc;font:16px system-ui,Arial,sans-serif}
+main{max-width:1080px;margin:0 auto;padding:30px 20px}header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+a{color:#93c5fd}h1{font-size:clamp(28px,4vw,44px);margin:30px 0 8px}.muted{color:#b1bdd0;line-height:1.5}
+.panel{border:1px solid #334155;background:#0e1d34;border-radius:20px;padding:22px;margin-top:24px}
+input,button{border-radius:12px;padding:12px 15px;font:inherit;border:1px solid #475569;color:white;background:#122743;max-width:100%}
+button{background:#2563eb;border-color:#2563eb;cursor:pointer;font-weight:700}button:disabled{opacity:.45;cursor:not-allowed}
+button.secondary{background:#192d45;border-color:#475569}button.danger{background:#8b263f;border-color:#8b263f}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.hidden{display:none}article{border:1px solid #334155;border-radius:16px;padding:20px;margin-top:14px}
+article strong{font-size:19px}article p{color:#b1bdd0;overflow-wrap:anywhere}.notice{min-height:24px;margin-top:16px;color:#93c5fd}
+</style>
+</head>
+<body><main>
+<header><strong>N · NEXA PJ</strong><nav class="row"><a href="/admin">Control Center</a><a href="/pj">Site Nexa PJ</a></nav></header>
+<h1>Aprovações empresariais</h1>
+<p class="muted">A análise é exclusivamente manual. Confira CNPJ, documentação e legitimidade do representante antes de aprovar. Esta página não movimenta dinheiro nem cria carteiras.</p>
+<section id="loginPanel" class="panel">
+<h2>Acesso administrativo</h2>
+<p class="muted">Entre com a conta Nexa configurada como administradora do backend.</p>
+<div class="row"><input id="email" type="email" autocomplete="username" placeholder="E-mail"><input id="password" type="password" autocomplete="current-password" placeholder="Senha"><button type="button" id="loginBtn">Entrar</button></div>
+</section>
+<section id="reviewPanel" class="panel hidden">
+<div class="row" style="justify-content:space-between"><h2>Documentos aguardando conferência</h2><div class="row"><button id="refreshBtn" class="secondary">Atualizar</button><button id="logoutBtn" class="secondary">Sair</button></div></div>
+<div id="pendingList" aria-live="polite">Consultando solicitações...</div>
+</section>
+<p id="notice" class="notice" role="status"></p>
+</main>
+<script>
+(()=>{'use strict';
+const API='https://nexa-backend-p2u0.onrender.com/api/v1';
+let token='';
+const $=id=>document.getElementById(id);
+const message=(value)=>{$('notice').textContent=value};
+const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function request(path,options={}){
+ const res=await fetch(API+path,{...options,headers:{Authorization:'Bearer '+token,...(options.body?{'Content-Type':'application/json'}:{})}});
+ let data;try{data=await res.json()}catch{data={}}
+ if(!res.ok)throw new Error(Array.isArray(data.message)?data.message.join(', '):String(data.message||data.error||'Falha de autorização'));
+ return data;
+}
+async function login(){
+ try{
+  message('Autenticando...');
+  const response=await fetch(API+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:$('email').value.trim(),password:$('password').value})});
+  const data=await response.json();
+  if(!response.ok)throw new Error('Login não autorizado.');
+  token=data.accessToken||data.access_token||data.token||data.tokens?.accessToken||'';
+  if(!token)throw new Error('Sessão administrativa indisponível.');
+  $('password').value='';await loadPending();
+  $('loginPanel').classList.add('hidden');$('reviewPanel').classList.remove('hidden');message('');
+ }catch(e){token='';message(e.message)}
+}
+async function loadPending(){
+ try{
+  const items=await request('/merchant-admin/pj/pending');
+  if(!Array.isArray(items))throw new Error('A lista de aprovações não está disponível.');
+  $('pendingList').innerHTML=items.length?items.map(item=>{
+    const id=String(item.id||'');
+    if(!/^[0-9a-f-]{36}$/i.test(id))return '';
+    return '<article data-request-id="'+escapeHtml(id)+'"><strong>CNPJ '+escapeHtml(item.cnpj)+'</strong><p>Solicitação: '+escapeHtml(id)+'</p><p>Recebida: '+escapeHtml(item.createdAt?new Date(item.createdAt).toLocaleString('pt-BR'):'—')+'</p><div class="row"><button data-action="document" data-id="'+escapeHtml(id)+'" class="secondary">Abrir contrato (link temporário)</button><button data-action="approve" data-id="'+escapeHtml(id)+'">Aprovar empresa</button><button data-action="reject" data-id="'+escapeHtml(id)+'" class="danger">Rejeitar</button></div></article>';
+  }).join(''):'<p class="muted">Nenhuma documentação aguardando análise.</p>';
+  message(items.length+' solicitação(ões) pendente(s).');
+ }catch(e){$('pendingList').textContent='Falha ao carregar aprovações.';message(e.message);throw e}
+}
+async function action(event){
+ const el=event.target.closest('button[data-action]');if(!el)return;
+ const id=el.dataset.id,op=el.dataset.action;
+ if(!/^[0-9a-f-]{36}$/i.test(id))return;
+ try{
+  el.disabled=true;
+  if(op==='document'){
+   const doc=await request('/merchant-admin/pj/requests/'+encodeURIComponent(id)+'/document');
+   if(typeof doc.reviewUrl!=='string'||!/^https:\/\//.test(doc.reviewUrl))throw new Error('Link privado do contrato não disponível.');
+   const opened=window.open(doc.reviewUrl,'_blank','noopener,noreferrer');
+   if(!opened)message('Seu navegador pode ter bloqueado a abertura do contrato. Habilite pop-ups temporariamente e tente novamente.');
+   else message('Documento aberto em nova aba. Link temporário de cinco minutos.');
+   return;
+  }
+  if(op!=='approve'&&op!=='reject')return;
+  if(!confirm(op==='approve'?'Você conferiu o documento, a identidade e os poderes de representação e deseja APROVAR esta empresa?':'Confirmar REJEIÇÃO da solicitação PJ?'))return;
+  const data=await request('/merchant-admin/pj/requests/'+encodeURIComponent(id)+'/review',{method:'POST',body:JSON.stringify({approve:op==='approve'})});
+  message(op==='approve'?(data.nexofficeConnected?'Empresa aprovada e ERP provisionado.':'Empresa aprovada. Provisionamento ERP ainda não confirmado: '+String(data.nexofficeStatus||'verifique integração.')):'Solicitação rejeitada.');
+  await loadPending();
+ }catch(e){message(e.message)}
+ finally{el.disabled=false}
+}
+function logout(){token='';$('reviewPanel').classList.add('hidden');$('loginPanel').classList.remove('hidden');$('pendingList').textContent='';message('Sessão encerrada.')}
+$('loginBtn').addEventListener('click',login);
+$('refreshBtn').addEventListener('click',()=>loadPending().catch(()=>{}));
+$('logoutBtn').addEventListener('click',logout);
+$('pendingList').addEventListener('click',action);
+})();
+</script>
+</body></html>
