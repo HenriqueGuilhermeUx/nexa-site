@@ -58,7 +58,24 @@
 
   <main id="withdraw" class="page hidden"><div class="pageKicker">VOLTAR PARA REAIS</div><h1 class="pageTitle">Sacar via Pix</h1><div class="pageSub">Veja a estimativa antes de confirmar.</div><div class="card"><div class="field"><label>Quanto USDC você quer sacar?</label><input id="withdrawAmount" class="input" inputmode="decimal"></div><button class="btn secondary" onclick="quoteWithdraw()">Ver estimativa</button><div id="withdrawQuote" class="quote hidden"></div><div class="field" style="margin-top:14px"><label>Chave Pix</label><input id="withdrawKey" class="input"></div><button id="withdrawBtn" class="btn" onclick="requestWithdraw()" disabled>Confirmar saque</button></div></main>
 
-  <main id="recurring" class="page hidden"><div class="pageKicker">OPEN FINANCE</div><h1 class="pageTitle">Adicionar automaticamente</h1><div class="pageSub">Escolha um valor e um dia do mês para sua recorrência.</div><div class="card"><div class="field"><label>Valor mensal</label><input id="recAmount" class="input" inputmode="decimal" placeholder="R$"></div><div class="field"><label>Dia do mês</label><input id="recDay" class="input" inputmode="numeric" value="5"></div><div class="actions"><button class="btn" onclick="saveRecurring()">Salvar recorrência</button><button class="btn secondary" onclick="linkRecurring()">Autorizar</button></div><div id="recStatus" class="quote"></div></div></main>
+  <main id="recurring" class="page hidden"><div class="pageKicker">OPEN FINANCE</div>
+  <h1 class="pageTitle">Pix Automático · USDC</h1>
+  <div class="pageSub">Planeje uma operação mensal opcional. Salvar o plano não ativa cobrança; o provedor e o banco precisam confirmar a autorização.</div>
+  <div class="card"><div class="field"><label for="recAmount">Valor mensal (R$)</label><input id="recAmount" class="input" inputmode="decimal" placeholder="R$"></div>
+  <div class="field"><label for="recDay">Dia do mês (1 a 28)</label><input id="recDay" class="input" inputmode="numeric" value="5"></div>
+  <button class="btn" onclick="saveRecurring()">Salvar plano sem cobrar</button>
+  <details style="margin-top:14px"><summary>Dados obrigatórios para solicitar autorização</summary>
+    <p class="sub">Informe o endereço de cobrança exigido pelo provedor. Os dados são transmitidos somente ao backend da Nexa e à Woovi após sua confirmação.</p>
+    <div class="field"><label for="recZip">CEP</label><input id="recZip" class="input" inputmode="numeric" autocomplete="postal-code" maxlength="9"></div>
+    <div class="field"><label for="recStreet">Rua</label><input id="recStreet" class="input" autocomplete="address-line1"></div>
+    <div class="field"><label for="recNumber">Número</label><input id="recNumber" class="input" autocomplete="address-line2"></div>
+    <div class="field"><label for="recNeighbour">Bairro</label><input id="recNeighbour" class="input"></div>
+    <div class="field"><label for="recCity">Cidade</label><input id="recCity" class="input" autocomplete="address-level2"></div>
+    <div class="field"><label for="recState">UF (2 letras)</label><input id="recState" class="input" autocomplete="address-level1" maxlength="2"></div>
+    <button class="btn secondary" onclick="linkRecurring()">Solicitar autorização à Woovi</button>
+  </details>
+  <div class="actions" style="margin-top:14px"><button class="btn secondary" onclick="pauseRecurring()">Pausar plano</button><button class="btn secondary" onclick="cancelRecurring()">Cancelar plano</button></div>
+  <div id="recStatus" class="quote" aria-live="polite"></div></div></main>
 
   <main id="rewards" class="page hidden"><div class="pageKicker">REWARDS</div><h1 class="pageTitle">Nexa Rewards</h1><div class="pageSub">Rewards Wallet-First. Sua posição continua vinculada à sua experiência Nexa.</div><div class="card"><div class="field"><label>Quanto USDC deseja separar?</label><input id="rewardAmount" class="input" inputmode="decimal"></div><button class="btn" onclick="joinRewards()">Participar do Rewards</button></div><div id="rewardsList" class="list"></div></main>
 
@@ -89,7 +106,16 @@ function render(){const name=user?.fullName||user?.email||'Cliente Nexa',first=n
 function renderAssets(){const html=ASSETS.map(a=>{const p=position(a.symbol);return '<div class="row" onclick="'+(a.symbol==='USDC'?"go('wallet')":"selectAsset('"+a.symbol+"')")+'"><div class="token" style="border-color:'+a.tone+';color:'+a.tone+'">'+a.mark+'</div><div class="grow"><div class="name">'+a.name+'</div><div class="sub">'+a.symbol+'</div></div><div class="value">'+fmt(p.amount,a.symbol==='USDC'?2:6)+' '+a.symbol+(p.value?'<div class="sub">US$ '+fmt(p.value,2)+'</div>':'')+'</div></div>'}).join('');$('homeAssets').innerHTML=html;$('assetGrid').innerHTML=ASSETS.map(a=>{const p=position(a.symbol);return '<button class="assetMini" onclick="'+(a.symbol==='USDC'?"go('wallet')":"selectAsset('"+a.symbol+"')")+'"><div style="font-size:21px;color:'+a.tone+'">'+a.mark+'</div><b>'+a.symbol+'</b><span>'+fmt(p.amount,8)+'</span><span>'+a.name+'</span></button>'}).join('')}
 function renderHistory(){const empty='<div class="row"><div class="grow"><div class="name">Suas movimentações aparecerão aqui.</div><div class="sub">Adicionar, converter, enviar e sacar ficam organizados nesta tela.</div></div></div>';const make=items=>items.length?items.map(x=>{const credit=x.direction==='credit';return '<div class="row"><div class="token" style="width:36px;height:36px">'+(credit?'↓':'↑')+'</div><div class="grow"><div class="name">'+escapeHtml(x.description||x.type||(credit?'Entrada':'Saída'))+'</div><div class="sub">'+(x.createdAt?new Date(x.createdAt).toLocaleString('pt-BR'):(x.asset||'Nexa'))+'</div></div><div class="value '+(credit?'credit':'debit')+'">'+(credit?'+':'-')+fmt(x.amount||x.amountUsdc||0,8)+' '+(x.asset||'')+'</div></div>'}).join(''):empty;$('recent').innerHTML=make(statement.slice(0,3));$('historyList').innerHTML=make(statement)}
 function renderRewards(){const list=window._rewards||[];$('rewardsList').innerHTML=list.length?list.map(p=>'<div class="row"><div class="grow"><div class="name">'+escapeHtml(p.plan||'FLEX')+'</div><div class="sub">'+escapeHtml(p.status||'')+'</div></div><div class="value">'+fmt(p.principalUsdc||p.amountUsdc||0,8)+' USDC</div></div>').join(''):'<div class="row"><div class="grow"><div class="name">Nenhuma posição Rewards.</div></div></div>'}
-function renderRecurring(){const e=$('recStatus');e.innerHTML=recurring?'<b>Status: '+escapeHtml(recurring.status||'ativo')+'</b><div class="sub">Valor mensal: R$ '+fmt(recurring.monthlyAmountBrl||recurring.amountBrl||0,2)+' · dia '+escapeHtml(recurring.preferredDay||recurring.dayOfMonth||'—')+'</div>':'Nenhuma recorrência configurada.'}
+function renderRecurring(){
+ const e=$('recStatus');
+ if(!recurring){e.textContent='Nenhum plano mensal configurado.';return;}
+ const provider=String(recurring.wooviSubscriptionStatus||'').toLowerCase();
+ const linked=Boolean(recurring.wooviSubscriptionId)&&['active','enabled','authorized'].includes(provider)&&String(recurring.status||'').toLowerCase()==='active';
+ e.innerHTML='<b>'+ (linked?'Autorização confirmada pelo provedor':'Plano registrado — autorização não confirmada') +'</b>'+
+ '<div class="sub">Valor mensal: R$ '+fmt(recurring.monthlyAmountBrl||recurring.amountBrl||0,2)+' · dia '+escapeHtml(recurring.preferredDay||recurring.dayOfMonth||'—')+
+ ' · status local: '+escapeHtml(recurring.status||'não informado')+'</div>'+
+ '<p class="sub">Nenhuma cobrança é iniciada por esta página sem sua autorização e confirmação do provedor.</p>';
+}
 function renderQr(addr){const q=$('walletQr');q.innerHTML='';if(addr&&window.QRCode)new QRCode(q,{text:addr,width:186,height:186})}
 function go(id){document.querySelectorAll('.page').forEach(x=>x.classList.add('hidden'));$(id)?.classList.remove('hidden');if(id==='assistant')void loadAssistant();document.querySelectorAll('[data-main]').forEach(x=>x.classList.toggle('active',x.dataset.main===id));history.replaceState(null,'','/wallet-v148.html'+(MAIN.includes(id)?'?tab='+id:''));window.scrollTo(0,0)}
 function selectAsset(a){$('assetSymbol').value=a;go('assets')}
@@ -103,7 +129,50 @@ async function refreshPix(){try{if(!pixCorrelation)throw new Error('Gere um Pix 
 async function quoteWithdraw(){try{const amountUsdc=num($('withdrawAmount').value);if(amountUsdc<=0)throw new Error('Informe um valor USDC válido.');withdrawQuoteData=await api('/payment/pix/quote',{method:'POST',headers:auth(true),body:JSON.stringify({amountUsdc})});const brl=Number(withdrawQuoteData.estimatedPayoutBrl||withdrawQuoteData.netBrl||0);$('withdrawQuote').innerHTML='<b>RESUMO DO SAQUE</b><div class="heroAmount" style="font-size:28px">R$ '+fmt(brl,2)+'</div><div class="sub">Cotação e condições confirmadas antes da solicitação.</div>';$('withdrawQuote').classList.remove('hidden');$('withdrawBtn').disabled=false}catch(e){msg(e.message)}}
 async function requestWithdraw(){try{if(!withdrawQuoteData)throw new Error('Veja a estimativa primeiro.');const amountUsdc=num($('withdrawAmount').value),pixKey=$('withdrawKey').value.trim();if(!pixKey)throw new Error('Informe sua chave Pix.');if(!confirm('Confirmar saque de '+fmt(amountUsdc,8)+' USDC para Pix?'))return;const d=await api('/payment/pix/redemption',{method:'POST',headers:auth(true),body:JSON.stringify({amountUsdc,pixKey})});msg(d.message||'Solicitação Pix registrada.');withdrawQuoteData=null;await loadAll();go('history')}catch(e){msg(e.message)}}
 async function saveRecurring(){try{const monthlyAmountBrl=num($('recAmount').value),preferredDay=Number($('recDay').value);if(monthlyAmountBrl<10)throw new Error('Valor mensal mínimo: R$ 10,00.');if(preferredDay<1||preferredDay>28)throw new Error('Escolha um dia entre 1 e 28.');const d=await api('/recurring-pix/upsert',{method:'POST',headers:auth(true),body:JSON.stringify({monthlyAmountBrl,preferredDay})});recurring=d.recurringPix||d;msg(d.message||'Recorrência atualizada.');renderRecurring()}catch(e){msg(e.message)}}
-async function linkRecurring(){try{if(!recurring)throw new Error('Salve a recorrência primeiro.');const d=await api('/recurring-pix/link-woovi',{method:'POST',headers:auth(true),body:JSON.stringify({address:''})});msg(d.message||'Autorização iniciada.');const url=d.url||d.link||d.paymentLinkUrl||d.checkoutUrl;if(url)location.href=url}catch(e){msg(e.message)}}
+async function linkRecurring(){
+ try{
+  if(!recurring)throw new Error('Salve o plano mensal antes de solicitar autorização.');
+  const address={
+   zipcode:String($('recZip').value||'').replace(/\D/g,''),
+   street:$('recStreet').value.trim(),
+   number:$('recNumber').value.trim(),
+   neighborhood:$('recNeighbour').value.trim(),
+   city:$('recCity').value.trim(),
+   state:$('recState').value.trim().toUpperCase(),
+  };
+  if(!/^\d{8}$/.test(address.zipcode)||!address.street||!address.number||!address.neighborhood||!address.city||!/^[A-Z]{2}$/.test(address.state))
+   throw new Error('Informe CEP, rua, número, bairro, cidade e UF para a autorização.');
+  if(!confirm('Solicitar à Woovi autorização de Pix Automático para R$ '+fmt(recurring.monthlyAmountBrl||0,2)+' por mês, dia '+(recurring.preferredDay||5)+'? A confirmação final depende do seu banco.'))return;
+  const d=await api('/recurring-pix/link-woovi',{method:'POST',headers:auth(true),body:JSON.stringify({address})});
+  if(d.success===false)throw new Error(d.message||'Woovi não confirmou a solicitação.');
+  recurring=d.recurringPix||recurring;
+  renderRecurring();
+  const woovi=d.woovi||{};
+  if(woovi.brCode){
+   const box=$('recStatus');const detail=document.createElement('div');detail.className='field';
+   const label=document.createElement('label');label.textContent='Código de autorização fornecido pelo provedor (revise no seu banco)';
+   const field=document.createElement('textarea');field.className='input';field.readOnly=true;field.value=String(woovi.brCode);field.rows=4;
+   detail.append(label,field);box.appendChild(detail);
+  }
+  msg(d.message||'Solicitação recebida; verifique a autorização com seu banco.');
+ }catch(e){msg(e.message)}
+}
+async function pauseRecurring(){
+ try{
+  if(!recurring)return msg('Nenhum plano registrado.');
+  if(!confirm('Pausar o plano mensal? Se houver assinatura no banco, a Nexa tentará cancelar a autorização com o provedor.'))return;
+  const d=await api('/recurring-pix/pause',{method:'POST',headers:auth(true)});
+  recurring=d.recurringPix||recurring;renderRecurring();msg(d.message||'Plano pausado.');
+ }catch(e){msg(e.message)}
+}
+async function cancelRecurring(){
+ try{
+  if(!recurring)return msg('Nenhum plano registrado.');
+  if(!confirm('Cancelar o plano mensal e solicitar cancelamento da autorização vinculada?'))return;
+  const d=await api('/recurring-pix/cancel',{method:'POST',headers:auth(true)});
+  recurring=d.recurringPix||recurring;renderRecurring();msg(d.message||'Plano cancelado.');
+ }catch(e){msg(e.message)}
+}
 async function joinRewards(){try{if(!isPremium())throw new Error('Nexa Rewards está disponível para clientes Premium.');const amountUsdc=num($('rewardAmount').value);if(amountUsdc<=0)throw new Error('Informe um valor USDC válido.');if(!confirm('Separar '+fmt(amountUsdc,8)+' USDC no Rewards?'))return;const d=await api('/rewards/join',{method:'POST',headers:auth(true),body:JSON.stringify({amountUsdc,plan:'FLEX',clientRequestId:'pwa_rewards_'+user.id+'_'+Date.now()})});msg(d.message||'Saldo reservado no Rewards.');await loadAll()}catch(e){msg(e.message)}}
 function copyWallet(){const a=walletAddress();if(a)navigator.clipboard.writeText(a)}
 function authorizeDirectTransfer(){if(!walletTransferAction)return msg('Revise a transferência novamente.');sessionStorage.setItem('nexa_wallet_action_v148',JSON.stringify(walletTransferAction));location.href='/portal/?walletAction=direct-transfer'}
