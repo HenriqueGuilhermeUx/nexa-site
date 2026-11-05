@@ -1500,6 +1500,72 @@ async function checkCrmSmartbotsStatus() {
   }
 }
 
+async function openCrmWhatsAppInbox() {
+  try {
+    const result = await call('/admin/crm-smartbots-inbox');
+    if (!result.success) {
+      openModal('<h2>Caixa de entrada WhatsApp</h2><p>Consulta indisponível (' +
+        esc(result.reason || 'conexão não configurada') + ').</p>');
+      return;
+    }
+    const rows = Array.isArray(result.items) ? result.items : [];
+    const statusLabels = {
+      human_needed: 'Precisa de atendimento humano',
+      new: 'Nova conversa',
+      open: 'Aberta',
+      closed: 'Encerrada'
+    };
+    const html = rows.map((item) => {
+      const id = String(item.id || '');
+      if (!/^[0-9a-f-]{36}$/i.test(id)) return '';
+      const who = item.contactName || item.maskedPhone || 'Contato sem identificação';
+      return '<div style="padding:12px 0;border-bottom:1px solid var(--border, #ddd)">' +
+        '<p><strong>' + esc(who) + '</strong>' + (item.maskedPhone && item.contactName ? ' · ' + esc(item.maskedPhone) : '') +
+        '</p><p>' + esc(statusLabels[item.status] || item.status || 'Sem status') +
+        (item.intent ? ' · ' + esc(item.intent) : '') + ' · ' + esc(fmtDate(item.updatedAt)) +
+        '</p><p>' + esc(item.preview || 'Sem prévia disponível') + '</p>' +
+        '<button class="small-btn" onclick="openCrmWhatsAppThread(\'' + id + '\')">Ver histórico</button></div>';
+    }).join('');
+    openModal('<h2>Caixa de entrada WhatsApp</h2><p>Leitura restrita ao administrador. ' +
+      'As conversas não estão vinculadas automaticamente aos cadastros Nexa. ' +
+      'Nenhuma mensagem será enviada.</p>' +
+      (rows.length ? html : '<p>Nenhuma conversa registrada.</p>') +
+      '<p>Exibindo até 50 conversas mais recentes.</p>');
+  } catch (error) {
+    toast('Falha ao carregar caixa de entrada: ' + error.message, true);
+  }
+}
+
+async function openCrmWhatsAppThread(inboxId) {
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(inboxId))) {
+    toast('Identificador de conversa inválido', true);
+    return;
+  }
+  try {
+    const result = await call('/admin/crm-smartbots-inbox/' + encodeURIComponent(inboxId));
+    if (!result.success || !result.conversation) throw new Error(result.reason || 'conversa indisponível');
+    const item = result.conversation;
+    const who = item.contactName || item.maskedPhone || 'Contato sem identificação';
+    const messages = Array.isArray(result.messages) ? result.messages : [];
+    const html = messages.map((message) => {
+      const outbound = message.direction === 'outbound';
+      const direction = outbound ? 'Nexa / bot' : 'Contato';
+      return '<div style="margin:10px 0;padding:10px;border:1px solid var(--border, #ddd);border-radius:8px">' +
+        '<p><strong>' + direction + '</strong> · ' + esc(fmtDate(message.createdAt)) +
+        (outbound && message.deliveryStatus ? ' · ' + esc(message.deliveryStatus) : '') +
+        '</p><div style="white-space:pre-wrap;overflow-wrap:anywhere">' + esc(message.message || '[Mensagem sem texto]') + '</div></div>';
+    }).join('');
+    openModal('<h2>Histórico WhatsApp</h2><p><strong>' + esc(who) +
+      '</strong>' + (item.maskedPhone ? ' · ' + esc(item.maskedPhone) : '') +
+      '</p><p>Somente leitura. Não pressupõe identidade verificada nem vínculo com cliente Nexa. ' +
+      'Exibindo até 50 mensagens mais recentes.</p>' +
+      '<button class="small-btn" onclick="openCrmWhatsAppInbox()">Voltar à caixa de entrada</button>' +
+      (messages.length ? html : '<p>Não há mensagens armazenadas para esta conversa.</p>'));
+  } catch (error) {
+    toast('Falha ao carregar histórico WhatsApp: ' + error.message, true);
+  }
+}
+
 function renderCrm() {
   const allContacts = data.crm?.contacts || [];
   const contacts = crmOpportunityFilter === 'all' ? allContacts : allContacts.filter((item) => item.suggestedAction?.code === crmOpportunityFilter);
@@ -1533,7 +1599,7 @@ function renderCrm() {
     )}</div>` +
     (opportunityCards ? `<h3>Oportunidades e acompanhamentos</h3><div class="grid">${opportunityCards}</div>` : '') +
     `<div class="actions"><button class="small-btn" onclick="filterCrmOpportunity('all')">Todos os clientes</button><span>${crmOpportunityFilter === 'all' ? 'Visão completa' : 'Filtro: ' + esc(opportunityLabels[crmOpportunityFilter] || crmOpportunityFilter)} · ${n(contacts.length)} clientes</span></div>` +
-    `<div class="actions"><button onclick="checkCrmSmartbotsStatus()">Verificar SmartBots / Kapso</button><button onclick="previewCrmCampaigns()">Prévia de campanhas (sem envio)</button></div>` +
+    `<div class="actions"><button onclick="checkCrmSmartbotsStatus()">Verificar SmartBots / Kapso</button><button onclick="openCrmWhatsAppInbox()">Caixa de entrada WhatsApp (leitura)</button><button onclick="previewCrmCampaigns()">Prévia de campanhas (sem envio)</button></div>` +
     `<div class="pipeline">${Object.keys(crmStageLabels)
       .map(
         (stage) =>
