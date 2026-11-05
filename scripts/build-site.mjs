@@ -72,6 +72,14 @@ if (checkedOut !== commit) {
 }
 
 run('npm', ['install', '--no-audit', '--no-fund'], {cwd: portalSource});
+// Privy React Auth 3.35.x references optional Solana program exports during
+// bundling even when Nexa portal does not expose Solana flows. Install only
+// the pinned optional peers into this ephemeral cloned portal; do not change
+// the committed portal sources or customer wallet configuration.
+run('npm', ['install', '--no-save', '--no-package-lock', '--no-audit', '--no-fund',
+  '@solana-program/system@0.8.0',
+  '@solana-program/memo@0.8.0',
+  '@solana-program/token@0.6.0'], {cwd: portalSource});
 run('npm', ['run', 'check'], {
   cwd: portalSource,
   env: {

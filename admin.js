@@ -1566,6 +1566,53 @@ async function openCrmWhatsAppThread(inboxId) {
   }
 }
 
+async function openCrmActivationSales() {
+  try {
+    const result = await call('/admin/crm-activation-sales');
+    if (!result.success) throw new Error('Prévia comercial indisponível');
+    const c = result.counts || {};
+    const metrics = '<div class="grid">' +
+      card('Cadastro sem KYC aprovado', Number(c.kycPending || 0)) +
+      card('KYC em análise', Number(c.kycInReview || 0)) +
+      card('Primeira operação não confirmada', Number(c.firstOperationNotConfirmed || 0)) +
+      card('KYC rejeitado / revisão humana', Number(c.kycRejected || 0)) +
+      card('Com operação confirmada', Number(c.hasFundingHistory || 0)) +
+      card('Revisar histórico', Number(c.fundingRequiresReview || 0)) +
+      '</div>';
+    const names = {kyc_pending:'Orientar KYC',kyc_in_review:'Aguardar/analisar KYC',
+      kyc_rejected:'Revisão humana',first_operation:'Educar sobre primeira operação',
+      funding_review:'Histórico precisa de revisão'};
+    const prospects = Array.isArray(result.prospects) ? result.prospects : [];
+    const items = prospects.slice(0,50).map((item) => {
+      const id = String(item.userId || '');
+      const link = /^[0-9a-f-]{36}$/i.test(id)
+        ? '<button class="small-btn" onclick="openCrm(\'' + id + '\')">Abrir CRM</button>'
+        : '';
+      return '<div style="padding:12px 0;border-bottom:1px solid var(--border, #ddd)">' +
+        '<strong>' + esc(item.name || 'Cliente') + '</strong> · ' +
+        esc(names[item.segment] || item.segment || '') +
+        '<p>Cadastro: ' + esc(fmtDate(item.registeredAt)) +
+        ' · KYC: ' + esc(item.kycStatus || 'não informado') +
+        ' · contato por WhatsApp: <strong>não autorizado automaticamente</strong></p>' +
+        '<details><summary>Ver orientação do Theo (prévia, não enviada)</summary>' +
+        '<p style="white-space:pre-wrap;overflow-wrap:anywhere">' +
+        esc(item.messageDraft || '') + '</p></details>' + link + '</div>';
+    }).join('');
+    openModal('<h2>Theo — Vendedor Nexa</h2>' +
+      '<p>Funil de ativação em modo de análise. <strong>Nenhuma mensagem será enviada.</strong></p>' +
+      metrics +
+      '<p>Os cadastros estão organizados por orientação de KYC e primeira operação. ' +
+      'A ausência de operação é baseada nos históricos internos consultados e não prova ausência de depósitos externos ou legados.</p>' +
+      '<p><strong>Importante:</strong> telefone e cadastro não comprovam consentimento para mensagens de WhatsApp. ' +
+      'Qualquer contato proativo depende de opt-in verificável e políticas da plataforma.</p>' +
+      '<h3>Oportunidades de ativação (' + n(result.totalProspects || 0) + ')</h3>' +
+      (prospects.length ? items : '<p>Nenhuma oportunidade encontrada.</p>') +
+      '<p>Exibindo até 50 oportunidades, sem envios e sem alterações nas contas.</p>');
+  } catch (error) {
+    toast('Não foi possível carregar o vendedor Nexa: ' + error.message, true);
+  }
+}
+
 function renderCrm() {
   const allContacts = data.crm?.contacts || [];
   const contacts = crmOpportunityFilter === 'all' ? allContacts : allContacts.filter((item) => item.suggestedAction?.code === crmOpportunityFilter);
@@ -1599,7 +1646,7 @@ function renderCrm() {
     )}</div>` +
     (opportunityCards ? `<h3>Oportunidades e acompanhamentos</h3><div class="grid">${opportunityCards}</div>` : '') +
     `<div class="actions"><button class="small-btn" onclick="filterCrmOpportunity('all')">Todos os clientes</button><span>${crmOpportunityFilter === 'all' ? 'Visão completa' : 'Filtro: ' + esc(opportunityLabels[crmOpportunityFilter] || crmOpportunityFilter)} · ${n(contacts.length)} clientes</span></div>` +
-    `<div class="actions"><button onclick="checkCrmSmartbotsStatus()">Verificar SmartBots / Kapso</button><button onclick="openCrmWhatsAppInbox()">Caixa de entrada WhatsApp (leitura)</button><button onclick="previewCrmCampaigns()">Prévia de campanhas (sem envio)</button></div>` +
+    `<div class="actions"><button onclick="checkCrmSmartbotsStatus()">Verificar SmartBots / Kapso</button><button onclick="openCrmWhatsAppInbox()">Caixa de entrada WhatsApp (leitura)</button><button onclick="openCrmActivationSales()">Theo · Vendedor Nexa</button><button onclick="previewCrmCampaigns()">Prévia de campanhas (sem envio)</button></div>` +
     `<div class="pipeline">${Object.keys(crmStageLabels)
       .map(
         (stage) =>
