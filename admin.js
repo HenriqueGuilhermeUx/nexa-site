@@ -1575,7 +1575,7 @@ async function openCrmLifecycleJourney() {
       ['kyc','KYC por concluir'],['kyc_review','KYC em análise'],
       ['kyc_assistance','KYC precisa de ajuda'],['first_deposit','Primeira operação ainda não confirmada'],
       ['financial_review','Revisar histórico'],['recurring','Conhecer recorrência'],
-      ['other_assets','Educação sobre outros ativos'],['ongoing','Acompanhamento contínuo']
+      ['other_assets','Educação sobre outros ativos'],['next_deposit','Revisar novo depósito'],['ongoing','Acompanhamento contínuo']
     ];
     const cards = stages.map(([key,label]) => card(label,Number(c[key]||0))).join('');
     const people = (Array.isArray(result.items) ? result.items : []).slice(0,80).map(item => {
@@ -1587,7 +1587,7 @@ async function openCrmLifecycleJourney() {
         '<strong>'+esc(item.name||'Cliente')+'</strong> · '+esc(item.title||'')+
         '<p>KYC: '+esc(item.identity||'')+
         ' · primeira entrada: '+esc(item.firstFunding||'')+
-        ' · recorrência: '+esc(item.recurring||'')+'</p>'+link+'</div>';
+        ' · recorrência: '+esc(item.recurring||'')+' · entradas repetidas: '+esc(item.repeatedFunding||'não confirmado')+'</p>'+link+'</div>';
     }).join('');
     openModal('<h2>Jornada Nexa · Theo</h2>' +
       '<p>Próxima melhor orientação, calculada com KYC e históricos financeiros confirmados. '+
