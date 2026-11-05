@@ -1482,8 +1482,19 @@ async function checkCrmSmartbotsStatus() {
       : 'Bot ' + esc(status.botId || '') + ' · ' + esc(status.provider || 'Kapso') +
         ' · respostas automáticas: ' + (status.autoReply ? 'habilitadas' : 'desabilitadas') +
         ' · sincronização de mensagens: ' + (status.messageSyncEnabled ? 'habilitada' : 'ainda não habilitada') + '.';
+    const metrics = status.metrics;
+    const showMetric = (value) => Number.isSafeInteger(value) && value >= 0 ? String(value) : 'indisponível';
+    const metricsHtml = metrics && status.connected
+      ? '<h3>Atendimento WhatsApp — indicadores</h3>' +
+        '<p>Conversas: <strong>' + showMetric(metrics.conversations) + '</strong> · ' +
+        'Mensagens recebidas: <strong>' + showMetric(metrics.inboundMessages) + '</strong> · ' +
+        'Mensagens enviadas: <strong>' + showMetric(metrics.outboundMessages) + '</strong> · ' +
+        'Conversas marcadas para atendimento humano: <strong>' + showMetric(metrics.humanNeededConversations) + '</strong>.</p>' +
+        '<p>Contagens do SmartBots; não representam necessariamente clientes únicos ou atendimentos resolvidos.</p>'
+      : '<p>Indicadores ainda não disponíveis.</p>';
     openModal('<h2>Conexão Nexa / SmartBots</h2><p>' + message +
-      '</p><p>Consulta somente leitura. Nenhuma mensagem é enviada por esta tela.</p>');
+      '</p>' + metricsHtml + '<p>Consulta somente leitura. Nenhuma mensagem é enviada por esta tela. ' +
+      'As conversas não são vinculadas automaticamente a cadastros Nexa.</p>');
   } catch (error) {
     toast('Não foi possível consultar a conexão: ' + error.message, true);
   }
