@@ -1538,6 +1538,7 @@ function renderCrm() {
 async function openCrm(userId) {
   try {
     const detail = await call(`/admin/crm/${encodeURIComponent(userId)}`);
+    const timeline = await call(`/admin/crm/${encodeURIComponent(userId)}/interactions`);
     const crm = detail.crm || {};
     const user = detail.user || {};
     const phone = String(user.phone || '').replace(/\D/g, '');
@@ -1576,14 +1577,14 @@ async function openCrm(userId) {
           crm.summary || '',
         )}</textarea></div></div><button class="green" onclick="saveCrm('${userId}')">Salvar CRM</button>` +
         `<div class="modal-section"><h3>Nova nota</h3><div class="form-grid"><div class="form-field"><label>Canal do contato</label><select id="crmNoteChannel"><option value="internal">Interno</option><option value="whatsapp">WhatsApp</option><option value="email">E-mail</option><option value="phone">Telefone</option></select></div><div class="form-field"><label>Próximo follow-up</label><input id="crmNoteNext" type="datetime-local"></div><div class="form-field full"><label>Registro</label><textarea id="crmNote" placeholder="Dúvida, objeção, decisão e próximo passo"></textarea></div></div><button onclick="addCrmNote('${userId}')">Adicionar nota</button></div>` +
-        `<div class="modal-section"><h3>Histórico</h3>${(detail.notes || [])
+        `<div class="modal-section"><h3>Histórico de interações</h3><p>Registros do CRM; sincronização automática com SmartBots ainda não conectada.</p>${(timeline.interactions || [])
           .map(
-            (note) =>
-              `<div class="note"><small>${fmtDate(note.createdAt)} · ${esc(
-                note.channel,
-              )} · ${esc(note.adminEmail)}</small>${esc(note.body)}</div>`,
+            (item) =>
+              `<div class="note"><small>${fmtDate(item.createdAt)} · ${esc(
+                item.channel,
+              )} · ${esc(item.actor)}</small>${esc(item.body)}</div>`,
           )
-          .join('')}</div>`,
+          .join('') || '<p>Nenhuma interação registrada.</p>'}</div>`,
     );
   } catch (error) {
     toast(error.message, true);
