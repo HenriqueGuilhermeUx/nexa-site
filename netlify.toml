@@ -5,7 +5,7 @@
 [build.environment]
   NODE_VERSION = "20.19.4"
   NPM_FLAGS = "--no-audit --no-fund"
-  NEXA_PORTAL_COMMIT = "d778f6bedf0f5b8b02bc6b222d5968c39590dc2e"
+  NEXA_PORTAL_COMMIT = "0b4bf9f7651cf1502fc31f735f839bc65d4d2056"
   NEXA_GLOBAL_APP_COMMIT = "a930c2438691e3b2026fa0a5a5e9a9b9d8ec1499"
   VITE_API_URL = "https://nexa-backend-p2u0.onrender.com/api/v1"
   VITE_NEXA_AGENTICS_PREVIEW_ENABLED = "true"

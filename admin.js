@@ -1566,6 +1566,40 @@ async function openCrmWhatsAppThread(inboxId) {
   }
 }
 
+async function openCrmLifecycleJourney() {
+  try {
+    const result = await call('/admin/lifecycle/overview');
+    if (!result.success) throw new Error('Jornada indisponível');
+    const c = result.counts || {};
+    const stages = [
+      ['kyc','KYC por concluir'],['kyc_review','KYC em análise'],
+      ['kyc_assistance','KYC precisa de ajuda'],['first_deposit','Primeira operação ainda não confirmada'],
+      ['financial_review','Revisar histórico'],['recurring','Conhecer recorrência'],
+      ['other_assets','Educação sobre outros ativos'],['ongoing','Acompanhamento contínuo']
+    ];
+    const cards = stages.map(([key,label]) => card(label,Number(c[key]||0))).join('');
+    const people = (Array.isArray(result.items) ? result.items : []).slice(0,80).map(item => {
+      const id = String(item.userId || '');
+      const link = /^[0-9a-f-]{36}$/i.test(id)
+        ? '<button class="small-btn" onclick="openCrm(\''+id+'\')">Abrir CRM</button>'
+        : '';
+      return '<div style="padding:10px 0;border-bottom:1px solid var(--border,#ddd)">' +
+        '<strong>'+esc(item.name||'Cliente')+'</strong> · '+esc(item.title||'')+
+        '<p>KYC: '+esc(item.identity||'')+
+        ' · primeira entrada: '+esc(item.firstFunding||'')+
+        ' · recorrência: '+esc(item.recurring||'')+'</p>'+link+'</div>';
+    }).join('');
+    openModal('<h2>Jornada Nexa · Theo</h2>' +
+      '<p>Próxima melhor orientação, calculada com KYC e históricos financeiros confirmados. '+
+      'Não são enviadas mensagens nem executadas compras por esta tela.</p>' +
+      '<div class="grid">'+cards+'</div>' +
+      '<h3>Clientes por etapa</h3>'+(people||'<p>Nenhum cliente elegível.</p>')+
+      '<p>Informações educativas, sem promessa de rendimento. Repetição de depósitos, compra de ativos e Pix recorrente exigem decisão do titular.</p>');
+  } catch (error) {
+    toast('Não foi possível abrir a jornada Nexa: '+error.message,true);
+  }
+}
+
 async function openCrmActivationSales() {
   try {
     const result = await call('/admin/crm-activation-sales');
@@ -1646,7 +1680,7 @@ function renderCrm() {
     )}</div>` +
     (opportunityCards ? `<h3>Oportunidades e acompanhamentos</h3><div class="grid">${opportunityCards}</div>` : '') +
     `<div class="actions"><button class="small-btn" onclick="filterCrmOpportunity('all')">Todos os clientes</button><span>${crmOpportunityFilter === 'all' ? 'Visão completa' : 'Filtro: ' + esc(opportunityLabels[crmOpportunityFilter] || crmOpportunityFilter)} · ${n(contacts.length)} clientes</span></div>` +
-    `<div class="actions"><button onclick="checkCrmSmartbotsStatus()">Verificar SmartBots / Kapso</button><button onclick="openCrmWhatsAppInbox()">Caixa de entrada WhatsApp (leitura)</button><button onclick="openCrmActivationSales()">Theo · Vendedor Nexa</button><button onclick="previewCrmCampaigns()">Prévia de campanhas (sem envio)</button></div>` +
+    `<div class="actions"><button onclick="checkCrmSmartbotsStatus()">Verificar SmartBots / Kapso</button><button onclick="openCrmWhatsAppInbox()">Caixa de entrada WhatsApp (leitura)</button><button onclick="openCrmActivationSales()">Theo · Vendedor Nexa</button><button onclick="openCrmLifecycleJourney()">Jornada Nexa · Ativação</button><button onclick="previewCrmCampaigns()">Prévia de campanhas (sem envio)</button></div>` +
     `<div class="pipeline">${Object.keys(crmStageLabels)
       .map(
         (stage) =>
