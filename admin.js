@@ -1474,6 +1474,21 @@ function filterCrmOpportunity(code) {
   renderCrm();
 }
 
+async function checkCrmSmartbotsStatus() {
+  try {
+    const status = await call('/admin/crm-smartbots-status');
+    const message = !status.connected
+      ? 'Integração SmartBots não ativa neste backend (' + esc(status.reason || 'sem conexão') + ').'
+      : 'Bot ' + esc(status.botId || '') + ' · ' + esc(status.provider || 'Kapso') +
+        ' · respostas automáticas: ' + (status.autoReply ? 'habilitadas' : 'desabilitadas') +
+        ' · sincronização de mensagens: ' + (status.messageSyncEnabled ? 'habilitada' : 'ainda não habilitada') + '.';
+    openModal('<h2>Conexão Nexa / SmartBots</h2><p>' + message +
+      '</p><p>Consulta somente leitura. Nenhuma mensagem é enviada por esta tela.</p>');
+  } catch (error) {
+    toast('Não foi possível consultar a conexão: ' + error.message, true);
+  }
+}
+
 function renderCrm() {
   const allContacts = data.crm?.contacts || [];
   const contacts = crmOpportunityFilter === 'all' ? allContacts : allContacts.filter((item) => item.suggestedAction?.code === crmOpportunityFilter);
@@ -1507,7 +1522,7 @@ function renderCrm() {
     )}</div>` +
     (opportunityCards ? `<h3>Oportunidades e acompanhamentos</h3><div class="grid">${opportunityCards}</div>` : '') +
     `<div class="actions"><button class="small-btn" onclick="filterCrmOpportunity('all')">Todos os clientes</button><span>${crmOpportunityFilter === 'all' ? 'Visão completa' : 'Filtro: ' + esc(opportunityLabels[crmOpportunityFilter] || crmOpportunityFilter)} · ${n(contacts.length)} clientes</span></div>` +
-    `<div class="actions"><button onclick="previewCrmCampaigns()">Prévia de campanhas (sem envio)</button></div>` +
+    `<div class="actions"><button onclick="checkCrmSmartbotsStatus()">Verificar SmartBots / Kapso</button><button onclick="previewCrmCampaigns()">Prévia de campanhas (sem envio)</button></div>` +
     `<div class="pipeline">${Object.keys(crmStageLabels)
       .map(
         (stage) =>
