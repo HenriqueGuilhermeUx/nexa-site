@@ -1611,6 +1611,8 @@ async function openCrmEducationQueue() {
     const metrics='<div class="grid">'+
       card('Cadastros analisados',Number(c.total||0))+
       card('KYC pendente',Number(c.kyc||0))+
+      card('Didit não iniciada',Number(c.kycNeverStarted||0))+
+      card('Didit expirada',Number(c.kycExpired||0))+
       card('Sem primeira entrada',Number(c.first_funding||0))+
       card('Após primeira entrada',Number(c.after_first_funding||0))+
       card('Uso recorrente',Number(c.after_repeat_funding||0))+
@@ -1638,8 +1640,8 @@ async function openCrmEducationQueue() {
     const actions='<div class="actions">'+
       '<button class="small-btn" onclick="openCrmEducationQueue()">Recarregar fila</button>'+
       (status.enabled
-        ?'<button onclick="runCrmEducationBatch()">Processar até 5 envios autorizados</button>'
-        :'<span>Envio externo desativado pelo backend; nenhuma mensagem será enviada.</span>')+
+        ?'<span>Envios educativos autorizados: processamento controlado pelo servidor.</span>'
+        :'<span>Envios externos desativados pelo backend.</span>')+
       '</div>';
     openModal('<h2>Theo · CRM de ativação</h2>'+
       '<p>Jornada com dados reais: KYC → primeira entrada → novas operações opcionais. '+
@@ -1649,23 +1651,6 @@ async function openCrmEducationQueue() {
       '<p>Exibindo até 100 clientes. Histórico de tentativas e cadência são verificados pelo backend a cada execução.</p>');
   } catch(error) {
     toast('Não foi possível consultar o CRM ativo: '+error.message,true);
-  }
-}
-
-async function runCrmEducationBatch() {
-  try {
-    const status=await call('/admin/crm-education-run-status');
-    if (!status.enabled) throw new Error('Envios desativados no servidor');
-    if (!window.confirm('Executar até 5 e-mails educativos somente para contas que autorizaram expressamente este contato? Cada tentativa terá registro e não será repetida automaticamente.')) return;
-    const result=await call('/admin/crm-education-run',{
-      method:'POST',body:JSON.stringify({confirm:true,limit:5}),
-    });
-    if (!result.success) throw new Error(result.reason||'Execução indisponível');
-    toast('Rodada concluída: '+n(result.sent||0)+' enviados, '+
-      n(result.needsReview||0)+' para revisão.');
-    await openCrmEducationQueue();
-  } catch(error) {
-    toast('Não foi possível executar a rodada: '+error.message,true);
   }
 }
 
