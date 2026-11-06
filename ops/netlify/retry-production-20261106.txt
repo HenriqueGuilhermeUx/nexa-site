@@ -1,0 +1,3 @@
+Nexa site production rebuild requested after Netlify account credit restoration on 2026-11-06.
+The validated main branch includes PR #68 pinning React portal commit 767dc08c6f3ee45ead68d5ea0b2fb64e3824428c.
+No configuration, build script, KYC, wallet, marketing or customer data changes.
