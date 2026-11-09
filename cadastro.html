@@ -8,8 +8,8 @@
   <div class="min-h-screen flex items-center justify-center px-4 py-10">
     <form id="cadastroForm" class="w-full max-w-md bg-slate-900/90 border border-white/10 p-8 rounded-2xl shadow-2xl">
       <a href="/" class="inline-flex items-center gap-3 mb-8"><span class="w-10 h-10 bg-indigo-500 rounded-xl flex items-center justify-center font-bold text-xl">N</span><span class="text-xl font-bold">Nexa</span></a>
-      <h1 class="text-3xl font-extrabold mb-2">Começar em 30s</h1>
-      <p class="text-slate-400 mb-6">Crie sua conta para testar o dólar digital.</p>
+      <h1 class="text-3xl font-extrabold mb-2">Abra sua conta Nexa</h1>
+      <p class="text-slate-300 mb-2">1. Crie seu acesso. &nbsp;2. Verifique sua identidade com a Didit. &nbsp;3. Conheça a carteira e as operações disponíveis.</p><p class="text-xs text-slate-400 mb-6">A verificação é necessária antes de operações financeiras. A escolha de realizar depósitos é sempre sua.</p>
       <label class="block text-sm text-slate-300 mb-2">Nome completo</label>
       <input id="fullName" required class="w-full mb-4 p-3 rounded-lg bg-slate-800 border border-white/10 outline-none focus:border-indigo-500" placeholder="Seu nome">
       <label class="block text-sm text-slate-300 mb-2">E-mail</label>
@@ -20,7 +20,12 @@
       <input id="phone" required class="w-full mb-4 p-3 rounded-lg bg-slate-800 border border-white/10 outline-none focus:border-indigo-500" placeholder="(11) 99999-9999">
       <label class="block text-sm text-slate-300 mb-2">Senha</label>
       <input id="password" type="password" minlength="6" required class="w-full mb-6 p-3 rounded-lg bg-slate-800 border border-white/10 outline-none focus:border-indigo-500" placeholder="Mínimo 6 caracteres">
-      <button id="submitBtn" class="w-full bg-indigo-500 hover:bg-indigo-600 p-3 rounded-lg font-bold cta-glow">Criar conta</button>
+      <label class="flex items-start gap-3 text-sm text-slate-300 mb-5" for="educationConsent">
+        <input id="educationConsent" type="checkbox" class="mt-1" aria-describedby="educationHelp">
+        <span>Quero receber por e-mail orientações educativas sobre cadastro, verificação e utilização da Nexa (no máximo 1 por semana). Posso cancelar quando quiser.</span>
+      </label>
+      <p id="educationHelp" class="text-xs text-slate-400 mb-5">Opcional, desmarcado por padrão. O aceite não é necessário para criar a conta ou iniciar a Didit.</p>
+      <button id="submitBtn" class="w-full bg-indigo-500 hover:bg-indigo-600 p-3 rounded-lg font-bold cta-glow">Criar conta e continuar para a verificação</button>
       <p id="msg" class="mt-4 text-sm text-center"></p>
       <p class="mt-6 text-sm text-slate-400 text-center">Já tem conta? <a class='text-indigo-400 hover:text-indigo-300' href='/login'>Entrar</a></p>
     </form>
@@ -38,7 +43,21 @@ document.getElementById('cadastroForm').addEventListener('submit', async (e) => 
     localStorage.setItem('nexa_access_token', data.accessToken);
     localStorage.setItem('nexa_refresh_token', data.refreshToken);
     localStorage.setItem('nexa_user', JSON.stringify(data.user));
-    window.location.href='/app.html';
+    if(document.getElementById('educationConsent').checked && data.accessToken){
+      try {
+        await fetch(API_URL+'/lifecycle/preferences',{
+          method:'POST',
+          headers:{'Content-Type':'application/json',Authorization:'Bearer '+data.accessToken},
+          body:JSON.stringify({educationalEmailOptIn:true,emailFrequency:'weekly'}),
+          signal:typeof AbortSignal!=='undefined'&&AbortSignal.timeout?AbortSignal.timeout(6000):undefined,
+        });
+      } catch(_err) {
+        // A falha de um opt-in opcional nunca cancela um cadastro concluído.
+        // O cliente pode registrar a preferência novamente no portal autenticado.
+      }
+    }
+    msg.textContent='Conta criada! Vamos à verificação de identidade segura.';
+    window.location.replace('/portal/');
   } catch(err) {
     msg.textContent=err.message; msg.className='mt-4 text-sm text-center text-red-400'; btn.disabled=false;
   }
