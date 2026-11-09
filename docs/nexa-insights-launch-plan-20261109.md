@@ -97,3 +97,11 @@ Newsletter #4: "Sete cuidados para proteger sua carteira" + convite voluntário 
 - Atendimento: mensagens iniciadas com Theo, handoffs, dúvidas de KYC, resoluções.
 - Qualidade de email: entrega, bounce, reclamação, descadastro.
 - Revisão: reportar o que foi **medido**, nunca inventar CTR, ROI, visitas ou taxa de conversão.
+
+## Incremento de ativação — primeira utilização (09/11/2026)
+- Criado guia permanente /insights/primeira-utilizacao-nexa.html para clientes que já se cadastraram e não sabem como avançar até a primeira operação.
+- Roteiro: portal autenticado → status Didit → funcionalidades disponíveis → confirmação cuidadosa de QR Code, chave Pix, beneficiário, custos e eventuais cotações → histórico/ajuda.
+- Nenhum link externo de pagamento nem dados de conta; jamais pedir CPF, selfie, senha ou código em WhatsApp/Telegram. Não declarar que o primeiro depósito foi realizado ou que a operação/serviço esteja disponível para todos.
+- Guia destacado no hub /insights/ e referenciado na orientação de KYC; sitemap/feed/testes atualizados.
+- O conteúdo é educativo, não modifica lógica Pix/USDC, Didit, Privy, login, KYC, ledger, Android ou CRM.
+- Métrica desejada: observar cliques para o portal e, após atribuição consentida e homologada, acompanhar KYC e primeira operação por coorte. CTAs com UTM não provam conversão até operação sem instrumentação real.
