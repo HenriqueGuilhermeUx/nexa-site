@@ -1,0 +1,36 @@
+name: Nexa Insights Content CI
+
+on:
+  pull_request:
+    paths:
+      - 'insights/**'
+      - 'sitemap.xml'
+      - 'robots.txt'
+      - 'index.html'
+      - 'scripts/validate-insights.mjs'
+      - 'docs/nexa-insights-launch-plan-20261109.md'
+      - '.github/workflows/nexa-insights-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'insights/**'
+      - 'sitemap.xml'
+      - 'robots.txt'
+      - 'index.html'
+      - 'scripts/validate-insights.mjs'
+      - '.github/workflows/nexa-insights-ci.yml'
+
+jobs:
+  content-safety:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.19.4'
+      - name: Check JavaScript syntax
+        run: |
+          node --check insights/utm-links.js
+          node --check scripts/validate-insights.mjs
+      - name: Validate educational claims and publishable links
+        run: node scripts/validate-insights.mjs
