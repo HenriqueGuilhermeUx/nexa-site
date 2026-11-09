@@ -181,6 +181,7 @@ async function refresh() {
       deposits,
       earlySummary,
       earlyLeads,
+      acquisition,
       crm,
       audit,
       checkout,
@@ -202,6 +203,7 @@ async function refresh() {
         leads: [],
         total: 0,
       }),
+      safeCall('/admin/crm-acquisition-report', null),
       safeCall('/admin/crm', { contacts: [], summary: {} }),
       safeCall('/admin/audit?limit=200', { events: [] }),
       safeCall('/merchant-admin/transactions?limit=300', {
@@ -220,6 +222,7 @@ async function refresh() {
       deposits: Array.isArray(deposits) ? deposits : deposits?.deposits || [],
       earlySummary: earlySummary || {},
       earlyLeads: earlyLeads || { leads: [] },
+      acquisition: acquisition || null,
       crm: crm || { contacts: [], summary: {} },
       audit: audit || { events: [] },
       checkout: checkout || { transactions: [] },
@@ -479,6 +482,31 @@ function filteredLeads() {
   );
 }
 
+function renderInsightsAcquisition() {
+  const report = data.acquisition;
+  if (!report || report.success !== true) {
+    return '<div class="card notice"><b>Nexa Insights:</b> relatório de origens indisponível no momento. O cadastro Primeiros Nexa continua funcionando independentemente.</div>';
+  }
+  const totals = report.totals || {};
+  const groups = Array.isArray(report.groups) ? report.groups : [];
+  const table = groups.length
+    ? '<div class="card scroll"><table><thead><tr><th>Origem</th><th>Campanha</th><th>Inscrições</th><th>Opt-in editorial</th><th>Cadastro posterior*</th><th>KYC aprovado*</th><th>Entrada confirmada*</th></tr></thead><tbody>'
+       + groups.map(item => '<tr><td>' + esc(item.source || 'não informada') + '</td><td>' + esc(item.campaign || 'não informada')
+         + '</td><td>' + n(item.leads || 0,0) + '</td><td>' + n(item.marketingOptIns || 0,0)
+         + '</td><td>' + n(item.matchedRegistrations || 0,0) + '</td><td>' + n(item.matchedKycApproved || 0,0)
+         + '</td><td>' + n(item.matchedConfirmedFunding || 0,0) + '</td></tr>').join('')
+       + '</tbody></table></div>'
+    : '<div class="card notice">Nenhuma inscrição Primeiros Nexa registrada até agora. Não há conversão atribuída para mostrar.</div>';
+  return '<h3>Nexa Insights · Aquisição orgânica</h3>'
+    + '<div class="grid">'
+    + card('Inscrições', n(totals.leads || 0,0))
+    + card('Opt-ins educativos', n(totals.marketingOptIns || 0,0),'ok')
+    + card('Cadastro posterior*', n(totals.matchedRegistrations || 0,0))
+    + card('KYC aprovado*', n(totals.matchedKycApproved || 0,0))
+    + '</div>' + table
+    + '<div class="card notice"><b>*Leitura conservadora:</b> correspondência de e-mail com uma conta criada depois da inscrição. Não é prova de que um canal causou o cadastro, KYC ou operação. UTMs são declaradas pelo navegador. Não há disparos de mensagens nesta área.</div>';
+}
+
 function renderPrimeiros() {
   const summary = data.earlySummary || { byStatus: {} };
   const rows = filteredLeads();
@@ -492,6 +520,7 @@ function renderPrimeiros() {
       summary.byStatus?.qualified || 0,
       'ok',
     )}${card('Ativados', summary.byStatus?.activated || 0, 'ok')}</div>` +
+    renderInsightsAcquisition() +
     `<div class="toolbar"><input id="leadSearch" placeholder="Buscar nome, e-mail, telefone ou origem" value="${esc(
       leadFilter,
     )}"><select id="leadStatus"><option value="all">Todos os status</option>${Object.entries(
