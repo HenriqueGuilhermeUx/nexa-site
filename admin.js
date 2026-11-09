@@ -1600,6 +1600,60 @@ async function openCrmLifecycleJourney() {
   }
 }
 
+async function openCrmEducationQueue() {
+  try {
+    const [result,status] = await Promise.all([
+      call('/admin/crm-education-queue'),
+      call('/admin/crm-education-run-status'),
+    ]);
+    if (!result.success) throw new Error('Fila indisponível');
+    const c=result.counts||{};
+    const metrics='<div class="grid">'+
+      card('Cadastros analisados',Number(c.total||0))+
+      card('KYC pendente',Number(c.kyc||0))+
+      card('Didit não iniciada',Number(c.kycNeverStarted||0))+
+      card('Didit expirada',Number(c.kycExpired||0))+
+      card('Sem primeira entrada',Number(c.first_funding||0))+
+      card('Após primeira entrada',Number(c.after_first_funding||0))+
+      card('Uso recorrente',Number(c.after_repeat_funding||0))+
+      card('E-mail educativo autorizado',Number(c.explicitlyOptedIn||0))+
+      card('Prontos para análise de envio',Number(c.dueForReview||0))+
+      '</div>';
+    const choices = {
+      kyc:'Concluir identidade',first_funding:'Entender primeira entrada',
+      after_first_funding:'Acompanhar e conhecer nova entrada',
+      after_repeat_funding:'Relacionamento e recorrência',
+    };
+    const details=(Array.isArray(result.items)?result.items:[]).map(item=>{
+      const id=String(item.userId||'');
+      const link=/^[0-9a-f-]{36}$/i.test(id)
+        ?'<button class="small-btn" onclick="openCrm(\''+id+'\')">Abrir cliente</button>':'';
+      return '<div style="padding:12px 0;border-bottom:1px solid var(--border,#ddd)">'+
+        '<strong>'+esc(item.name||'Cliente')+'</strong> · '+esc(choices[item.phase]||item.phase||'')+
+        '<p>Consentimento: '+(item.consentForEducationalEmail?'Autorizado':'Não autorizado')+
+        ' · elegibilidade: '+esc(item.timing||'a verificar')+
+        ' · primeira entrada: '+(item.firstFundingConfirmed?'confirmada':'não confirmada')+'</p>'+
+        '<details><summary>Orientação planejada (não enviada por esta tela)</summary>'+
+        '<p>'+esc(item.suggestedSubject||'')+'</p><p>'+esc(item.suggestedMessage||'')+'</p></details>'+
+        link+'</div>';
+    }).join('');
+    const actions='<div class="actions">'+
+      '<button class="small-btn" onclick="openCrmEducationQueue()">Recarregar fila</button>'+
+      (status.enabled
+        ?'<span>Envios educativos autorizados: processamento controlado pelo servidor.</span>'
+        :'<span>Envios externos desativados pelo backend.</span>')+
+      '</div>';
+    openModal('<h2>Theo · CRM de ativação</h2>'+
+      '<p>Jornada com dados reais: KYC → primeira entrada → novas operações opcionais. '+
+      'Mensagens apenas para clientes com consentimento educativo registrado; WhatsApp proativo permanece desativado.</p>'+
+      metrics+actions+'<h3>Próximas ações ('+n(result.totalRows||0)+')</h3>'+
+      (details||'<p>Fila sem oportunidades no momento.</p>')+
+      '<p>Exibindo até 100 clientes. Histórico de tentativas e cadência são verificados pelo backend a cada execução.</p>');
+  } catch(error) {
+    toast('Não foi possível consultar o CRM ativo: '+error.message,true);
+  }
+}
+
 async function openCrmActivationSales() {
   try {
     const result = await call('/admin/crm-activation-sales');
@@ -1680,7 +1734,7 @@ function renderCrm() {
     )}</div>` +
     (opportunityCards ? `<h3>Oportunidades e acompanhamentos</h3><div class="grid">${opportunityCards}</div>` : '') +
     `<div class="actions"><button class="small-btn" onclick="filterCrmOpportunity('all')">Todos os clientes</button><span>${crmOpportunityFilter === 'all' ? 'Visão completa' : 'Filtro: ' + esc(opportunityLabels[crmOpportunityFilter] || crmOpportunityFilter)} · ${n(contacts.length)} clientes</span></div>` +
-    `<div class="actions"><button onclick="checkCrmSmartbotsStatus()">Verificar SmartBots / Kapso</button><button onclick="openCrmWhatsAppInbox()">Caixa de entrada WhatsApp (leitura)</button><button onclick="openCrmActivationSales()">Theo · Vendedor Nexa</button><button onclick="openCrmLifecycleJourney()">Jornada Nexa · Ativação</button><button onclick="previewCrmCampaigns()">Prévia de campanhas (sem envio)</button></div>` +
+    `<div class="actions"><button onclick="checkCrmSmartbotsStatus()">Verificar SmartBots / Kapso</button><button onclick="openCrmWhatsAppInbox()">Caixa de entrada WhatsApp (leitura)</button><button onclick="openCrmActivationSales()">Theo · Vendedor Nexa</button><button onclick="openCrmEducationQueue()">Theo · CRM Ativo (leitura)</button><button onclick="openCrmLifecycleJourney()">Jornada Nexa · Ativação</button><button onclick="previewCrmCampaigns()">Prévia de campanhas (sem envio)</button></div>` +
     `<div class="pipeline">${Object.keys(crmStageLabels)
       .map(
         (stage) =>
