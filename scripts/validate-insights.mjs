@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
 const text=p=>readFileSync(p,'utf8');
-const slugs=['o-que-e-usdc','pix-usdc-como-funciona','por-que-verificar-identidade','como-proteger-carteira-digital'];
+const slugs=['o-que-e-usdc','pix-usdc-como-funciona','por-que-verificar-identidade','como-proteger-carteira-digital','primeira-utilizacao-nexa'];
 const home=text('insights/index.html'),root=text('index.html'),sitemap=text('sitemap.xml'),feed=text('insights/feed.xml'),utm=text('insights/utm-links.js');
 assert.match(root,/href="\/insights\/"/);
 assert.match(home,/<h1>/);
@@ -24,6 +24,12 @@ assert.match(home,/https:\/\/wa\.me\/551333289704/);
 assert.match(home,/https:\/\/t\.me\/NexaInsights/);
 assert.match(root,/https:\/\/t\.me\/NexaInsights/);
 assert.match(home,/@NexaTheoBot/);
+assert.match(home,/primeira-utilizacao-nexa\\.html/);
+const firstUse=text("insights/primeira-utilizacao-nexa.html");
+assert.match(firstUse,/o portal Nexa/);
+assert.match(firstUse,/somente pelo ambiente autenticado/);
+assert.match(firstUse,/Não transfira dinheiro para contas indicadas/);
+assert.ok(!firstUse.includes("href=\"https://t.me/NexaTheoBot\""));
 assert.match(home,/ainda está em ativação/);
 assert.ok(!home.includes('href="https://t.me/NexaTheoBot"'),
   'Bot must not be promoted as a live support channel before activation');
