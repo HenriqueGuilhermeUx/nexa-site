@@ -21,7 +21,12 @@ assert.match(adminJs,/esc\(item\.source/);
 
 
 assert.match(home,/https:\/\/wa\.me\/551333289704/);
-assert.match(home,/Telegram oficial em prepara(c|ç)(a|ã)o/);
+assert.match(home,/https:\/\/t\.me\/NexaInsights/);
+assert.match(root,/https:\/\/t\.me\/NexaInsights/);
+assert.match(home,/@NexaTheoBot/);
+assert.match(home,/ainda está em ativação/);
+assert.ok(!home.includes('href="https://t.me/NexaTheoBot"'),
+  'Bot must not be promoted as a live support channel before activation');
 for(const slug of slugs){
  const path='insights/'+slug+'.html';
  assert.ok(existsSync(path),'Missing '+path);
