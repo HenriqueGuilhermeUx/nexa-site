@@ -5,6 +5,14 @@ const slugs=['o-que-e-usdc','pix-usdc-como-funciona','por-que-verificar-identida
 const home=text('insights/index.html'),root=text('index.html'),sitemap=text('sitemap.xml'),feed=text('insights/feed.xml'),utm=text('insights/utm-links.js');
 assert.match(root,/href="\/insights\/"/);
 assert.match(home,/<h1>/);
+assert.match(home,/id="comece"/);
+for(const route of ['/primeiros-nexa','/cadastro','/portal/']){
+  assert.ok(home.includes('href="'+route+'"'),'Missing high-intent route '+route);
+}
+assert.match(home,/data-nexa-cta="route-primeiros"/);
+assert.match(home,/data-nexa-cta="route-cadastro"/);
+assert.match(root,/Quero fazer parte dos Primeiros Nexa/);
+
 assert.match(home,/https:\/\/wa\.me\/551333289704/);
 assert.match(home,/Telegram oficial em prepara(c|ç)(a|ã)o/);
 for(const slug of slugs){
