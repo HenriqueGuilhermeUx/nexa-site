@@ -13,8 +13,8 @@ Data: 9 de novembro de 2026. Status: conteúdos preparados, não equivale a publ
 |---|---|---|
 | Site /insights/ | 1 artigo / semana, 4 textos evergreen de arranque | Criado nesta PR |
 | X | 3 posts por semana | Textos abaixo; conta Nexa ainda não conectada no Metricool |
-| Telegram, canal público | 1 post por dia | Depende de criar canal e seu username oficial |
-| Telegram, Theo | suporte opt-in | Webhook preparado no SmartBots, depende de bot BotFather, token e ativação |
+| Telegram, canal público | 1 post por dia | Canal criado: @NexaInsights; requer publicação inicial e divulgação |
+| Telegram, Theo | suporte opt-in | Webhook preparado no SmartBots, bot criado: @NexaTheoBot; depende do token, webhook e ativação segura |
 | Instagram / Reels | 2 vídeos / semana | Roteiros abaixo; perfil Nexa não está conectado no Metricool |
 | Newsletter | 1 edição semanal | Rascunhos; enviar somente a assinantes com autorização válida |
 | WhatsApp | suporte reativo e pesquisa autorizada | Não usar base de números para marketing em massa |
@@ -25,7 +25,7 @@ Data: 9 de novembro de 2026. Status: conteúdos preparados, não equivale a publ
 - Primeiros Nexa: https://trynexa.com.br/primeiros-nexa
 - Portal autenticado: https://trynexa.com.br/portal/
 - Theo WhatsApp oficial: https://wa.me/551333289704?text=Oi%20Nexa%2C%20preciso%20de%20ajuda
-- Telegram Theo/canal: **não divulgar** link até criados e verificados.
+- Telegram canal: https://t.me/NexaInsights — username informado pelo proprietário em 09/11/2026; divulgação orgânica autorizada. Telegram Theo: https://t.me/NexaTheoBot — criado, **não anunciar como suporte ativo até token/webhook testados em produção**.
 - Links de campanha externa: usar utm_source (ex.: telegram, x, instagram, newsletter), utm_medium (organic_social ou email), utm_campaign=insights_launch_2026. Ex.: https://trynexa.com.br/insights/?utm_source=x&utm_medium=organic_social&utm_campaign=insights_launch_2026
 - As páginas preservam os parâmetros UTM nas saídas da área editorial; **a medição final de KYC/depósito por campanha depende de integração de atribuição no backend**. Não afirmar que já está implementada.
 
