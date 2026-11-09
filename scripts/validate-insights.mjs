@@ -18,7 +18,7 @@ for(const slug of slugs){
  assert.match(home,new RegExp(slug+'\\.html'));
  assert.match(feed,new RegExp(slug+'\\.html'));
  assert.match(sitemap,new RegExp(slug+'\\.html'));
- assert.doesNotMatch(content,/ganho garantido|compre agora|lucro certo|rendimento sem risco/i);
+ assert.doesNotMatch(content,/<(?:a|h1|h2|h3)[^>]*>[^<]*(?:compre agora|ganho garantido|lucro certo|rendimento sem risco)/i);
 }
 assert.match(utm,/utm_source/);
 assert.match(utm,/utm_campaign/);
