@@ -12,6 +12,13 @@ for(const route of ['/primeiros-nexa','/cadastro','/portal/']){
 assert.match(home,/data-nexa-cta="route-primeiros"/);
 assert.match(home,/data-nexa-cta="route-cadastro"/);
 assert.match(root,/Quero fazer parte dos Primeiros Nexa/);
+const adminJs=text('admin.js'),adminHtml=text('admin.html');
+assert.match(adminJs,/\/admin\/crm-acquisition-report/);
+assert.match(adminJs,/renderInsightsAcquisition/);
+assert.match(adminJs,/correspondência de e-mail/);
+assert.match(adminHtml,/src="\/admin\.js\?v=8"/);
+assert.match(adminJs,/esc\(item\.source/);
+
 
 assert.match(home,/https:\/\/wa\.me\/551333289704/);
 assert.match(home,/Telegram oficial em prepara(c|ç)(a|ã)o/);
