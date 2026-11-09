@@ -24,7 +24,7 @@ assert.match(home,/https:\/\/wa\.me\/551333289704/);
 assert.match(home,/https:\/\/t\.me\/NexaInsights/);
 assert.match(root,/https:\/\/t\.me\/NexaInsights/);
 assert.match(home,/@NexaTheoBot/);
-assert.match(home,/primeira-utilizacao-nexa\\.html/);
+assert.match(home,/primeira-utilizacao-nexa\.html/);
 const firstUse=text("insights/primeira-utilizacao-nexa.html");
 assert.match(firstUse,/o portal Nexa/);
 assert.match(firstUse,/somente pelo ambiente autenticado/);
