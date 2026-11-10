@@ -29,10 +29,13 @@ const firstUse=text("insights/primeira-utilizacao-nexa.html");
 assert.match(firstUse,/o portal Nexa/);
 assert.match(firstUse,/somente pelo ambiente autenticado/);
 assert.match(firstUse,/Não transfira dinheiro para contas indicadas/);
-assert.ok(!firstUse.includes("href=\"https://t.me/NexaTheoBot\""));
-assert.match(home,/ainda está em ativação/);
-assert.ok(!home.includes('href="https://t.me/NexaTheoBot"'),
-  'Bot must not be promoted as a live support channel before activation');
+assert.match(firstUse,/href="https:\/\/t\.me\/NexaTheoBot"/);
+assert.match(firstUse,/nenhum chat autentica sua conta financeira/);
+assert.match(home,/href="https:\/\/t\.me\/NexaTheoBot"/);
+assert.match(root,/href="https:\/\/t\.me\/NexaTheoBot"/);
+assert.match(home,/data-nexa-cta="hub-theo-telegram"/);
+assert.match(home,/Sua identidade financeira não é verificada no Telegram/);
+assert.match(home,/Nunca compartilhe|nunca compartilhe/);
 for(const slug of slugs){
  const path='insights/'+slug+'.html';
  assert.ok(existsSync(path),'Missing '+path);
@@ -49,6 +52,6 @@ for(const slug of slugs){
 assert.match(utm,/utm_source/);
 assert.match(utm,/utm_campaign/);
 assert.match(utm,/incoming\.get/);
-assert.doesNotMatch(home,/https:\/\/t\.me\/NexaTheoBot/);
+assert.match(home,/https:\/\/t\.me\/NexaTheoBot/);
 assert.ok(existsSync('docs/nexa-insights-launch-plan-20261109.md'));
-console.log('Nexa Insights: site, four articles, feed, SEO and safe CTA contract PASS');
+console.log('Nexa Insights: site, educational articles, feed, SEO and verified Telegram+WhatsApp support CTA contract PASS');
