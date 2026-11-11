@@ -5,6 +5,8 @@ https://wallet.trynexa.com.br/login https://trynexa.com.br/login 302!
 https://wallet.trynexa.com.br/login/ https://trynexa.com.br/login/ 302!
 https://wallet.trynexa.com.br/login.html https://trynexa.com.br/login.html 302!
 https://wallet.trynexa.com.br/portal.html https://trynexa.com.br/portal/ 302!
+https://wallet.trynexa.com.br/portal https://trynexa.com.br/portal/ 302!
+https://wallet.trynexa.com.br/portal/ https://trynexa.com.br/portal/ 302!
 https://wallet.trynexa.com.br/cadastro.html https://trynexa.com.br/cadastro.html 302!
 https://wallet.trynexa.com.br/recuperar-senha https://trynexa.com.br/recuperar-senha 302!
 https://wallet.trynexa.com.br/recuperar-senha/ https://trynexa.com.br/recuperar-senha/ 302!
@@ -16,6 +18,9 @@ https://wallet.trynexa.com.br/recuperar-senha.html https://trynexa.com.br/recupe
 /global/es/ /global-es.html 200
 /global /global.html 200
 /global/ /global.html 200
+# Force both direct portal URLs to the compiled React index, not old portal.html.
+/portal  /portal/index.html  200!
+/portal/  /portal/index.html  200!
 /login  /portal/  302!
 /login/  /portal/  302!
 /login.html  /portal/  302!

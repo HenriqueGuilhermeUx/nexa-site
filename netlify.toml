@@ -223,11 +223,13 @@
   from = "/portal"
   to = "/portal/index.html"
   status = 200
+  force = true
 
 [[redirects]]
   from = "/portal/"
   to = "/portal/index.html"
   status = 200
+  force = true
 
 [[redirects]]
   from = "/portal/*"
