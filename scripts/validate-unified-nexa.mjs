@@ -6,13 +6,18 @@ const index=read('index.html'),wallet=read('wallet.html'),lifeGateway=read('meu-
 const redirects=read('netlify.toml'),builder=read('scripts/build-site.mjs');
 const worker=read('sw.js');
 const plainRedirects=read('_redirects');
-const walletProtectedAliases=["/login","/login/","/login.html","/portal.html","/cadastro.html","/recuperar-senha","/recuperar-senha/","/recuperar-senha.html"];
+const walletProtectedAliases=["/login","/login/","/login.html","/cadastro.html","/recuperar-senha","/recuperar-senha/","/recuperar-senha.html"];
 for(const alias of walletProtectedAliases){
   const marker='https://wallet.trynexa.com.br'+alias+' https://trynexa.com.br'+alias+' 302!';
   assert.ok(plainRedirects.includes(marker),'Missing wallet-only 302 alias '+alias);
   assert.ok(plainRedirects.indexOf(marker) < plainRedirects.indexOf('/login  /portal/'),
     'Domain alias guard must precede legacy global redirects');
 }
+const walletPortalAlias='https://wallet.trynexa.com.br/portal.html https://trynexa.com.br/portal/ 302!';
+assert.ok(plainRedirects.includes(walletPortalAlias),
+  'Wallet origin must redirect legacy portal to original, Privy-approved portal');
+assert.ok(plainRedirects.indexOf(walletPortalAlias) < plainRedirects.indexOf('/login  /portal/'),
+  'Wallet origin safety alias must precede generic login redirects');
 assert.ok(!plainRedirects.includes('https://trynexa.com.br/login https://wallet.trynexa.com.br'),
   'Original login must not be redirected to unapproved Wallet domain');
 for(const path of ['/login','/login/','/login.html','/portal.html']){
