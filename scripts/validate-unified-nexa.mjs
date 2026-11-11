@@ -13,6 +13,28 @@ for(const alias of walletProtectedAliases){
   assert.ok(plainRedirects.indexOf(marker) < plainRedirects.indexOf('/login  /portal/'),
     'Domain alias guard must precede legacy global redirects');
 }
+
+for(const walletPath of ['/portal','/portal/']){
+  const alias='https://wallet.trynexa.com.br'+walletPath+' https://trynexa.com.br/portal/ 302!';
+  assert.ok(plainRedirects.includes(alias),'Wallet portal must move to Privy-approved origin: '+walletPath);
+  assert.ok(plainRedirects.indexOf(alias)<plainRedirects.indexOf('/portal  /portal/index.html  200!'),
+    'Wallet portal origin rule must precede generic React rewrite');
+}
+for(const portalPath of ['/portal','/portal/']){
+  assert.ok(plainRedirects.includes(portalPath+'  /portal/index.html  200!'),
+    'Public portal must resolve to React index, not old portal.html: '+portalPath);
+  const route=[
+    '[[redirects]]',
+    '  from = "'+portalPath+'"',
+    '  to = "/portal/index.html"',
+    '  status = 200',
+    '  force = true'
+  ].join('\n');
+  assert.ok(redirects.includes(route),'Netlify must force canonical portal React entry: '+portalPath);
+}
+assert.ok(!plainRedirects.includes('/portal/*  /portal/index.html  200!'),
+  'Do not force wildcard SPA rewrite across real compiled JS/CSS assets');
+
 const walletPortalAlias='https://wallet.trynexa.com.br/portal.html https://trynexa.com.br/portal/ 302!';
 assert.ok(plainRedirects.includes(walletPortalAlias),
   'Wallet origin must redirect legacy portal to original, Privy-approved portal');
