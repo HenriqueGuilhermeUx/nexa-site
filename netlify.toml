@@ -150,13 +150,15 @@
 [[redirects]]
   from = "/login"
   to = "/portal/"
-  status = 301
+  status = 302
+  force = true
   force = true
 
 [[redirects]]
   from = "/login.html"
   to = "/portal/"
-  status = 301
+  status = 302
+  force = true
   force = true
 
 [[redirects]]
@@ -180,7 +182,8 @@
 [[redirects]]
   from = "/portal.html"
   to = "/portal/"
-  status = 301
+  status = 302
+  force = true
   force = true
 
 [[redirects]]
