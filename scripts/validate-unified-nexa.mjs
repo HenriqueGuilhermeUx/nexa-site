@@ -29,7 +29,7 @@ for(const path of ['/login','/login.html','/portal.html']){
     '  to = "/portal/"',
     '  status = 302',
     '  force = true'
-  ].join('\\n');
+  ].join('\n');
   assert.ok(redirects.includes(canonical),
     'Netlify TOML must force the legacy page redirect: '+path);
 }
