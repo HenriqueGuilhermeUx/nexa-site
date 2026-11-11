@@ -152,13 +152,11 @@
   to = "/portal/"
   status = 302
   force = true
-  force = true
 
 [[redirects]]
   from = "/login.html"
   to = "/portal/"
   status = 302
-  force = true
   force = true
 
 [[redirects]]
@@ -183,7 +181,6 @@
   from = "/portal.html"
   to = "/portal/"
   status = 302
-  force = true
   force = true
 
 [[redirects]]
