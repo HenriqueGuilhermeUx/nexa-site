@@ -1,0 +1,44 @@
+name: Nexa Onboarding Public Routes Smoke
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/smoke-nexa-onboarding-public.mjs'
+      - '.github/workflows/nexa-onboarding-public-smoke.yml'
+      - '_redirects'
+      - 'netlify.toml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/smoke-nexa-onboarding-public.mjs'
+      - '.github/workflows/nexa-onboarding-public-smoke.yml'
+      - '_redirects'
+      - 'netlify.toml'
+  schedule:
+    - cron: '27 */4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  syntax:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check read-only smoke syntax
+        run: node --check scripts/smoke-nexa-onboarding-public.mjs
+
+  public-routes:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate deployed Nexa public entry points
+        run: node scripts/smoke-nexa-onboarding-public.mjs
