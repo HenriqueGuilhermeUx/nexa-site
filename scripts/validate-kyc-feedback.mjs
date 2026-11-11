@@ -27,7 +27,7 @@ assert.match(page, /name="dispositivo" value="iphone"/);
 assert.ok((page.match(/type="radio" name="dificuldade"/g)||[]).length >= 7);
 assert.doesNotMatch(page, /<textarea|type="file"|name="(?:cpf|email|senha|password|token|documento|identidade|nome|userId|accountId)"/i,
   'Anonymous feedback may not collect customer identifiers or documents');
-assert.doesNotMatch(page, /<script|window\.localStorage|window\.sessionStorage|Authorization:|/api/v1/kyc/i,
+assert.doesNotMatch(page, /<script|window\.localStorage|window\.sessionStorage|Authorization:|\/api\/v1\/kyc/i,
   'Feedback must not access authentication or financial credentials');
 assert.match(page, /não verifica sua identidade/i);
 assert.match(page, /não pedimos|não informe|não informamos/i);
