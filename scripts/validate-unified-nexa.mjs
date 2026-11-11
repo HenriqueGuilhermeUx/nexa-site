@@ -10,11 +10,35 @@ const walletProtectedAliases=["/login","/login/","/login.html","/cadastro.html",
 for(const alias of walletProtectedAliases){
   const marker='https://wallet.trynexa.com.br'+alias+' https://trynexa.com.br'+alias+' 302!';
   assert.ok(plainRedirects.includes(marker),'Missing wallet-only 302 alias '+alias);
-  assert.ok(plainRedirects.indexOf(marker) < plainRedirects.indexOf('/login  /login.html'),
+  assert.ok(plainRedirects.indexOf(marker) < plainRedirects.indexOf('/login  /portal/'),
     'Domain alias guard must precede legacy global redirects');
 }
+const walletPortalAlias='https://wallet.trynexa.com.br/portal.html https://trynexa.com.br/portal/ 302!';
+assert.ok(plainRedirects.includes(walletPortalAlias),
+  'Wallet origin must redirect legacy portal to original, Privy-approved portal');
+assert.ok(plainRedirects.indexOf(walletPortalAlias) < plainRedirects.indexOf('/login  /portal/'),
+  'Wallet origin safety alias must precede generic login redirects');
 assert.ok(!plainRedirects.includes('https://trynexa.com.br/login https://wallet.trynexa.com.br'),
   'Original login must not be redirected to unapproved Wallet domain');
+for(const path of ['/login','/login/','/login.html','/portal.html']){
+  const canonical=path+'  /portal/  302!';
+  assert.ok(plainRedirects.includes(canonical),
+    'Legacy login/portal must reach the canonical KYC-enabled portal: '+path);
+  assert.ok(!plainRedirects.includes(path+'  /login.html  200!'),
+    'Legacy login cannot shadow the KYC-enabled portal: '+path);
+}
+for(const path of ['/login','/login.html','/portal.html']){
+  const canonical=[
+    '[[redirects]]',
+    '  from = "'+path+'"',
+    '  to = "/portal/"',
+    '  status = 302',
+    '  force = true'
+  ].join('\n');
+  assert.ok(redirects.includes(canonical),
+    'Netlify TOML must force the legacy page redirect: '+path);
+}
+
 
 assert.match(index,/<title>Nexa — Sua vida, um só lugar<\/title>/);
 assert.match(index,/NEXA · SEU ESPAÇO/);
