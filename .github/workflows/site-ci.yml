@@ -30,6 +30,8 @@ jobs:
         run: node scripts/validate-launch-site.js
       - name: Validate Nexa unified brand and preserved Wallet routes
         run: node scripts/validate-unified-nexa.mjs
+      - name: Validate privacy-minimal KYC feedback form
+        run: node scripts/validate-kyc-feedback.mjs
       - name: Validate custom Wallet domain preflight script (no network)
         run: node scripts/check-wallet-domain.mjs
       - name: Validate Privy domain readiness probe (local only, no network)

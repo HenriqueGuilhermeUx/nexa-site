@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,follow">
+  <meta name="theme-color" content="#071424">
+  <meta name="description" content="Ajude a Nexa a entender dificuldades na verificação de identidade, sem compartilhar dados pessoais.">
+  <title>Ajuda na verificação de identidade | Nexa</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <style>
+    :root{color-scheme:dark;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    *{box-sizing:border-box}
+    body{margin:0;background:radial-gradient(circle at 18% 0%,#173656 0%,transparent 36%),linear-gradient(135deg,#071424,#0d172b);color:#f0f7ff;min-height:100vh}
+    .wrap{width:min(690px,calc(100% - 30px));margin:0 auto;padding:32px 0 64px}
+    .brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-size:20px;font-weight:800}
+    .logo{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:#4765ff}
+    .panel{margin-top:27px;padding:clamp(22px,5vw,36px);border:1px solid #293e5c;border-radius:20px;background:#0d1b30e8;box-shadow:0 16px 50px #0005}
+    h1{font-size:clamp(27px,5vw,36px);line-height:1.15;margin:0 0 14px}
+    h2{font-size:17px;margin:28px 0 13px}
+    p{line-height:1.6;color:#c7d5e7}
+    .muted{font-size:13px;color:#acbdd1}
+    fieldset{border:0;margin:0;padding:0}
+    legend{font-size:17px;font-weight:700;margin:22px 0 14px}
+    label.choice{display:flex;align-items:flex-start;gap:12px;padding:13px 15px;margin:8px 0;border:1px solid #344766;background:#12233c;border-radius:12px;cursor:pointer}
+    label.choice:hover{background:#1a2d48}
+    input[type=radio]{accent-color:#85abff;width:18px;height:18px;flex:none;margin:1px 0 0}
+    button,.link{display:inline-block;border:0;border-radius:10px;padding:14px 20px;font:inherit;font-weight:750;text-decoration:none;cursor:pointer}
+    button{background:#8cb1ff;color:#071424;width:100%;margin-top:25px}
+    button:hover{background:#bbd1ff}
+    a{color:#9dbbff}
+    .links{display:flex;flex-wrap:wrap;gap:12px;margin:17px 0}
+    .link{border:1px solid #3c567b;color:#edf4ff;background:#132944}
+    .bot-field{position:absolute;left:-10000px;height:1px;width:1px;overflow:hidden}
+    .note{background:#14283e;border-left:3px solid #75bed3;padding:14px;border-radius:8px;margin:22px 0}
+    footer{margin:26px 0;color:#a6bad1;font-size:13px}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="brand" href="/"><span class="logo">N</span>Nexa</a>
+    <section class="panel" aria-labelledby="survey-heading">
+      <h1 id="survey-heading">A verificação de identidade não funcionou para você?</h1>
+      <p>Queremos descobrir onde a experiência precisa melhorar. Responda apenas duas perguntas. A participação é <strong>opcional</strong> e não afeta sua conta nem sua verificação.</p>
+      <p class="note">Não informe CPF, nome, e-mail, senha, código, foto ou documento. Esta pesquisa <strong>não verifica sua identidade</strong> e não pede dados biométricos.</p>
+      <form name="nexa-kyc-feedback" method="POST" action="/ajuda-verificacao-enviado" data-netlify="true" netlify-honeypot="bot-field">
+        <input type="hidden" name="form-name" value="nexa-kyc-feedback">
+        <p class="bot-field" aria-hidden="true"><label>Deixe em branco <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+        <fieldset>
+          <legend>Em qual etapa você encontrou dificuldade?</legend>
+          <label class="choice"><input type="radio" name="dificuldade" value="nao_encontrei_verificacao" required><span>Não encontrei onde começar a verificação</span></label>
+          <label class="choice"><input type="radio" name="dificuldade" value="nao_consegui_entrar"><span>Não consegui entrar na minha conta</span></label>
+          <label class="choice"><input type="radio" name="dificuldade" value="botao_sem_resposta"><span>O botão de verificar não funcionou</span></label>
+          <label class="choice"><input type="radio" name="dificuldade" value="didit_nao_abriu"><span>A página da Didit não abriu ou apresentou erro</span></label>
+          <label class="choice"><input type="radio" name="dificuldade" value="camera_ou_documento"><span>Tive dificuldade com câmera ou documento no ambiente da Didit</span></label>
+          <label class="choice"><input type="radio" name="dificuldade" value="seguranca_ou_privacidade"><span>Fiquei em dúvida sobre segurança ou privacidade</span></label>
+          <label class="choice"><input type="radio" name="dificuldade" value="preferi_adiar"><span>Preferi continuar em outro momento</span></label>
+          <label class="choice"><input type="radio" name="dificuldade" value="outro"><span>Outro motivo</span></label>
+        </fieldset>
+        <fieldset>
+          <legend>Em qual dispositivo isso aconteceu? <span class="muted">(opcional)</span></legend>
+          <label class="choice"><input type="radio" name="dispositivo" value="android"><span>Android</span></label>
+          <label class="choice"><input type="radio" name="dispositivo" value="iphone"><span>iPhone</span></label>
+          <label class="choice"><input type="radio" name="dispositivo" value="computador"><span>Computador</span></label>
+          <label class="choice"><input type="radio" name="dispositivo" value="outro"><span>Outro / prefiro não informar</span></label>
+        </fieldset>
+        <button type="submit">Enviar minha resposta</button>
+        <p class="muted">Sua resposta será usada para melhorar o início da verificação. Não a vinculamos à sua conta nesta página. Para consultar seus dados e etapas pessoais, utilize o portal autenticado. Veja nossa <a href="/privacidade">Política de Privacidade</a>.</p>
+      </form>
+      <h2>Prefere falar com alguém?</h2>
+      <p>O Theo pode orientar você sobre o processo e encaminhar o atendimento humano. Não envie documentos por mensagens.</p>
+      <div class="links">
+        <a class="link" href="https://t.me/NexaTheoBot" target="_blank" rel="noopener noreferrer">Pedir ajuda no Telegram</a>
+        <a class="link" href="https://wa.me/551333289704?text=Oi%20Nexa%2C%20tive%20dificuldade%20na%20verificacao%20de%20identidade." target="_blank" rel="noopener noreferrer">Pedir ajuda no WhatsApp</a>
+      </div>
+      <p><a href="/portal/">Voltar ao portal Nexa</a></p>
+    </section>
+    <footer>Nexa · Esta pesquisa não solicita movimentação financeira nem depósitos.</footer>
+  </main>
+</body>
+</html>
