@@ -39,4 +39,15 @@ for(const [source,sourceName]of [[signup,'signup'],[support,'support'],[guide,'o
   assert.match(source, /href="\/ajuda-verificacao\.html"/,
    'KYC feedback link missing from '+sourceName);
 }
+
+assert.match(guide, /A Didit não começou\? Veja a solução mais próxima/);
+assert.match(guide, /Não encontrei o botão/);
+assert.match(guide, /A câmera não funcionou/);
+assert.match(guide, /https:\/\/t\.me\/NexaTheoBot/);
+assert.match(guide, /https:\/\/wa\.me\/551333289704/);
+assert.match(signup, /Após criar a conta/);
+assert.match(signup, /Não precisa depositar/);
+assert.match(support, /sem enviar CPF, e-mail de cadastro, documentos/);
+assert.doesNotMatch(support, /Ao entrar em contato, informe seu e-mail de cadastro/);
+
 console.log('Nexa KYC feedback: privacy-minimal static Netlify form, honeypot, relevant links and thank-you page PASS');
