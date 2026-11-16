@@ -48,7 +48,6 @@ document.getElementById('cadastroForm').addEventListener('submit', async (e) => 
     localStorage.setItem('nexa_access_token', data.accessToken);
     localStorage.setItem('nexa_refresh_token', data.refreshToken);
     localStorage.setItem('nexa_user', JSON.stringify(data.user));
-    let educationNeedsReview=false;
     if(document.getElementById('educationConsent').checked && data.accessToken){
       try {
         await fetch(API_URL+'/lifecycle/preferences',{
