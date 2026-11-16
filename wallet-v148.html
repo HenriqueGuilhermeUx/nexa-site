@@ -28,7 +28,7 @@
     <div class="card hero"><div class="heroLabel"><span class="eyebrow">VALOR DA CARTEIRA</span><span style="color:#70879F;font-size:11px">◉</span></div><div id="portfolioTotal" class="heroAmount">0,00 USDC</div><div id="availableUsdc" class="heroUnit">Saldo principal em USDC</div><div class="heroHint">Sua wallet individual, com a complexidade técnica ficando por trás da experiência.</div></div>
     <div class="quick"><button class="qa primary" onclick="go('deposit')"><i>＋</i>Adicionar</button><button class="qa" onclick="go('assets')"><i>⇄</i>Converter</button><button class="qa" onclick="go('send')"><i>↗</i>Enviar</button><button class="qa" onclick="go('withdraw')"><i>↓</i>Sacar</button></div>
     <button class="card assistant" style="width:100%;text-align:left;color:inherit" onclick="go('assistant')"><div class="assistantIcon">N</div><div class="grow"><div class="kicker">ASSISTENTE NEXA</div><div class="assistantTitle">Posso te ajudar?</div><div class="assistantText">Organize sua rotina, entenda seu dinheiro e acompanhe o que precisa de atenção.</div></div><b>›</b></button>
-    <div class="sectionHead"><div><div class="sectionKicker">MINHA WALLET</div><div class="sectionTitle">Meus ativos</div></div><button class="link" onclick="go('assets')">Ver todos</button></div>
+    <div class="card" style="margin-top:15px"><div class="sectionKicker">CARTEIRAS EXTERNAS</div><div class="sectionTitle">Acompanhe outras wallets</div><p class="pageSub">Adicione um endereço público para ver USDC na Polygon. Não precisa conectar dois aplicativos.</p><button class="btn secondary" onclick="go('externalWallet')">Adicionar carteira externa</button></div><div class="sectionHead"><div><div class="sectionKicker">MINHA WALLET</div><div class="sectionTitle">Meus ativos</div></div><button class="link" onclick="go('assets')">Ver todos</button></div>
     <div id="homeAssets" class="list"></div>
     <div class="sectionHead"><div><div class="sectionKicker">ATIVIDADE</div><div class="sectionTitle">Movimentações recentes</div></div><button class="link" onclick="go('history')">Ver histórico</button></div>
     <div id="recent" class="list"></div>
@@ -39,6 +39,7 @@
   <main id="move" class="page hidden"><div class="pageKicker">MOVIMENTAR</div><h1 class="pageTitle">O que você quer fazer?</h1><div class="pageSub">Escolha uma ação. A Nexa mantém as etapas técnicas fora do caminho e mostra o que importa antes de você confirmar.</div><div class="moveGrid">
     <button class="moveCard" onclick="go('deposit')"><div class="moveIcon">＋</div><b>Adicionar</b><small>Comece com Pix e receba USDC na sua wallet.</small></button>
     <button class="moveCard" onclick="go('recurring')"><div class="moveIcon">⇣</div><b>Adicionar automaticamente</b><small>Programe um valor mensal via Open Finance.</small></button>
+    <button class="moveCard" onclick="go('externalWallet')"><div class="moveIcon">◈</div><b>Carteira cripto</b><small>Acompanhe USDC de sua MetaMask ou outra carteira e veja como trazer para a Nexa.</small></button>
     <button class="moveCard" onclick="go('assets')"><div class="moveIcon">⇄</div><b>Converter</b><small>Use USDC para acessar ativos disponíveis na Nexa.</small></button>
     <button class="moveCard" onclick="go('send')"><div class="moveIcon">↗</div><b>Enviar</b><small>Envie para outro usuário Nexa.</small></button>
     <button class="moveCard" onclick="go('wallet')"><div class="moveIcon">⇣</div><b>Receber</b><small>Veja endereço e informações da sua wallet.</small></button>
@@ -48,11 +49,46 @@
 
   <main id="history" class="page hidden"><div class="pageKicker">HISTÓRICO</div><h1 class="pageTitle">Histórico</h1><div class="pageSub">Suas entradas, conversões, envios e saques organizados em um só lugar.</div><div id="historyList" class="list"></div></main>
 
-  <main id="profile" class="page hidden"><div class="pageKicker">CLIENTE NEXA</div><h1 class="pageTitle">Perfil</h1><div class="card"><div class="profileHead"><div id="profileAvatar" class="profileAvatar">N</div><div><div id="profileName" class="profileName">Cliente Nexa</div><div id="profileHandle" class="profileHandle">@nexa</div></div></div><div class="meta"><span>E-MAIL</span><b id="profileEmail">—</b></div><div class="meta"><span>NEXA ID</span><b id="profileNexaId">—</b></div><div class="meta"><span>VERIFICAÇÃO</span><b id="profileKyc">—</b></div><div class="meta"><span>PLANO</span><b id="profilePlan">Nexa</b></div></div><div class="card"><button class="menuLink" onclick="go('wallet')">Carteira <span>›</span></button><a class="menuLink" href="/merchant">Nexa Empresa · CNPJ <span>›</span></a><button class="menuLink" onclick="go('recurring')">Open Finance · recorrência mensal <span>›</span></button><button class="menuLink" onclick="go('rewards')">Nexa Rewards <span>›</span></button><a class="menuLink" href="/suporte">Fale com a Nexa <span>›</span></a><a class="menuLink" href="/identity">Identidade e segurança <span>›</span></a><button class="menuLink" onclick="logout()">Sair da conta <span>›</span></button></div></main>
+  <main id="profile" class="page hidden"><div class="pageKicker">CLIENTE NEXA</div><h1 class="pageTitle">Perfil</h1><div class="card"><div class="profileHead"><div id="profileAvatar" class="profileAvatar">N</div><div><div id="profileName" class="profileName">Cliente Nexa</div><div id="profileHandle" class="profileHandle">@nexa</div></div></div><div class="meta"><span>E-MAIL</span><b id="profileEmail">—</b></div><div class="meta"><span>NEXA ID</span><b id="profileNexaId">—</b></div><div class="meta"><span>VERIFICAÇÃO</span><b id="profileKyc">—</b></div><div class="meta"><span>PLANO</span><b id="profilePlan">Nexa</b></div></div><div class="card"><button class="menuLink" onclick="go('wallet')">Carteira <span>›</span></button><button class="menuLink" onclick="go('externalWallet')">Carteiras externas · sem WalletConnect <span>›</span></button><a class="menuLink" href="/merchant">Nexa Empresa · CNPJ <span>›</span></a><button class="menuLink" onclick="go('recurring')">Open Finance · recorrência mensal <span>›</span></button><button class="menuLink" onclick="go('rewards')">Nexa Rewards <span>›</span></button><a class="menuLink" href="/suporte">Fale com a Nexa <span>›</span></a><a class="menuLink" href="/identity">Identidade e segurança <span>›</span></a><button class="menuLink" onclick="logout()">Sair da conta <span>›</span></button></div></main>
 
   <main id="wallet" class="page hidden"><div class="pageKicker">CARTEIRA</div><h1 class="pageTitle">Sua wallet Nexa</h1><div class="card hero"><div class="eyebrow">SALDO DISPONÍVEL</div><div id="walletBalance" class="heroAmount">0 USDC</div><div class="heroHint">Wallet conectada e pronta para as funcionalidades disponíveis.</div></div><div class="card"><div class="sectionKicker">RECEBER USDC</div><div class="sectionTitle">Seu endereço da wallet</div><p class="pageSub">Use este endereço para receber USDC diretamente na sua wallet.</p><div id="walletQr" class="qr"></div><div id="walletAddress" class="address">—</div><div class="sub">Rede compatível: Polygon</div><button class="btn secondary" style="margin-top:14px" onclick="copyWallet()">Copiar endereço</button></div></main>
 
-  <main id="deposit" class="page hidden"><div class="pageKicker">ADICIONAR</div><h1 class="pageTitle">Adicionar com Pix</h1><div class="pageSub">Comece pelo que você já conhece. O Pix confirmado segue para USDC na sua wallet.</div><div class="card"><div class="field"><label>Quanto você quer adicionar?</label><input id="depositAmount" class="input" inputmode="decimal" placeholder="R$ 100,00"></div><div class="actions"><button class="btn" onclick="createPix()">Gerar Pix</button><button class="btn secondary" onclick="refreshPix()">Já paguei · atualizar agora</button></div><div id="pixResult" class="quote hidden"></div></div></main>
+  <main id="externalWallet" class="page hidden">
+    <div class="pageKicker">ADICIONAR · CARTEIRA CRIPTO</div>
+    <h1 class="pageTitle">Suas carteiras, em um só lugar.</h1>
+    <div class="pageSub">Sem instalar outra Nexa, sem WalletConnect e sem compartilhar sua frase de recuperação.</div>
+    <div class="card">
+      <div class="sectionKicker">ETAPA 1</div>
+      <div class="sectionTitle">Adicionar carteira para acompanhar</div>
+      <p class="pageSub">Copie seu endereço público de uma carteira EVM (MetaMask, Trust Wallet, Coinbase Wallet ou outra). A Nexa consulta o USDC nativo da Polygon, sem acesso aos seus fundos.</p>
+      <div class="field"><label>Endereço público (0x...)</label><input id="externalWatchInput" class="input" placeholder="0x..." autocomplete="off" spellcheck="false" autocapitalize="off"></div>
+      <div class="actions"><button type="button" class="btn" onclick="watchExternalWallet()">Consultar USDC Polygon</button><button type="button" class="btn secondary" onclick="useBrowserWallet()">Usar carteira deste navegador</button></div>
+      <a class="btn secondary" href="https://link.metamask.io/dapp/trynexa.com.br/wallet-v148.html?tab=externalWallet" rel="noopener noreferrer" style="display:block;text-align:center">Abrir esta página no navegador da MetaMask</a>
+      <div id="externalWatchMessage" class="message hidden" role="status" aria-live="polite"></div>
+      <div id="externalWatchResult" class="quote hidden">
+        <b id="externalWatchBalance">—</b>
+        <div class="sub" id="externalWatchAddress"></div>
+        <div class="sub">Saldo da carteira externa. Não é saldo disponível Nexa, nem comprovação de titularidade.</div>
+        <button type="button" class="btn secondary" onclick="copyExternalWatchAddress()">Copiar endereço externo</button>
+      </div>
+      <p class="pageSub" style="font-size:12px">No celular, o botão “Usar carteira deste navegador” funciona dentro do navegador integrado da MetaMask. Para qualquer outra carteira, basta colar o endereço público.</p>
+    </div>
+    <div class="card">
+      <div class="sectionKicker">ETAPA 2</div>
+      <div class="sectionTitle">Trazer USDC para a Nexa</div>
+      <p class="pageSub">Abra o seu endereço individual de recebimento Nexa e envie USDC nativo na rede Polygon usando o botão Enviar da sua carteira externa. Você revisa e confirma a operação na própria carteira, sem WalletConnect.</p>
+      <button type="button" class="btn secondary" onclick="go('wallet')">Ver meu endereço Nexa e QR Code</button>
+      <p class="pageSub" style="font-size:12px">Confira rede, token, endereço e taxa de gás antes de enviar. Os fundos só devem ser considerados recebidos após a confirmação on-chain e conciliação da Nexa. Não envie valores de teste sem validação operacional.</p>
+    </div>
+    <div class="card">
+      <div class="sectionKicker">ETAPA 3</div>
+      <div class="sectionTitle">Enviar para uma carteira externa</div>
+      <p class="pageSub">O endereço externo pode ser copiado acima e usado no fluxo de envio cripto autorizado da Nexa, quando disponível para sua conta. A consulta de saldo não habilita transferência, não substitui a verificação do destinatário e não credita nenhum saldo.</p>
+      <button type="button" class="btn secondary" onclick="copyExternalWatchAddress()">Copiar endereço de destino</button>
+    </div>
+  </main>
+
+  <main id="deposit" class="page hidden"><div class="pageKicker">ADICIONAR</div><h1 class="pageTitle">Adicionar com Pix</h1><div class="pageSub">Comece pelo que você já conhece. O Pix confirmado segue para USDC na sua wallet.</div><div class="card"><div class="field"><label>Quanto você quer adicionar?</label><input id="depositAmount" class="input" inputmode="decimal" placeholder="R$ 100,00"></div><div class="actions"><button class="btn" onclick="createPix()">Gerar Pix</button><button class="btn secondary" onclick="refreshPix()">Já paguei · atualizar agora</button></div><div id="pixResult" class="quote hidden"></div></div><div class="card"><div class="sectionKicker">OUTRAS FORMAS DE ADICIONAR</div><div class="sectionTitle">Já tem cripto em outra carteira?</div><p class="pageSub">Adicione seu endereço público e consulte USDC na Polygon. Para receber na Nexa, utilize seu endereço de depósito após verificar rede e contrato.</p><button class="btn secondary" onclick="go('externalWallet')">Usar carteira externa</button></div></main>
 
   <main id="send" class="page hidden"><div class="pageKicker">TRANSFERÊNCIAS</div><h1 class="pageTitle">Enviar</h1><div class="pageSub">Use @username. A Nexa localiza a conta correta.</div><div class="card"><div class="field"><label>Para quem?</label><input id="sendUsername" class="input" placeholder="@username"></div><button class="btn secondary" onclick="findRecipient()">Verificar usuário</button><div id="recipient" class="quote hidden"></div><div class="field" style="margin-top:14px"><label>Quanto USDC?</label><input id="sendAmount" class="input" inputmode="decimal" placeholder="0,00"></div><button class="btn" onclick="sendInternal()">Revisar e enviar</button></div></main>
 
@@ -175,6 +211,99 @@ async function cancelRecurring(){
 }
 async function joinRewards(){try{if(!isPremium())throw new Error('Nexa Rewards está disponível para clientes Premium.');const amountUsdc=num($('rewardAmount').value);if(amountUsdc<=0)throw new Error('Informe um valor USDC válido.');if(!confirm('Separar '+fmt(amountUsdc,8)+' USDC no Rewards?'))return;const d=await api('/rewards/join',{method:'POST',headers:auth(true),body:JSON.stringify({amountUsdc,plan:'FLEX',clientRequestId:'pwa_rewards_'+user.id+'_'+Date.now()})});msg(d.message||'Saldo reservado no Rewards.');await loadAll()}catch(e){msg(e.message)}}
 function copyWallet(){const a=walletAddress();if(a)navigator.clipboard.writeText(a)}
+
+let externalWatchAddress = '';
+let externalWatchRequest = 0;
+const EXTERNAL_POLYGON_USDC = '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359';
+const EXTERNAL_RPC = ['https://polygon-bor-rpc.publicnode.com','https://polygon.drpc.org'];
+function externalWatchNotice(message) {
+  const node = $('externalWatchMessage');
+  node.textContent = message;
+  node.classList.toggle('hidden',!message);
+}
+function validExternalWalletAddress(value) {
+  return /^0x[a-fA-F0-9]{40}$/.test(value) && !/^0x0{40}$/i.test(value);
+}
+function formatExternalUsdc(raw) {
+  const units = BigInt(raw);
+  const integer = units / 1000000n;
+  const decimals = (units % 1000000n).toString().padStart(6,'0').replace(/0+$/,'');
+  return integer.toString() + (decimals ? ',' + decimals : '') + ' USDC';
+}
+async function readExternalPolygonUsdc(address) {
+  const data='0x70a08231'+address.slice(2).toLowerCase().padStart(64,'0');
+  let lastError;
+  for (const rpc of EXTERNAL_RPC) {
+    const controller = new AbortController();
+    const timeout = setTimeout(()=>controller.abort(), 10000);
+    try {
+      const chainResponse=await fetch(rpc,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({jsonrpc:'2.0',id:2,method:'eth_chainId',params:[]}),
+        signal:controller.signal});
+      if(!chainResponse.ok)throw Error('HTTP '+chainResponse.status);
+      const chain=await chainResponse.json();
+      if(chain.error || String(chain.result).toLowerCase()!=='0x89')throw Error('O nó não confirmou Polygon (137).');
+      const response=await fetch(rpc,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({jsonrpc:'2.0',id:1,method:'eth_call',
+          params:[{to:EXTERNAL_POLYGON_USDC,data},'latest']}),
+        signal:controller.signal});
+      if(!response.ok)throw Error('HTTP '+response.status);
+      const json=await response.json();
+      if(json.error || !/^0x[0-9a-fA-F]+$/.test(json.result||''))throw Error('Resposta inválida do nó Polygon');
+      return formatExternalUsdc(json.result);
+    } catch(e) {lastError=e;} finally {clearTimeout(timeout);}
+  }
+  throw new Error('Não foi possível consultar a rede Polygon. Tente novamente depois. '+(lastError?.name==='AbortError'?'Tempo esgotado.':''));
+}
+async function watchExternalWallet() {
+  const address=String($('externalWatchInput').value||'').trim();
+  const callId=++externalWatchRequest;
+  $('externalWatchResult').classList.add('hidden');
+  externalWatchAddress='';
+  if(!validExternalWalletAddress(address)) {
+    externalWatchNotice('Informe um endereço EVM público válido, começando com 0x. Nunca informe sua frase-semente.');
+    return;
+  }
+  externalWatchNotice('Consultando saldo USDC nativo na Polygon…');
+  try {
+    const balance=await readExternalPolygonUsdc(address);
+    if(callId!==externalWatchRequest)return;
+    externalWatchAddress=address;
+    $('externalWatchBalance').textContent=balance;
+    $('externalWatchAddress').textContent=address;
+    $('externalWatchResult').classList.remove('hidden');
+    externalWatchNotice('Consulta concluída. Endereço acompanhado sem comprovação de titularidade.');
+  } catch(e) {
+    if(callId===externalWatchRequest)externalWatchNotice(e.message||'Consulta indisponível.');
+  }
+}
+async function useBrowserWallet() {
+  const provider = window.ethereum;
+  if(!provider || typeof provider.request!=='function') {
+    externalWatchNotice('Abra esta página pelo navegador integrado da MetaMask (Explorar) ou cole o endereço público da carteira. Não é necessário WalletConnect.');
+    return;
+  }
+  try {
+    const accounts=await provider.request({method:'eth_requestAccounts'});
+    const address=Array.isArray(accounts)?accounts[0]:'';
+    if(!validExternalWalletAddress(address))throw Error('A carteira não forneceu um endereço EVM válido.');
+    $('externalWatchInput').value=address;
+    await watchExternalWallet();
+    externalWatchNotice('Endereço informado pela carteira deste navegador. Não é prova de titularidade associada à conta Nexa.');
+  } catch(e) {
+    externalWatchNotice(e.code===4001?'Conexão recusada pela carteira.':(e.message||'Não foi possível acessar a carteira deste navegador.'));
+  }
+}
+async function copyExternalWatchAddress() {
+  if(!externalWatchAddress)return externalWatchNotice('Adicione e consulte primeiro um endereço público válido.');
+  try {
+    await navigator.clipboard.writeText(externalWatchAddress);
+    externalWatchNotice('Endereço externo copiado. Confira o destinatário e a rede antes de qualquer envio.');
+  } catch {
+    externalWatchNotice('Cópia indisponível neste navegador. Selecione o endereço mostrado para copiar.');
+  }
+}
+
 function authorizeDirectTransfer(){if(!walletTransferAction)return msg('Revise a transferência novamente.');sessionStorage.setItem('nexa_wallet_action_v148',JSON.stringify(walletTransferAction));location.href='/portal/?walletAction=direct-transfer'}
 function openNativeNexa(){location.href='nexa://';setTimeout(()=>msg('Para esta operação patrocinada, use a Nexa 2.0.43 build 148 instalada no aparelho para concluir a autorização Privy.'),900)}
 let assistantEnabled=false,assistantHistory=[];
@@ -184,6 +313,6 @@ function renderAssistant(extra=[]){assistantHistory=[...assistantHistory,...extr
 async function sendAssistant(forced){const input=$('assistantInput'),message=String(forced||input.value||'').trim();if(!message||!assistantEnabled)return;if(!forced)input.value='';renderAssistant([{role:'user',content:message}]);try{const history=assistantHistory.slice(0,-1).slice(-12).map(x=>({role:x.role,content:x.content}));const d=await api('/staff/chat',{method:'POST',headers:auth(true),body:JSON.stringify({message,conversationHistory:history})});const answer=String(d.response||'Não consegui responder agora. Tente novamente.');renderAssistant([{role:'assistant',content:answer}]);if('speechSynthesis'in window){speechSynthesis.cancel();speechSynthesis.speak(Object.assign(new SpeechSynthesisUtterance(answer),{lang:'pt-BR',rate:.96}))}}catch(e){msg(e.status===503?'O Assistente Nexa ainda não foi ativado para esta conta.':'Não consegui falar com o Assistente Nexa agora.')}}
 function startAssistantVoice(){const R=window.SpeechRecognition||window.webkitSpeechRecognition;if(!R)return msg('Reconhecimento de voz não está disponível neste navegador. Continue digitando.');const r=new R();r.lang='pt-BR';r.interimResults=false;r.maxAlternatives=1;r.onresult=e=>{const t=e.results?.[0]?.[0]?.transcript||'';$('assistantInput').value=t;sendAssistant(t)};r.onerror=()=>msg('Não consegui ouvir agora. Você pode continuar digitando.');r.start()}
 function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function logout(show=true){['nexa_token','nexa_access_token','nexa_refresh_token','nexa_user'].forEach(k=>localStorage.removeItem(k));token='';refreshToken='';user=null;$('app').classList.add('hidden');$('login').classList.remove('hidden');if(show)showLoginMsg('Sessão encerrada.');else clearLoginMsg()}
+function logout(show=true){externalWatchAddress='';externalWatchRequest++;$('externalWatchInput').value='';$('externalWatchResult').classList.add('hidden');externalWatchNotice('');['nexa_token','nexa_access_token','nexa_refresh_token','nexa_user'].forEach(k=>localStorage.removeItem(k));token='';refreshToken='';user=null;$('app').classList.add('hidden');$('login').classList.remove('hidden');if(show)showLoginMsg('Sessão encerrada.');else clearLoginMsg()}
 $('loginBtn').onclick=login;$('password').addEventListener('keydown',e=>{if(e.key==='Enter')login()});if('serviceWorker'in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});if(token)boot();
 </script></body></html>
