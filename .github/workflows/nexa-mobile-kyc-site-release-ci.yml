@@ -1,0 +1,55 @@
+name: Nexa production site — mobile facial KYC release guard
+on:
+  push:
+    branches:
+      - release/nexa-portal-lifecycle-optin-20261116
+  pull_request:
+    paths:
+      - cadastro.html
+      - netlify.toml
+      - scripts/validate-mobile-kyc-onboarding.mjs
+      - .github/workflows/nexa-mobile-kyc-site-release-ci.yml
+permissions:
+  contents: read
+jobs:
+  safe-mobile-kyc:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.19.4'
+      - name: Guard existing pages, wallet, auth routing and Global app
+        run: |
+          node - <<'NODE'
+          const fs=require('node:fs'),cp=require('node:child_process'),assert=require('node:assert/strict');
+          const files=cp.execFileSync('git',['diff','--name-only','origin/main...HEAD'],{encoding:'utf8'}).trim().split('\n').filter(Boolean);
+          const allow=new Set(['cadastro.html','netlify.toml','scripts/validate-mobile-kyc-onboarding.mjs','.github/workflows/nexa-mobile-kyc-site-release-ci.yml']);
+          assert.deepEqual(files.filter(f=>!allow.has(f)),[]);
+          const now=fs.readFileSync('netlify.toml','utf8'),old=cp.execFileSync('git',['show','origin/main:netlify.toml'],{encoding:'utf8'});
+          assert.equal(now.replace('b153f58d39ae9a87ffe4e04433b32a4e521ab8fe','dd476f6a41846e864acfebcdd43b3115693b1010'),old);
+          console.info('Only pinned portal commit changed; all redirect, Global and security settings identical');
+          NODE
+      - name: Validate mobile KYC, privacy feedback and existing web pages
+        run: |
+          node scripts/validate-mobile-kyc-onboarding.mjs
+          node scripts/validate-kyc-feedback.mjs
+          node scripts/validate-launch-site.js
+          node scripts/validate-unified-nexa.mjs
+      - name: Compile exact new portal alongside unchanged Global app
+        env:
+          NEXA_PORTAL_COMMIT: b153f58d39ae9a87ffe4e04433b32a4e521ab8fe
+          NEXA_GLOBAL_APP_COMMIT: a930c2438691e3b2026fa0a5a5e9a9b9d8ec1499
+        run: node scripts/build-site.mjs
+      - name: Validate compiled portal safety
+        run: |
+          test -s portal/index.html
+          test -s global-app/index.html
+          grep -R -q '/payment/user' portal/assets
+          grep -R -q 'direct-settlement/wallet/link' portal/assets
+          ! grep -R -E 'PRIVY_APP_SECRET|MASTER_WALLET_PRIVATE_KEY|/user/link-privy-wallet' portal
+      - name: No production deploy from this CI
+        run: echo 'GitHub CI validates staged site; Netlify production is separate after review'
