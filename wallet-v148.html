@@ -63,7 +63,7 @@
       <p class="pageSub">Copie seu endereço público de uma carteira EVM (MetaMask, Trust Wallet, Coinbase Wallet ou outra). A Nexa consulta o USDC nativo da Polygon, sem acesso aos seus fundos.</p>
       <div class="field"><label>Endereço público (0x...)</label><input id="externalWatchInput" class="input" placeholder="0x..." autocomplete="off" spellcheck="false" autocapitalize="off"></div>
       <div class="actions"><button type="button" class="btn" onclick="watchExternalWallet()">Consultar USDC Polygon</button><button type="button" class="btn secondary" onclick="useBrowserWallet()">Usar carteira deste navegador</button></div>
-      <a class="btn secondary" href="https://link.metamask.io/dapp/trynexa.com.br/wallet-v148.html" rel="noopener noreferrer" style="display:block;text-align:center">Abrir esta página no navegador da MetaMask</a>
+      <a class="btn secondary" href="https://link.metamask.io/dapp/trynexa.com.br/wallet-v148.html?tab=externalWallet" rel="noopener noreferrer" style="display:block;text-align:center">Abrir esta página no navegador da MetaMask</a>
       <div id="externalWatchMessage" class="message hidden" role="status" aria-live="polite"></div>
       <div id="externalWatchResult" class="quote hidden">
         <b id="externalWatchBalance">—</b>
@@ -237,6 +237,12 @@ async function readExternalPolygonUsdc(address) {
     const controller = new AbortController();
     const timeout = setTimeout(()=>controller.abort(), 10000);
     try {
+      const chainResponse=await fetch(rpc,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({jsonrpc:'2.0',id:2,method:'eth_chainId',params:[]}),
+        signal:controller.signal});
+      if(!chainResponse.ok)throw Error('HTTP '+chainResponse.status);
+      const chain=await chainResponse.json();
+      if(chain.error || String(chain.result).toLowerCase()!=='0x89')throw Error('O nó não confirmou Polygon (137).');
       const response=await fetch(rpc,{method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({jsonrpc:'2.0',id:1,method:'eth_call',
           params:[{to:EXTERNAL_POLYGON_USDC,data},'latest']}),
