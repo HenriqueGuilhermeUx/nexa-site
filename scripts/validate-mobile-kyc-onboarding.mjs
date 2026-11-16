@@ -4,7 +4,7 @@ const signup=readFileSync('cadastro.html','utf8');
 const netlify=readFileSync('netlify.toml','utf8');
 assert.match(signup,/Após criar a conta · prefira o celular/);
 assert.match(signup,/reconhecimento facial da Didit/);
-assert.match(signup,/abra a Nexa no celular/);
+assert.match(signup,/acesse https:\/\/trynexa\.com\.br\/portal\/ no celular/);
 assert.match(signup,/entre na mesma conta/);
 assert.match(signup,/Não precisa depositar/);
 assert.match(signup,/id="educationConsent" type="checkbox"/);
