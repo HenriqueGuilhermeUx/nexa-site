@@ -1,0 +1,32 @@
+name: Nexa installed Wallet PWA v148 — Aave Privy handoff, no deploy
+on:
+  push:
+    branches: [feat/aave-pwa-wallet-v148-safe-handoff-20261117]
+permissions:
+  contents: read
+jobs:
+  installed-pwa-aave:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify installed Nexa Wallet Aave access remains gated and non-signing
+        run: node scripts/validate-aave-pwa-v148.mjs
+      - name: Check exact incremental PWA diff without modifying existing install identity
+        run: |
+          node <<'NODE'
+          const fs=require('node:fs'),assert=require('node:assert/strict');
+          const s=fs.readFileSync('wallet-v148.html','utf8');
+          for(const forbidden of ['window.ethereum.request({method:\'eth_sendTransaction\'',
+             'walletClient.writeContract(','privateKey=']) {
+            assert.ok(!s.includes(forbidden),'Unsafe wallet signing in plain PWA: '+forbidden);
+          }
+          assert.ok(s.includes("location.href='/portal/'"));
+          assert.ok(s.includes("if(!aavePwaPilotReady||!token)"));
+          console.log('No direct signing from installed PWA; handoff only to authenticated same-origin Privy portal.');
+          NODE
