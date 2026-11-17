@@ -35,6 +35,13 @@ assert.match(early, /\/early-access\/join/);
 assert.match(early, /lgpdConsent/);
 assert.match(early, /marketingConsent/);
 assert.match(early, /referralCode/);
+assert.match(early, /id="referralLink"/);
+assert.match(early, /onclick="copyReferral\(this\)"/);
+assert.match(early, /id="shareReferralWhatsApp"/);
+assert.match(early, /encodeURIComponent\('Conheça os Primeiros Nexa/);
+assert.match(early, /Compartilhar seu convite voluntariamente/);
+assert.match(early, /href="\/cadastro"/);
+assert.match(early, /a Nexa não envia mensagens aos seus contatos/i);
 assert.match(early, /lista não abre conta/i);
 assert.doesNotMatch(early, /cashback|ganhe USDC|rendimento garantido/i);
 

@@ -63,8 +63,17 @@
           <p class="eyebrow text-emerald-300 mt-7">Você está dentro</p>
           <h2 class="text-4xl font-black mt-3">Bem-vindo aos Primeiros Nexa.</h2>
           <p id="successMessage" class="text-slate-300 text-lg mt-5">Seu interesse foi registrado. A abertura será gradual e os convites chegarão pelos canais informados.</p>
-          <div class="card rounded-2xl p-5 mt-7 text-left"><p class="text-sm text-slate-400">Seu link de indicação</p><div class="flex flex-col sm:flex-row gap-3 mt-3"><input id="referralLink" readonly class="flex-1 p-3 rounded-xl text-sm"><button onclick="copyReferral()" class="bg-white/10 border border-white/10 px-5 py-3 rounded-xl font-bold">Copiar</button></div></div>
-          <div class="flex flex-col sm:flex-row gap-3 mt-7"><a href="/" class="flex-1 bg-white/10 border border-white/10 p-4 rounded-2xl font-bold">Voltar ao site</a><a href="/pj" class="flex-1 bg-emerald-500/15 text-emerald-300 border border-emerald-500/20 p-4 rounded-2xl font-bold">Conhecer Nexa PJ</a></div>
+          <div class="card rounded-2xl p-5 mt-7 text-left">
+            <p class="text-sm text-slate-400">Seu link de indicação</p>
+            <div class="flex flex-col sm:flex-row gap-3 mt-3">
+              <input id="referralLink" readonly aria-label="Link de indicação Primeiros Nexa" class="flex-1 p-3 rounded-xl text-sm">
+              <button id="copyReferralBtn" type="button" onclick="copyReferral(this)" class="bg-white/10 border border-white/10 px-5 py-3 rounded-xl font-bold">Copiar</button>
+              <a id="shareReferralWhatsApp" target="_blank" rel="noopener noreferrer" class="bg-emerald-500/15 text-emerald-300 border border-emerald-500/20 px-5 py-3 rounded-xl font-bold text-center" href="#" aria-label="Compartilhar seu convite voluntariamente pelo WhatsApp">Compartilhar</a>
+            </div>
+            <p id="referralCopyMessage" role="status" aria-live="polite" class="mt-3 text-xs text-slate-400">Convide quem também quer conhecer a Nexa. O compartilhamento é feito por você; a Nexa não envia mensagens aos seus contatos.</p>
+          </div>
+          <p class="mt-6 text-sm text-slate-400">Quer conhecer a Wallet que já existe? Cadastro, verificação e eventual operação são passos separados desta lista e dependem da sua escolha.</p>
+          <div class="flex flex-col sm:flex-row gap-3 mt-4"><a href="/cadastro" class="flex-1 bg-indigo-500 text-white p-4 rounded-2xl font-bold">Conhecer cadastro da Wallet</a><a href="/" class="flex-1 bg-white/10 border border-white/10 p-4 rounded-2xl font-bold">Voltar ao site</a></div>
         </div>
       </section>
     </div>
@@ -80,8 +89,25 @@
     const tracking={utmSource:params.get('utm_source')||null,utmMedium:params.get('utm_medium')||null,utmCampaign:params.get('utm_campaign')||null,utmContent:params.get('utm_content')||null,landingPath:location.pathname,referrer:document.referrer||null};
     function source(){return tracking.utmSource||((document.referrer||'').includes('instagram')?'instagram':(document.referrer||'').includes('facebook')?'facebook':(document.referrer||'').includes('tiktok')?'tiktok':'direct')}
     function setLoading(value){const btn=document.getElementById('submitBtn');btn.disabled=value;btn.textContent=value?'Entrando para a lista...':'Quero ser um dos Primeiros Nexa';btn.classList.toggle('opacity-60',value)}
-    form.addEventListener('submit',async event=>{event.preventDefault();const msg=document.getElementById('formMsg');msg.textContent='';setLoading(true);try{const body={fullName:document.getElementById('fullName').value.trim(),email:document.getElementById('email').value.trim(),phone:document.getElementById('phone').value.trim(),preferredChannel:document.getElementById('preferredChannel').value,cryptoExperience:document.getElementById('cryptoExperience').value,primaryInterest:document.getElementById('primaryInterest').value,source:source(),campaign:tracking.utmCampaign||'primeiros_nexa',referredByCode:referredByCode||undefined,lgpdConsent:document.getElementById('lgpdConsent').checked,marketingConsent:document.getElementById('marketingConsent').checked,metadata:tracking};const response=await fetch(API+'/early-access/join',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const text=await response.text();let data={};try{data=text?JSON.parse(text):{}}catch{data={message:text}}if(!response.ok){const raw=data.message||data.error||'Não foi possível concluir agora.';throw new Error(Array.isArray(raw)?raw.join(', '):typeof raw==='object'?JSON.stringify(raw):String(raw))}const code=data.lead?.referralCode||'';const link=location.origin+'/primeiros-nexa'+(code?'?ref='+encodeURIComponent(code):'');document.getElementById('referralLink').value=link;document.getElementById('successMessage').textContent=data.alreadyRegistered?'Você já fazia parte da lista. Seus dados foram atualizados e sua prioridade foi preservada.':'Seu interesse foi registrado. A abertura será gradual e os convites chegarão pelos canais informados.';document.getElementById('formArea').classList.add('hidden');document.getElementById('successArea').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'})}catch(error){msg.textContent=error.message;msg.className='text-sm text-rose-300 text-center min-h-5'}finally{setLoading(false)}});
-    async function copyReferral(){const field=document.getElementById('referralLink');await navigator.clipboard.writeText(field.value);const button=event.currentTarget;const old=button.textContent;button.textContent='Copiado';setTimeout(()=>button.textContent=old,1400)}
+    form.addEventListener('submit',async event=>{event.preventDefault();const msg=document.getElementById('formMsg');msg.textContent='';setLoading(true);try{const body={fullName:document.getElementById('fullName').value.trim(),email:document.getElementById('email').value.trim(),phone:document.getElementById('phone').value.trim(),preferredChannel:document.getElementById('preferredChannel').value,cryptoExperience:document.getElementById('cryptoExperience').value,primaryInterest:document.getElementById('primaryInterest').value,source:source(),campaign:tracking.utmCampaign||'primeiros_nexa',referredByCode:referredByCode||undefined,lgpdConsent:document.getElementById('lgpdConsent').checked,marketingConsent:document.getElementById('marketingConsent').checked,metadata:tracking};const response=await fetch(API+'/early-access/join',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const text=await response.text();let data={};try{data=text?JSON.parse(text):{}}catch{data={message:text}}if(!response.ok){const raw=data.message||data.error||'Não foi possível concluir agora.';throw new Error(Array.isArray(raw)?raw.join(', '):typeof raw==='object'?JSON.stringify(raw):String(raw))}const code=data.lead?.referralCode||'';const link=location.origin+'/primeiros-nexa'+(code?'?ref='+encodeURIComponent(code):'');document.getElementById('referralLink').value=link;document.getElementById('shareReferralWhatsApp').href='https://api.whatsapp.com/send?text='+encodeURIComponent('Conheça os Primeiros Nexa: uma forma mais simples de acessar ativos digitais. Se quiser, veja o convite: '+link);document.getElementById('successMessage').textContent=data.alreadyRegistered?'Você já fazia parte da lista. Seus dados foram atualizados e sua prioridade foi preservada.':'Seu interesse foi registrado. A abertura será gradual e os convites chegarão pelos canais informados.';document.getElementById('formArea').classList.add('hidden');document.getElementById('successArea').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'})}catch(error){msg.textContent=error.message;msg.className='text-sm text-rose-300 text-center min-h-5'}finally{setLoading(false)}});
+    async function copyReferral(button){
+      const field=document.getElementById('referralLink');
+      const feedback=document.getElementById('referralCopyMessage');
+      try{
+        if(navigator.clipboard && window.isSecureContext){
+          await navigator.clipboard.writeText(field.value);
+        }else{
+          field.focus();field.select();
+          if(!document.execCommand('copy'))throw new Error('clipboard_unavailable');
+        }
+        button.textContent='Copiado';
+        feedback.textContent='Link copiado. Envie apenas para quem quiser receber seu convite.';
+        setTimeout(()=>button.textContent='Copiar',1400);
+      }catch{
+        field.focus();field.select();
+        feedback.textContent='Selecione e copie o link acima para compartilhar.';
+      }
+    }
     if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
   </script>
 </body>
