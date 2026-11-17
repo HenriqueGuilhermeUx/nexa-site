@@ -48,21 +48,38 @@ document.getElementById('cadastroForm').addEventListener('submit', async (e) => 
     localStorage.setItem('nexa_access_token', data.accessToken);
     localStorage.setItem('nexa_refresh_token', data.refreshToken);
     localStorage.setItem('nexa_user', JSON.stringify(data.user));
-    if(document.getElementById('educationConsent').checked && data.accessToken){
-      try {
-        await fetch(API_URL+'/lifecycle/preferences',{
-          method:'POST',
-          headers:{'Content-Type':'application/json',Authorization:'Bearer '+data.accessToken},
-          body:JSON.stringify({educationalEmailOptIn:true,emailFrequency:'weekly'}),
-          signal:typeof AbortSignal!=='undefined'&&AbortSignal.timeout?AbortSignal.timeout(6000):undefined,
-        });
-      } catch(_err) {
-        // A falha de um opt-in opcional nunca cancela um cadastro concluído.
-        // O cliente pode registrar a preferência novamente no portal autenticado.
+    // Consent is optional and must be acknowledged by the authenticated API.
+    // Do not imply a preference was saved just because fetch did not throw.
+    const wantsEducation=document.getElementById('educationConsent').checked;
+    let educationNotSaved=false;
+    if(wantsEducation){
+      if(!data.accessToken){
+        educationNotSaved=true;
+      }else{
+        try{
+          const preferenceResponse=await fetch(API_URL+'/lifecycle/preferences',{
+            method:'POST',
+            headers:{'Content-Type':'application/json',Authorization:'Bearer '+data.accessToken},
+            body:JSON.stringify({educationalEmailOptIn:true,emailFrequency:'weekly'}),
+            signal:typeof AbortSignal!=='undefined'&&AbortSignal.timeout?AbortSignal.timeout(6000):undefined,
+          });
+          const preferenceData=await preferenceResponse.json().catch(()=>null);
+          if(!preferenceResponse.ok || preferenceData?.success!==true || preferenceData?.optedIn!==true){
+            educationNotSaved=true;
+          }
+        }catch(_err){
+          educationNotSaved=true;
+        }
       }
     }
-    msg.textContent='Conta criada! Vamos à verificação de identidade segura.';
-    window.location.replace('/portal/');
+    if(educationNotSaved){
+      msg.textContent='Conta criada. Não foi possível confirmar sua escolha de e-mails educativos. Você pode ativá-los depois em sua conta. Sua verificação de identidade não foi afetada.';
+      msg.className='mt-4 text-sm text-center text-amber-300';
+      setTimeout(()=>window.location.replace('/portal/'),4000);
+    }else{
+      msg.textContent='Conta criada! Vamos à verificação de identidade segura.';
+      window.location.replace('/portal/');
+    }
   } catch(err) {
     msg.textContent=err.message; msg.className='mt-4 text-sm text-center text-red-400'; btn.disabled=false;
   }
