@@ -30,8 +30,10 @@ jobs:
           const allow=new Set(['cadastro.html','netlify.toml','scripts/validate-mobile-kyc-onboarding.mjs','.github/workflows/nexa-mobile-kyc-site-release-ci.yml']);
           assert.deepEqual(files.filter(f=>!allow.has(f)),[]);
           const now=fs.readFileSync('netlify.toml','utf8'),old=cp.execFileSync('git',['show','origin/main:netlify.toml'],{encoding:'utf8'});
-          assert.equal(now.replace('b153f58d39ae9a87ffe4e04433b32a4e521ab8fe','dd476f6a41846e864acfebcdd43b3115693b1010'),old);
-          console.info('Only pinned portal commit changed; all redirect, Global and security settings identical');
+          // The mobile-first portal is already pinned in main. New onboarding
+          // changes must preserve the entire production routing configuration.
+          assert.equal(now,old);
+          console.info('Production portal pin, redirects, Global and security settings unchanged');
           NODE
       - name: Validate mobile KYC, privacy feedback and existing web pages
         run: |
