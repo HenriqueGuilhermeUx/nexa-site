@@ -30,9 +30,9 @@
     <button class="card assistant" style="width:100%;text-align:left;color:inherit" onclick="go('assistant')"><div class="assistantIcon">N</div><div class="grow"><div class="kicker">ASSISTENTE NEXA</div><div class="assistantTitle">Posso te ajudar?</div><div class="assistantText">Organize sua rotina, entenda seu dinheiro e acompanhe o que precisa de atenção.</div></div><b>›</b></button>
     <button type="button" class="card" style="display:block;width:100%;margin-top:15px;text-align:left;color:inherit;border-color:#247BA8" onclick="go('aave')">
       <div class="sectionKicker">NEXA AAVE · COM SUA CARTEIRA</div>
-      <div class="sectionTitle">Aplicar USDC ou retirar da Aave</div>
-      <p class="pageSub">Use sua própria carteira Privy e confirme cada transação. O acesso real depende da autorização da conta; crédito ainda não está habilitado.</p>
-      <span class="link" aria-hidden="true">Consultar meu acesso ›</span>
+      <div class="sectionTitle">Conheça o rendimento em USDC na Aave</div>
+      <p class="pageSub">Entenda como funcionam aplicações e retiradas com sua própria carteira. Movimentações reais ainda dependem de homologação e liberação individual.</p>
+      <span class="link" aria-hidden="true">Conhecer e consultar disponibilidade ›</span>
     </button>
     <div class="card" style="margin-top:15px"><div class="sectionKicker">CARTEIRAS EXTERNAS</div><div class="sectionTitle">Acompanhe outras wallets</div><p class="pageSub">Adicione um endereço público para ver USDC na Polygon. Não precisa conectar dois aplicativos.</p><button class="btn secondary" onclick="go('externalWallet')">Adicionar carteira externa</button></div><div class="sectionHead"><div><div class="sectionKicker">MINHA WALLET</div><div class="sectionTitle">Meus ativos</div></div><button class="link" onclick="go('assets')">Ver todos</button></div>
     <div id="homeAssets" class="list"></div>
@@ -122,8 +122,8 @@
 
   <main id="aave" class="page hidden">
     <div class="pageKicker">NEXA · AAVE V3 · POLYGON</div>
-    <h1 class="pageTitle">Aave com sua própria carteira</h1>
-    <p class="pageSub">Aplicações e retiradas usam USDC nativo na Polygon e exigem autorização individual na Privy. A Nexa não assina por você e não movimenta fundos automaticamente.</p>
+    <h1 class="pageTitle">Entenda a Aave com sua própria carteira</h1>
+    <p class="pageSub">Conheça como funcionariam aplicações e retiradas de USDC nativo na Polygon, com confirmação individual pela Privy. Esta página é informativa: não inicia movimentações.</p>
     <div class="card">
       <div class="sectionKicker">MINHA DISPONIBILIDADE</div>
       <div id="aavePilotAvailability" class="sectionTitle" role="status" aria-live="polite">Aguardando verificação segura</div>
@@ -132,7 +132,7 @@
     </div>
     <div class="card">
       <div class="sectionTitle">Como funciona</div>
-      <p class="pageSub">1. Escolha USDC nativo e confira os riscos. 2. Autorize somente o valor escolhido na carteira. 3. Confirme a aplicação. 4. Acompanhe seus aTokens e retire para sua própria wallet quando houver liquidez.</p>
+      <p class="pageSub">Quando a operação for autorizada: 1. Confira o USDC nativo e os riscos. 2. Aprove apenas o valor exato na carteira. 3. Confirme a aplicação separadamente. 4. Acompanhe aUSDC e solicite retirada quando disponível. Nenhuma dessas ações é executada nesta página.</p>
       <p class="pageSub">Rendimento variável, riscos de contratos, liquidez, custos de gás e eventual perda de fundos. Empréstimos e amortizações permanecem indisponíveis neste piloto.</p>
     </div>
   </main>
