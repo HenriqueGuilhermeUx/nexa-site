@@ -30,8 +30,8 @@ jobs:
           const allow=new Set(['netlify.toml','.github/workflows/nexa-mobile-kyc-site-release-ci.yml']);
           assert.deepEqual(files.filter(f=>!allow.has(f)),[]);
           const now=fs.readFileSync('netlify.toml','utf8'),old=cp.execFileSync('git',['show','origin/main:netlify.toml'],{encoding:'utf8'});
-          const expected=old.replace('b153f58d39ae9a87ffe4e04433b32a4e521ab8fe',
-            '1db7745bd6901a267eb2c1baa3885281de0d83a4');
+          const expected=old.replace('1db7745bd6901a267eb2c1baa3885281de0d83a4',
+            '7e16b2ef50dd3b4a8d7253112eb5fe4a4fb6a629');
           assert.equal(now,expected);
           console.info('Only reviewed portal SHA pin changed; all redirects, Global and security settings identical');
           NODE
@@ -43,7 +43,7 @@ jobs:
           node scripts/validate-unified-nexa.mjs
       - name: Compile exact new portal alongside unchanged Global app
         env:
-          NEXA_PORTAL_COMMIT: 1db7745bd6901a267eb2c1baa3885281de0d83a4
+          NEXA_PORTAL_COMMIT: 7e16b2ef50dd3b4a8d7253112eb5fe4a4fb6a629
           NEXA_GLOBAL_APP_COMMIT: a930c2438691e3b2026fa0a5a5e9a9b9d8ec1499
         run: node scripts/build-site.mjs
       - name: Validate compiled portal safety
