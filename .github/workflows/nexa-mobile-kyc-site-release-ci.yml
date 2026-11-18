@@ -27,11 +27,13 @@ jobs:
           node - <<'NODE'
           const fs=require('node:fs'),cp=require('node:child_process'),assert=require('node:assert/strict');
           const files=cp.execFileSync('git',['diff','--name-only','origin/main...HEAD'],{encoding:'utf8'}).trim().split('\n').filter(Boolean);
-          const allow=new Set(['cadastro.html','.github/workflows/nexa-mobile-kyc-site-release-ci.yml']);
+          const allow=new Set(['netlify.toml','.github/workflows/nexa-mobile-kyc-site-release-ci.yml']);
           assert.deepEqual(files.filter(f=>!allow.has(f)),[]);
           const now=fs.readFileSync('netlify.toml','utf8'),old=cp.execFileSync('git',['show','origin/main:netlify.toml'],{encoding:'utf8'});
-          assert.equal(now,old);
-          console.info('Portal pin, wallet redirects, Global and financial/security settings unchanged');
+          const expected=old.replace('b153f58d39ae9a87ffe4e04433b32a4e521ab8fe',
+            '1db7745bd6901a267eb2c1baa3885281de0d83a4');
+          assert.equal(now,expected);
+          console.info('Only reviewed portal SHA pin changed; all redirects, Global and security settings identical');
           NODE
       - name: Validate mobile KYC, privacy feedback and existing web pages
         run: |
@@ -41,7 +43,7 @@ jobs:
           node scripts/validate-unified-nexa.mjs
       - name: Compile exact new portal alongside unchanged Global app
         env:
-          NEXA_PORTAL_COMMIT: b153f58d39ae9a87ffe4e04433b32a4e521ab8fe
+          NEXA_PORTAL_COMMIT: 1db7745bd6901a267eb2c1baa3885281de0d83a4
           NEXA_GLOBAL_APP_COMMIT: a930c2438691e3b2026fa0a5a5e9a9b9d8ec1499
         run: node scripts/build-site.mjs
       - name: Validate compiled portal safety
