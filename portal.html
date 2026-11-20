@@ -85,6 +85,12 @@
       </div>
     </div>
     <div id="panel-resumo" class="panel">
+      <div id="walletActivationServiceNotice" class="card rounded-3xl p-6 mb-5" style="border:1px solid #277AA5">
+        <div class="text-sm font-black text-cyan-300">AVISO DE SERVIÇO NEXA — CARTEIRA PRIVY</div>
+        <p class="text-slate-200 text-sm mt-3">Identificamos que algumas contas receberam um endereço interno sem concluir o vínculo da carteira individual Privy. Sua verificação de identidade permanece válida. Não crie outra conta.</p>
+        <p class="text-slate-300 text-sm mt-2">Se o KYC estiver aprovado, abra o portal autenticado e conclua a ativação da Privy com o mesmo e-mail e a assinatura de titularidade. Antes disso, não envie fundos para um endereço antigo.</p>
+        <a href="/portal/" class="inline-block mt-3 font-bold text-cyan-300 underline">Concluir minha carteira Privy</a>
+      </div>
       <div class="nexa-pwa-hero">
         <div class="nexa-pwa-hero-label">VALOR DA CARTEIRA</div>
         <div id="pwaWalletValue" class="nexa-pwa-hero-value">0,00 USDC</div>
@@ -219,7 +225,7 @@ function renderBasic(){ if(!user)return; const name=user.fullName||user.email||'
   if($('pwaProfileEmail'))$('pwaProfileEmail').textContent=user.email||'—';
   if($('pwaProfileUsername'))$('pwaProfileUsername').textContent=user.username?'@'+String(user.username).replace(/^@/,''):'—';
   if($('pwaProfileKyc'))$('pwaProfileKyc').textContent=user.kycStatus||'—';
-  if($('pwaProfileWallet'))$('pwaProfileWallet').textContent=wallet||'Carteira não encontrada';
+  if($('pwaProfileWallet'))$('pwaProfileWallet').textContent=user?.wallet?.privyLinked===true?'Privy vinculada':'Privy pendente — ativação necessária';if($('walletActivationServiceNotice'))$('walletActivationServiceNotice').classList.toggle('hidden',user?.wallet?.privyLinked===true);
   renderQr(); }
 function renderQr(){const a=$('walletQr'); if(!a)return; a.innerHTML=''; if(wallet&&window.QRCode)new QRCode(a,{text:wallet,width:210,height:210})}
 async function loadAll(){await loadMe();await loadBalances();renderBasic();await Promise.allSettled([loadRewards(),loadRecurring(),loadHistory()])}
