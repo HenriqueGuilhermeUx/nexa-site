@@ -109,6 +109,22 @@
         <div class="nexa-pwa-asset"><div class="nexa-pwa-token" style="border-color:#F59E0B;color:#F59E0B">₿</div><div class="nexa-pwa-asset-copy"><div class="nexa-pwa-asset-name">Bitcoin</div><div class="nexa-pwa-asset-symbol">WBTC</div></div><div id="pwaWbtc" class="nexa-pwa-asset-value">0 WBTC</div></div>
         <div class="nexa-pwa-asset"><div class="nexa-pwa-token" style="border-color:#D5E2EF;color:#D5E2EF">Au</div><div class="nexa-pwa-asset-copy"><div class="nexa-pwa-asset-name">Ouro Digital</div><div class="nexa-pwa-asset-symbol">PAXG</div></div><div id="pwaPaxg" class="nexa-pwa-asset-value">0 PAXG</div></div>
       </div>
+      <section id="mayaAgenticsBenefitsCard" class="glass rounded-[2rem] p-6 mb-6" aria-labelledby="mayaAgenticsTitle">
+        <div class="flex flex-wrap justify-between items-center gap-2 mb-3"><span class="text-xs font-black tracking-widest text-cyan-300">MAYA + AGENTICS · BENEFÍCIO PREMIUM</span><span class="text-xs border border-cyan-600 rounded-full px-3 py-1">Em homologação</span></div>
+        <h2 id="mayaAgenticsTitle" class="text-2xl font-black mb-3">A Maya ajuda você. Com Agentics, ela ajuda a planejar melhor.</h2>
+        <p class="text-sm text-slate-300 mb-4">A Maya continua para todos. A Agentics acrescentará planejamento avançado, rascunhos e revisão humana como benefício Premium, quando o piloto estiver homologado.</p>
+        <div class="grid md:grid-cols-2 gap-3 mb-4">
+          <div class="bg-slate-950/50 rounded-2xl p-4 border border-white/10"><strong class="block mb-2">Maya para todos</strong><p class="text-xs text-slate-300">Conversa, pesquisa e os recursos da Maya já disponíveis.</p></div>
+          <div class="bg-slate-950/50 rounded-2xl p-4 border border-cyan-600/40"><strong class="block mb-2">Maya + Agentics Premium</strong><p class="text-xs text-slate-300">Planos estruturados, organização de etapas e sugestões para sua revisão.</p></div>
+        </div>
+        <p data-maya-agentics-status class="text-xs text-cyan-200" role="status">Planejamento avançado em homologação — ainda não disponível para uso real.</p>
+        <p data-maya-agentics-entitlement class="text-xs text-slate-400 mt-2">Disponibilidade Premium não verificada. Conheça a novidade sem ativar nada.</p>
+        <div class="flex gap-3 flex-wrap mt-4">
+          <a href="/maya" class="inline-block rounded-xl border border-cyan-600 px-4 py-3 text-sm font-bold text-cyan-200">Conhecer a Maya</a>
+          <button type="button" data-maya-agentics-action disabled class="rounded-xl bg-slate-700 opacity-50 px-4 py-3 text-sm font-bold" aria-label="Agentics em homologação">Planejar com Agentics — em breve</button>
+        </div>
+        <p class="text-xs text-slate-500 mt-3">Nenhuma ação financeira automática. Esta apresentação não consulta sua conta nem envia dados à Agentics.</p>
+      </section>
       <div class="nexa-pwa-section-head"><div><div class="nexa-pwa-kicker">ATIVIDADE</div><div class="nexa-pwa-title">Movimentações</div></div><button class="nexa-pwa-link" onclick="openTab('historico')">Ver histórico</button></div>
       <div class="card rounded-3xl p-5"><p class="text-slate-300 text-sm">Entradas, conversões e saques aparecem no histórico com seus status de processamento e conciliação.</p></div>
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -171,6 +187,7 @@
     <button data-native-tab="perfil" onclick="openTab('perfil')"><span class="navico">◯</span><span>Perfil</span></button>
   </nav>
 </main>
+<script src="/maya-agentics-benefits.js" defer></script>
 <script>
 const API='https://nexa-backend-p2u0.onrender.com/api/v1';
 let token=localStorage.getItem('nexa_access_token')||localStorage.getItem('nexa_token')||'';let refreshToken=localStorage.getItem('nexa_refresh_token')||'';let user=null;let balances={BRL:0,USDC:0,WBTC:0,PAXG:0};let wallet='';

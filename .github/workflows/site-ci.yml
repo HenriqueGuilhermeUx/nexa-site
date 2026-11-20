@@ -42,6 +42,8 @@ jobs:
         run: node scripts/validate-agentics-beta.mjs
       - name: Verify commercial Agentics and Trust pages are static and accurately scoped
         run: node scripts/validate-agentics-commercial.mjs
+      - name: Verify Maya Agentics Premium benefits contract is informative and fail-closed
+        run: node --test scripts/smoke-maya-agentics-benefits-pwa.mjs
       - name: Validate required pages
         run: |
           test -s index.html
