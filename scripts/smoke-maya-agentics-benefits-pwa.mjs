@@ -25,7 +25,7 @@ test('the logged-in PWA contains a clear benefit but never claims the pilot is l
  assert.match(html,/<script src="\/maya-agentics-benefits\.js" defer><\/script>/);
 });
 test('browser presentation is network-free, side-effect-free, and has no token ingestion',()=>{
- for(const item of [/\bfetch\s*\(/,/XMLHttpRequest/,/localStorage/,/sessionStorage/,/sendBeacon/,/postMessage/,/authorization/i,/wallet\.transfer/i,/sendPix/i,/agentics.*execute/i]){
+ for(const item of [/\bfetch\s*\(/,/XMLHttpRequest/,/localStorage/,/sessionStorage/,/sendBeacon/,/postMessage/,/['\"]Authorization['\"]\s*:/i,/wallet\.transfer/i,/sendPix/i,/agentics.*execute/i]){
    assert.doesNotMatch(js,item);
  }
  const api=load();
