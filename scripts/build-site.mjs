@@ -20,7 +20,7 @@ const repository =
   'https://github.com/HenriqueGuilhermeUx/nexa-react-app.git';
 const commit =
   process.env.NEXA_PORTAL_COMMIT ||
-  '20c885af5fa65510c2fd60300549173a54ce50c8';
+  '00421d5a6a88d809743d82278115a9e17cf329e6';
 const globalAppRepository =
   process.env.NEXA_GLOBAL_APP_REPOSITORY ||
   'https://github.com/HenriqueGuilhermeUx/nexa-mobile.git';
