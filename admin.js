@@ -1283,6 +1283,9 @@ function renderTesouraria() {
   if (!fc?.success) {
     $('content').innerHTML =
       '<div class="card notice bad"><h3>Controle financeiro Wallet-First indisponível</h3><p>O painel não vai substituir dados ausentes por ledger ou posições manuais. Atualize quando o endpoint <code>/admin/financial-control</code> estiver disponível.</p></div>';
+    if (typeof window.renderDepositOperationsPanel === 'function') {
+      $('content').insertAdjacentHTML('beforeend', window.renderDepositOperationsPanel(data.depositOperations));
+    }
     return;
   }
 
