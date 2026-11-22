@@ -1,0 +1,42 @@
+name: Nexa Admin Deposit Operations Safety
+on:
+  pull_request:
+    paths:
+      - "admin.html"
+      - "admin.js"
+      - "admin-treasury-deposits.js"
+      - "scripts/test-admin-treasury-deposits.cjs"
+      - ".github/workflows/admin-treasury-deposits-check.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  syntax-and-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Static JavaScript syntax
+        run: |
+          node --check admin.js
+          node --check admin-treasury-deposits.js
+      - name: Renderer safety and regression fixtures
+        run: node scripts/test-admin-treasury-deposits.cjs
+      - name: Read-only contract
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const html=fs.readFileSync('admin.html','utf8');
+          const admin=fs.readFileSync('admin.js','utf8');
+          const ops=fs.readFileSync('admin-treasury-deposits.js','utf8');
+          const assert=require('assert/strict');
+          assert(html.includes('admin-treasury-deposits.js'));
+          assert(admin.includes("safeCall('/treasury-admin/deposit-operations?limit=50', null)"));
+          assert(ops.includes("READ_ONLY_OPERATOR_ASSISTANCE"));
+          assert(ops.includes("Não comprovada"));
+          assert(!/fetch\s*\(|axios\.|XMLHttpRequest|\.post\s*\(/.test(ops));
+          assert(!/\.innerHTML\s*=|localStorage|sessionStorage/.test(ops));
+          console.log('Read-only UI safety contract passed.');
+          NODE

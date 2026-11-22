@@ -186,6 +186,7 @@ async function refresh() {
       audit,
       checkout,
       trades,
+      depositOperations,
     ] = await Promise.all([
       safeCall('/admin/ops-center', {}),
       safeCall('/admin/financial-control', null),
@@ -210,6 +211,7 @@ async function refresh() {
         transactions: [],
       }),
       safeCall('/treasury-admin/trades?limit=300', { trades: [] }),
+      safeCall('/treasury-admin/deposit-operations?limit=50', null),
     ]);
 
     data = {
@@ -227,6 +229,7 @@ async function refresh() {
       audit: audit || { events: [] },
       checkout: checkout || { transactions: [] },
       trades: trades || { trades: [] },
+      depositOperations: depositOperations || null,
       ledgerBalances: {},
     };
 
@@ -1280,6 +1283,9 @@ function renderTesouraria() {
   if (!fc?.success) {
     $('content').innerHTML =
       '<div class="card notice bad"><h3>Controle financeiro Wallet-First indisponível</h3><p>O painel não vai substituir dados ausentes por ledger ou posições manuais. Atualize quando o endpoint <code>/admin/financial-control</code> estiver disponível.</p></div>';
+    if (typeof window.renderDepositOperationsPanel === 'function') {
+      $('content').insertAdjacentHTML('beforeend', window.renderDepositOperationsPanel(data.depositOperations));
+    }
     return;
   }
 
@@ -1467,6 +1473,9 @@ function renderTesouraria() {
     )}</pre></div>` +
     `<div class="card scroll"><h3>Posições contábeis manuais / legado</h3><p class="muted">Estas posições não são tratadas como saldo real de provider. Servem apenas para contabilidade, migração e reconciliação.</p><table><thead><tr><th>Ativo</th><th>Posição</th><th>Fonte</th><th>Atualização</th></tr></thead><tbody>${positionRows}</tbody></table></div>` +
     '<div class="card notice"><b>Regra operacional:</b> provider/on-chain é fonte de saldo; ledger é journal; estados <code>provider_uncertain</code> e <code>manual_review</code> exigem reconciliação antes de qualquer nova tentativa.</div>';
+  if (typeof window.renderDepositOperationsPanel === 'function') {
+    $('content').insertAdjacentHTML('beforeend', window.renderDepositOperationsPanel(data.depositOperations));
+  }
 }
 
 const crmStageLabels = {
