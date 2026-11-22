@@ -5,6 +5,7 @@ on:
       - "admin.html"
       - "admin.js"
       - "admin-treasury-deposits.js"
+      - "scripts/test-admin-treasury-deposits.cjs"
       - ".github/workflows/admin-treasury-deposits-check.yml"
   workflow_dispatch:
 permissions:
@@ -21,6 +22,8 @@ jobs:
         run: |
           node --check admin.js
           node --check admin-treasury-deposits.js
+      - name: Renderer safety and regression fixtures
+        run: node scripts/test-admin-treasury-deposits.cjs
       - name: Read-only contract
         run: |
           node - <<'NODE'
