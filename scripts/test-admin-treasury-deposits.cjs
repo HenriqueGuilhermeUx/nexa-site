@@ -17,7 +17,7 @@ const sample = {
   success: true,
   mode: 'READ_ONLY_OPERATOR_ASSISTANCE',
   coverage: { status: 'UNKNOWN', providerBalancesVerified: false, availableUsdc: null, additionalUsdcToBuy: null },
-  alerts: [{ key: evil, severity: 'REVIEW_REQUIRED', action: evil }],
+  alerts: [{ key: evil, severity: 'REVIEW_REQUIRED', action: evil }, { key: 'TREASURY_DELIVERY_PROVIDER_UNCERTAIN', count: 3, action: 'Conferir', severity: 'REVIEW_REQUIRED' }],
   settlements: [{
     id: evil, fiatProvider: 'woovi', fiatStatus: 'paid',
     grossBrl: '10.00', netBrlForUsdc: '9.10', obligationUsdcRecorded: '1.4768',
@@ -34,6 +34,7 @@ assert.match(html, /Não comprovada/);
 assert.match(html, /Não comprovado/);
 assert.match(html, /Não reenviar/);
 assert.match(html, /delivery-1/);
+assert.match(html, /<strong>3<\/strong><p>Não reenviar USDC/);
 assert.doesNotMatch(html, /<img src=x/);
 assert.match(html, /&lt;img/);
 assert.doesNotMatch(html, /undefined|NaN/);
