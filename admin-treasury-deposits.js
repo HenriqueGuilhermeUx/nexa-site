@@ -48,6 +48,10 @@
     ).join('');
     const uncertain = safeArray(snapshot.deliveries).filter((d) =>
       d.status === 'provider_uncertain');
+    const uncertainAlert = safeArray(snapshot.alerts).find(
+      (a) => a.key === 'TREASURY_DELIVERY_PROVIDER_UNCERTAIN');
+    const uncertainTotal = Number.isSafeInteger(Number(uncertainAlert?.count))
+      && Number(uncertainAlert.count) >= 0 ? Number(uncertainAlert.count) : null;
     const uncertainRows = uncertain.map((d) => '<tr><td>' +
       escapeHtml(d.id) + '</td><td>' + amount(d.amountUsdc) +
       ' USDC</td><td>' + escapeHtml(d.operation?.reason || 'Investigar no provedor') +
@@ -63,7 +67,8 @@
       '<div class="card"><h4>USDC adicional a comprar</h4><strong>' +
       amount(coverage.additionalUsdcToBuy) + '</strong><p>Sem recomendação de valor enquanto faltarem saldos comprovados.</p></div>' +
       '<div class="card"><h4>Entregas com confirmação incerta</h4><strong>' +
-      uncertain.length + '</strong><p>Não reenviar USDC sem reconciliação.</p></div></div>' +
+      (uncertainTotal === null ? 'A verificar' : uncertainTotal) +
+      '</strong><p>Não reenviar USDC sem reconciliação. Lista limitada aos registros consultados.</p></div></div>' +
       '<h4>Alertas operacionais</h4>' +
       (alerts || '<p class="muted">Nenhum alerta retornado nesta consulta.</p>') +
       '<h4>Settlements Wallet-First</h4><div class="table-wrap"><table><thead><tr>' +
