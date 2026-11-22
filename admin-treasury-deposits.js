@@ -31,6 +31,26 @@
     const coverageState = coverage.providerBalancesVerified === true
       ? 'Comprovação do provedor exige revisão'
       : 'Não comprovada';
+    const email = snapshot.notificationReadiness || {};
+    const funding = snapshot.fundingInstruction || {};
+    const transfer = snapshot.transferPolicy || {};
+    const emailReady = email.apiKeyConfigured === true
+      && email.adminRecipientConfigured === true
+      && email.senderConfigured === true;
+    const readinessHtml = '<div class="card notice">' +
+      '<h4>Reposição e aportes · orientação segura</h4>' +
+      '<p><strong>Conta de destino:</strong> conta BRL corporativa Nexa na Foxbit, somente após conferência oficial.</p>' +
+      '<p><strong>Valor a aportar:</strong> ' + amount(funding.amountBrl, 2) +
+      ' · não transferir recursos antes de verificar déficit, saldo real e operações em trânsito.</p>' +
+      '<h4>Alertas por e-mail</h4><p>Resend: ' +
+      (emailReady ? 'configuração básica presente; entrega não verificada' : 'configuração não confirmada') +
+      '. Avisos de Pix, USDC disponível, intervenção e funding dependem do evento e de prova nos provedores. ' +
+      'Esta consulta não envia e-mails.</p>' +
+      '<h4>Transferências Nexa → Nexa</h4><p>' +
+      'Cotação em ' + escapeHtml(transfer.quoteEndpoint || '/wallet-v15/transfer/quote') +
+      '; preferir carteira → carteira com assinatura e confirmação Polygon. ' +
+      'A cotação não executa a operação; não usar ledger como saldo spendable da wallet.</p>' +
+      '</div>';
     const alerts = safeArray(snapshot.alerts).map((a) =>
       '<div class="note"><b>' + escapeHtml(a.key) + '</b> · ' +
       escapeHtml(a.severity) + '<p>' + escapeHtml(a.action) + '</p></div>').join('');
@@ -69,6 +89,7 @@
       '<div class="card"><h4>Entregas com confirmação incerta</h4><strong>' +
       (uncertainTotal === null ? 'A verificar' : uncertainTotal) +
       '</strong><p>Não reenviar USDC sem reconciliação. Lista limitada aos registros consultados.</p></div></div>' +
+      readinessHtml +
       '<h4>Alertas operacionais</h4>' +
       (alerts || '<p class="muted">Nenhum alerta retornado nesta consulta.</p>') +
       '<h4>Settlements Wallet-First</h4><div class="table-wrap"><table><thead><tr>' +
