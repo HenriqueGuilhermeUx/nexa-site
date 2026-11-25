@@ -9,7 +9,7 @@
     <form id="cadastroForm" class="w-full max-w-md bg-slate-900/90 border border-white/10 p-8 rounded-2xl shadow-2xl">
       <a href="/" class="inline-flex items-center gap-3 mb-8"><span class="w-10 h-10 bg-indigo-500 rounded-xl flex items-center justify-center font-bold text-xl">N</span><span class="text-xl font-bold">Nexa</span></a>
       <h1 class="text-3xl font-extrabold mb-2">Abra sua conta Nexa</h1>
-      <p class="text-slate-300 mb-2">1. Crie seu acesso. &nbsp;2. Verifique sua identidade com a Didit. &nbsp;3. Conheça a carteira e as operações disponíveis.</p><p class="text-xs text-slate-400 mb-6">A verificação é necessária antes de operações financeiras. A escolha de realizar depósitos é sempre sua.</p>
+      <p class="text-slate-300 mb-2">1. Crie seu acesso. &nbsp;2. Ative sua carteira individual no aplicativo Nexa com o mesmo e-mail. &nbsp;3. Faça a verificação de identidade Didit antes de operar.</p><p class="text-xs text-slate-400 mb-6">A verificação é necessária antes de operações financeiras. A escolha de realizar depósitos é sempre sua.</p>
       <label class="block text-sm text-slate-300 mb-2">Nome completo</label>
       <input id="fullName" required class="w-full mb-4 p-3 rounded-lg bg-slate-800 border border-white/10 outline-none focus:border-indigo-500" placeholder="Seu nome">
       <label class="block text-sm text-slate-300 mb-2">E-mail</label>
@@ -25,11 +25,11 @@
         <span>Quero receber por e-mail orientações educativas sobre cadastro, verificação e utilização da Nexa (no máximo 1 por semana). Posso cancelar quando quiser.</span>
       </label>
       <p id="educationHelp" class="text-xs text-slate-400 mb-5">Opcional, desmarcado por padrão. O aceite não é necessário para criar a conta ou iniciar a Didit.</p>
-      <button id="submitBtn" class="w-full bg-indigo-500 hover:bg-indigo-600 p-3 rounded-lg font-bold cta-glow">Criar conta e continuar para a verificação</button>
+      <button id="submitBtn" class="w-full bg-indigo-500 hover:bg-indigo-600 p-3 rounded-lg font-bold cta-glow">Criar conta e ver como ativar a carteira</button>
       <p id="msg" class="mt-4 text-sm text-center"></p>
       <aside class="mt-5 rounded-xl border border-indigo-300/20 bg-slate-800/60 p-4 text-sm text-slate-300" aria-label="Como começar a verificação">
-        <strong class="text-white">Após criar a conta · prefira o celular</strong>
-        <p class="mt-2">Para fazer o reconhecimento facial da Didit, prefira abrir a Nexa no celular, com câmera disponível. Se começou no computador, acesse https://trynexa.com.br/portal/ no celular e entre na mesma conta; nunca compartilhe sessão, códigos ou documentos. Você será levado ao portal para iniciar a Didit com sua autorização. Não precisa depositar. Se a etapa não aparecer, não envie documentos por chat: <a class="text-cyan-300 underline" href="/insights/primeira-utilizacao-nexa.html">veja o guia</a> ou <a class="text-cyan-300 underline" href="https://t.me/NexaTheoBot" target="_blank" rel="noopener noreferrer">fale com o Theo</a>.</p>
+        <strong class="text-white">Após criar a conta · ative sua carteira no app</strong>
+        <p class="mt-2">Após criar sua conta, abra o aplicativo Nexa, entre com o mesmo e-mail e confirme a ativação segura pela Privy. A carteira não é criada neste navegador. A Didit continua disponível no <a class="text-cyan-300 underline" href="/portal/">portal Nexa</a>: para o reconhecimento facial, prefira um celular com câmera. Se estiver no computador, acesse o portal no celular com a mesma conta. Não compartilhe códigos nem documentos, e não é necessário depositar. Se a etapa não aparecer, não envie documentos por chat: <a class="text-cyan-300 underline" href="/insights/primeira-utilizacao-nexa.html">veja o guia</a> ou <a class="text-cyan-300 underline" href="https://t.me/NexaTheoBot" target="_blank" rel="noopener noreferrer">fale com o Theo</a>.</p>
       </aside>
       <p class="mt-4 text-sm text-slate-300 text-center">Já criou conta e a verificação travou? <a class="text-cyan-300 underline" href="/ajuda-verificacao.html">Conte onde encontrou dificuldade (20 segundos)</a>. Sem CPF ou documentos.</p>
       <p class="mt-6 text-sm text-slate-400 text-center">Já tem conta? <a class='text-indigo-400 hover:text-indigo-300' href='/login'>Entrar</a></p>
@@ -75,10 +75,10 @@ document.getElementById('cadastroForm').addEventListener('submit', async (e) => 
     if(educationNotSaved){
       msg.textContent='Conta criada. Não foi possível confirmar sua escolha de e-mails educativos. Você pode ativá-los depois em sua conta. Sua verificação de identidade não foi afetada.';
       msg.className='mt-4 text-sm text-center text-amber-300';
-      setTimeout(()=>window.location.replace('/portal/'),4000);
+      setTimeout(()=>window.location.replace('/ativar-carteira.html?origem=cadastro'),4000);
     }else{
-      msg.textContent='Conta criada! Vamos à verificação de identidade segura.';
-      window.location.replace('/portal/');
+      msg.textContent='Conta criada! Agora ative sua carteira no aplicativo Nexa. A Didit permanece disponível pelo portal.';
+      window.location.replace('/ativar-carteira.html?origem=cadastro');
     }
   } catch(err) {
     msg.textContent=err.message; msg.className='mt-4 text-sm text-center text-red-400'; btn.disabled=false;
