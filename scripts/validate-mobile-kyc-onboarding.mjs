@@ -6,7 +6,7 @@ assert.match(signup,/Após criar a conta · ative sua carteira no app/);
 assert.match(signup,/A Didit continua disponível no/);
 assert.match(signup,/href="\/portal\/"/);
 assert.match(signup,/\/ativar-carteira\.html\?origem=cadastro/);
-assert.match(signup,/entre na mesma conta/);
+assert.match(signup,/entre com o mesmo e-mail/);
 assert.match(signup,/Não precisa depositar/);
 assert.match(signup,/id="educationConsent" type="checkbox"/);
 assert.doesNotMatch(signup,/id="educationConsent"[^>]*checked/i);
