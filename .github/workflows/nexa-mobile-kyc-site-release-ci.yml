@@ -38,7 +38,7 @@ jobs:
             const signup=cp.execFileSync('git',['hash-object','cadastro.html'],{encoding:'utf8'}).trim();
             const fixture=cp.execFileSync('git',['hash-object','scripts/validate-mobile-kyc-onboarding.mjs'],{encoding:'utf8'}).trim();
             assert.equal(signup,'61fcd7c8779895ff63013e872c65cb2c29c12fe5','Signup must match the exact reviewed blob');
-            assert.equal(fixture,'0dbb72cb95de55d84a6539cba8492353a8594aa4','Safety fixture must match the exact reviewed blob');
+            assert.equal(fixture,'5c60ca46953a353e4d497119bc50642df22439f9','Safety fixture must match the exact reviewed blob');
             console.info('Pinned signup and KYC test blobs reviewed; production configuration unchanged');
           }else{
             assert.deepEqual(files.filter(f=>!allow.has(f)),[]);
