@@ -28,12 +28,25 @@ jobs:
           const fs=require('node:fs'),cp=require('node:child_process'),assert=require('node:assert/strict');
           const files=cp.execFileSync('git',['diff','--name-only','origin/main...HEAD'],{encoding:'utf8'}).trim().split('\n').filter(Boolean);
           const allow=new Set(['netlify.toml','.github/workflows/nexa-mobile-kyc-site-release-ci.yml']);
-          assert.deepEqual(files.filter(f=>!allow.has(f)),[]);
           const now=fs.readFileSync('netlify.toml','utf8'),old=cp.execFileSync('git',['show','origin/main:netlify.toml'],{encoding:'utf8'});
-          const expected=old.replace('1db7745bd6901a267eb2c1baa3885281de0d83a4',
-            '7e16b2ef50dd3b4a8d7253112eb5fe4a4fb6a629');
-          assert.equal(now,expected);
-          console.info('Only reviewed portal SHA pin changed; all redirects, Global and security settings identical');
+          if(files.includes('cadastro.html')){
+            // Explicit one-off allowance for the reviewed Privy-first signup. Keep
+            // every production portal SHA pin and financial route byte-identical.
+            const exact=new Set(['cadastro.html','scripts/validate-mobile-kyc-onboarding.mjs','.github/workflows/nexa-mobile-kyc-site-release-ci.yml']);
+            assert.deepEqual(files.filter(f=>!exact.has(f)),[],'Unreviewed files in Privy-first signup');
+            assert.equal(now,old,'Netlify config must remain untouched for this PR');
+            const signup=cp.execFileSync('git',['hash-object','cadastro.html'],{encoding:'utf8'}).trim();
+            const fixture=cp.execFileSync('git',['hash-object','scripts/validate-mobile-kyc-onboarding.mjs'],{encoding:'utf8'}).trim();
+            assert.equal(signup,'61fcd7c8779895ff63013e872c65cb2c29c12fe5','Signup must match the exact reviewed blob');
+            assert.equal(fixture,'5c60ca46953a353e4d497119bc50642df22439f9','Safety fixture must match the exact reviewed blob');
+            console.info('Pinned signup and KYC test blobs reviewed; production configuration unchanged');
+          }else{
+            assert.deepEqual(files.filter(f=>!allow.has(f)),[]);
+            const expected=old.replace('1db7745bd6901a267eb2c1baa3885281de0d83a4',
+              '7e16b2ef50dd3b4a8d7253112eb5fe4a4fb6a629');
+            assert.equal(now,expected);
+            console.info('Only reviewed portal SHA pin changed; all redirects, Global and security settings identical');
+          }
           NODE
       - name: Validate mobile KYC, privacy feedback and existing web pages
         run: |
