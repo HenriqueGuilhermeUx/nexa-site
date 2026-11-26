@@ -1,0 +1,26 @@
+name: Nexa Rewards + Maya Explorar safe public UI
+on:
+  pull_request:
+    paths:
+      - 'rewards.html'
+      - 'explorar.html'
+      - 'index.html'
+      - 'maya.html'
+      - 'wallet-v148.html'
+      - 'portal.html'
+      - 'scripts/validate-rewards-maya-explorar.cjs'
+      - '.github/workflows/nexa-rewards-maya-explorar.yml'
+  workflow_dispatch:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Verify no browser Rewards ledger reservations or unofficial integrations
+        run: node scripts/validate-rewards-maya-explorar.cjs
