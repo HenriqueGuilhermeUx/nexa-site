@@ -42,10 +42,17 @@ jobs:
             console.info('Pinned signup and KYC test blobs reviewed; production configuration unchanged');
           }else{
             assert.deepEqual(files.filter(f=>!allow.has(f)),[]);
-            const expected=old.replace('1db7745bd6901a267eb2c1baa3885281de0d83a4',
-              '7e16b2ef50dd3b4a8d7253112eb5fe4a4fb6a629');
+            // The exact Nexa Rewards/Maya portal pin was separately reviewed
+            // against the current LIVE source. No other config change is permitted.
+            const rewardsPinChange = old.includes('NEXA_PORTAL_COMMIT = "7e16b2ef50dd3b4a8d7253112eb5fe4a4fb6a629"')
+              && now.includes('NEXA_PORTAL_COMMIT = "c1aaa2673bd8797baee33b95268700ee54cbea93"');
+            const expected = rewardsPinChange
+              ? old.replace('NEXA_PORTAL_COMMIT = "7e16b2ef50dd3b4a8d7253112eb5fe4a4fb6a629"',
+                'NEXA_PORTAL_COMMIT = "c1aaa2673bd8797baee33b95268700ee54cbea93"')
+              : old.replace('1db7745bd6901a267eb2c1baa3885281de0d83a4',
+                  '7e16b2ef50dd3b4a8d7253112eb5fe4a4fb6a629');
             assert.equal(now,expected);
-            console.info('Only reviewed portal SHA pin changed; all redirects, Global and security settings identical');
+            console.info('Only the exact reviewed portal SHA pin changed; Global, KYC and security routes identical');
           }
           NODE
       - name: Validate mobile KYC, privacy feedback and existing web pages
@@ -56,7 +63,7 @@ jobs:
           node scripts/validate-unified-nexa.mjs
       - name: Compile exact new portal alongside unchanged Global app
         env:
-          NEXA_PORTAL_COMMIT: 7e16b2ef50dd3b4a8d7253112eb5fe4a4fb6a629
+          NEXA_PORTAL_COMMIT: c1aaa2673bd8797baee33b95268700ee54cbea93
           NEXA_GLOBAL_APP_COMMIT: a930c2438691e3b2026fa0a5a5e9a9b9d8ec1499
         run: node scripts/build-site.mjs
       - name: Validate compiled portal safety
