@@ -22,8 +22,13 @@ assert.match(archivedPortal, /id="rewardBtn"[^>]+disabled/, 'legacy form stays i
 assert.match(rewards, /não é fixo nem garantido/i);
 assert.match(rewards, /não inicia operações financeiras/i);
 assert.match(explore, /https:\/\/m\.uber\.com\//);
-assert.match(explore, /https:\/\/www\.ticketmaster\.com\.br\//);
+assert.doesNotMatch(explore, /href="https:\/\/www\.ticketmaster\.com\.br\//, 'Ticketmaster deferred');
 assert.match(explore, /https:\/\/www\.sympla\.com\.br\//);
+assert.match(explore, /https:\/\/www\.bitrefill\.com\/br\/pt\/gift-cards\/uber-brazil\//);
+assert.match(explore, /O USDC da Nexa não é debitado diretamente pela Uber/);
+assert.match(explore, /A Nexa não processa essa compra/);
+assert.match(rewards, /Morpho/);
+assert.match(rewards, /Steakhouse Prime USDC/);
 assert.doesNotMatch(explore, /99\s*(?:táxi|taxi|app)/i);
 assert.doesNotMatch(explore, /onclick\s*=/i, 'provider opens must require direct user click on external links');
 assert.match(maya, /\/explorar\.html/);
